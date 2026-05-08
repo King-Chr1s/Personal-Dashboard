@@ -1,0 +1,3100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Chris</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e11;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a35;
+    --accent: #c8f04a;
+    --accent2: #7b5ea7;
+    --accent3: #f4a261;
+    --accent4: #48cae4;
+    --text: #e8e8f0;
+    --text-muted: #6b6b80;
+    --danger: #f05a5a;
+    --success: #4adb8a;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+
+  .header-left h1 span {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .header-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .week-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 4px;
+    width: fit-content;
+  }
+
+  .tab {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--accent);
+    color: #0e0e11;
+    font-weight: 600;
+  }
+
+  /* PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 700px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  /* PROJECT CARDS */
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover { border-color: var(--accent); }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--proj-color, var(--accent));
+    border-radius: 3px 0 0 3px;
+  }
+
+  .proj-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .proj-icon {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+
+  .proj-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .proj-goal {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .proj-minutes {
+    text-align: right;
+  }
+
+  .proj-today {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--proj-color, var(--accent));
+    line-height: 1;
+  }
+
+  .proj-today-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* PROGRESS BAR */
+  .prog-bar-bg {
+    height: 5px;
+    background: var(--border);
+    border-radius: 99px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+
+  .prog-bar-fill {
+    height: 100%;
+    background: var(--proj-color, var(--accent));
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  .prog-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* DAY DOTS */
+  .day-dots {
+    display: flex;
+    gap: 5px;
+    margin-top: 12px;
+  }
+
+  .day-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .day-dot.done {
+    background: var(--proj-color, var(--accent));
+    border-color: var(--proj-color, var(--accent));
+    color: #0e0e11;
+    font-weight: 600;
+  }
+
+  /* WEEK SUMMARY */
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .summary-row:last-child { border-bottom: none; }
+
+  .summary-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .summary-val {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* TOTAL TIME */
+  .big-stat {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .big-stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ---- BUDGET PANEL ---- */
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .budget-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .budget-month {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--text);
+  }
+
+  .balance-pill {
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .balance-pos { background: rgba(74,219,138,0.12); color: var(--success); border: 1px solid rgba(74,219,138,0.3); }
+  .balance-neg { background: rgba(240,90,90,0.12); color: var(--danger); border: 1px solid rgba(240,90,90,0.3); }
+
+  .income-expense-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .ie-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .ie-label {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .ie-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+  }
+
+  .ie-value.income { color: var(--success); }
+  .ie-value.expense { color: var(--danger); }
+
+  /* CATEGORIES */
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cat-row:last-child { border-bottom: none; }
+
+  .cat-emoji { font-size: 1.1rem; width: 28px; text-align: center; }
+
+  .cat-info { flex: 1; }
+
+  .cat-name { font-size: 0.78rem; color: var(--text); }
+  .cat-note { font-size: 0.62rem; color: var(--text-muted); margin-top: 1px; }
+
+  .cat-amount {
+    font-size: 0.82rem;
+    font-weight: 500;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .cat-amount.pos { color: var(--success); }
+  .cat-amount.neg { color: var(--text); }
+
+  .cat-bar-bg {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .cat-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--accent3);
+  }
+
+  /* INPUT SECTION */
+  .add-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .inp {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .inp:focus { border-color: var(--accent); }
+  .inp::placeholder { color: var(--text-muted); }
+
+  .inp-amount { width: 110px; }
+  .inp-label { flex: 1; min-width: 100px; }
+
+  select.inp {
+    cursor: pointer;
+    appearance: none;
+  }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0e0e11;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover { background: #d8ff5a; }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    border-radius: 6px;
+  }
+
+  /* TRANSACTION LIST */
+  .tx-list { margin-top: 4px; }
+
+  .tx-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(-4px); } to { opacity:1; } }
+
+  .tx-item:last-child { border-bottom: none; }
+
+  .tx-cat-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tx-name { flex: 1; font-size: 0.75rem; color: var(--text); }
+  .tx-cat { font-size: 0.6rem; color: var(--text-muted); }
+
+  .tx-amount {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .tx-amount.pos { color: var(--success); }
+  .tx-amount.neg { color: var(--danger); }
+
+  /* SAVINGS */
+  .savings-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  svg.ring { overflow: visible; }
+
+  /* QUOTE */
+  .quote-card {
+    background: linear-gradient(135deg, rgba(200,240,74,0.06), rgba(123,94,167,0.08));
+    border: 1px solid rgba(200,240,74,0.15);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .quote-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .quote-author {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--accent);
+    color: #0e0e11;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SECTION SPACING */
+  .section-gap { margin-top: 20px; }
+
+  /* FOCUS BLOCK */
+  .focus-block {
+    background: linear-gradient(135deg, rgba(200,240,74,0.08), rgba(72,202,228,0.06));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .focus-label {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .focus-today {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .focus-time {
+    font-size: 0.72rem;
+    color: var(--text);
+    margin-top: 4px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Mon <span>Tableau</span></h1>
+    <div class="header-date" id="headerDate">—</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+    <div class="week-badge" id="weekBadge">Semaine —</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.0 — Dashboard Personnel</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('temps')">⏱ Temps</button>
+  <button class="tab" onclick="switchTab('objectifs')">🎯 Objectifs</button>
+  <button class="tab" onclick="switchTab('bienetre')">🧘 Bien-être</button>
+  <button class="tab" onclick="switchTab('sport')">💪 Sport</button>
+  <button class="tab" onclick="switchTab('nutrition')">🥗 Nutrition</button>
+  <button class="tab" onclick="switchTab('repas')">🍽️ Repas</button>
+  <button class="tab" onclick="switchTab('langues')">🌍 Langues</button>
+  <button class="tab" onclick="switchTab('culture')">📚 Culture</button>
+  <button class="tab" onclick="switchTab('invest')">📈 Investissements</button>
+  <button class="tab" onclick="switchTab('budget')">💶 Budget</button>
+  <button class="tab" onclick="switchTab('formation')">🎓 Formation</button>
+</div>
+
+<!-- ===== TEMPS ===== -->
+<div class="panel active" id="panel-temps">
+
+  <div class="focus-block">
+    <div class="focus-label">🎯 Focus du jour</div>
+    <div class="focus-today" id="focusTodayText">—</div>
+    <div class="focus-time" id="focusTodayTime">—</div>
+  </div>
+
+  <div class="grid-2" id="projectsGrid"></div>
+
+  <div class="grid-2 section-gap">
+    <!-- Récap semaine -->
+    <div class="card">
+      <div class="card-title">Récap semaine</div>
+      <div id="weekSummary"></div>
+    </div>
+
+    <!-- Total + citation -->
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Total cette semaine</div>
+        <div class="big-stat" id="totalWeek">0</div>
+        <div class="big-stat-label">minutes investies</div>
+      </div>
+      <div class="quote-card">
+        <div class="quote-text" id="quoteText">—</div>
+        <div class="quote-author" id="quoteAuthor">—</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== OBJECTIFS ===== -->
+<div class="panel" id="panel-objectifs">
+
+  <!-- Bannière focus -->
+  <div style="background:linear-gradient(135deg,rgba(200,240,74,0.1),rgba(123,94,167,0.12));border:1px solid rgba(200,240,74,0.2);border-radius:var(--radius);padding:20px;margin-bottom:24px;text-align:center">
+    <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Rappel anti-perfectionnisme</div>
+    <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.1rem;color:var(--text)">"Un objectif sans deadline est juste un rêve."</div>
+    <div style="font-size:0.62rem;color:var(--text-muted);margin-top:6px">Fixe une date, agis, ajuste — dans cet ordre.</div>
+  </div>
+
+  <!-- Ajouter objectif -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Ajouter un objectif</div>
+    <div class="add-row">
+      <input class="inp" type="text" id="objTitle" placeholder="Mon objectif..." style="flex:2;min-width:160px"/>
+      <select class="inp" id="objCat">
+        <option value="Carrière">💼 Carrière</option>
+        <option value="Finance">💶 Finance</option>
+        <option value="Langues">🌍 Langues</option>
+        <option value="Sport">💪 Sport</option>
+        <option value="Personnel">🧠 Personnel</option>
+        <option value="Formation">🎓 Formation</option>
+        <option value="Autre">📦 Autre</option>
+      </select>
+      <select class="inp" id="objHorizon">
+        <option value="Court terme">⚡ Court terme (< 3 mois)</option>
+        <option value="Moyen terme">📅 Moyen terme (3–12 mois)</option>
+        <option value="Long terme">🔭 Long terme (1 an+)</option>
+      </select>
+      <input class="inp" type="date" id="objDeadline" style="width:140px"/>
+      <button class="btn btn-primary" onclick="addObjectif()">+ Ajouter</button>
+    </div>
+    <div style="margin-top:10px">
+      <textarea class="inp" id="objNote" placeholder="Pourquoi cet objectif est important pour toi..." rows="2" style="width:100%;resize:none;font-size:0.75rem"></textarea>
+    </div>
+  </div>
+
+  <!-- Filtres horizon -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="objFilters">
+    <button class="btn btn-primary" onclick="setObjFilter('all')">Tous</button>
+    <button class="btn" onclick="setObjFilter('Court terme')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">⚡ Court terme</button>
+    <button class="btn" onclick="setObjFilter('Moyen terme')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">📅 Moyen terme</button>
+    <button class="btn" onclick="setObjFilter('Long terme')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🔭 Long terme</button>
+    <button class="btn" onclick="setObjFilter('done')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">✅ Atteints</button>
+  </div>
+
+  <!-- Liste objectifs -->
+  <div id="objList"></div>
+
+  <!-- Stats -->
+  <div class="card section-gap">
+    <div class="card-title">Vue d'ensemble</div>
+    <div id="objStats"></div>
+  </div>
+
+</div>
+
+<!-- ===== SPORT ===== -->
+<div class="panel" id="panel-sport">
+
+  <!-- Programme hebdo -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Programme hebdomadaire</div>
+    <div id="sportWeekGrid"></div>
+  </div>
+
+  <!-- Séance du jour -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Checklist séance du jour</div>
+      <div id="sportChecklist"></div>
+      <div class="add-row" style="margin-top:14px">
+        <input class="inp" type="text" id="sportExoInput" placeholder="Ajouter un exercice..." style="flex:1"/>
+        <button class="btn btn-primary" onclick="addSportExo()">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Stats de la semaine</div>
+      <div id="sportStats"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== LANGUES ===== -->
+<div class="panel" id="panel-langues">
+
+  <!-- Tabs langue -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-primary" id="ltab-es" onclick="switchLang('es')">🇪🇸 Espagnol</button>
+    <button class="btn" id="ltab-it" onclick="switchLang('it')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🇮🇹 Italien</button>
+    <button class="btn" id="ltab-ru" onclick="switchLang('ru')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🇷🇺 Russe</button>
+    <button class="btn" id="ltab-en" onclick="switchLang('en')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🇬🇧 Anglais</button>
+  </div>
+
+  <div id="langPanel"></div>
+
+</div>
+
+<!-- ===== REPAS ===== -->
+<div class="panel" id="panel-repas">
+
+  <!-- Date nav -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn" onclick="repasNav(-1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">◀</button>
+    <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--accent)" id="repasDateLabel">—</div>
+    <button class="btn" onclick="repasNav(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">▶</button>
+    <button class="btn btn-primary" onclick="repasGoToday()">Aujourd'hui</button>
+  </div>
+
+  <!-- 3 repas -->
+  <div class="grid-3" id="repasCards"></div>
+
+  <!-- Macros du jour -->
+  <div class="card section-gap">
+    <div class="card-title">Macros estimés du jour</div>
+    <div id="macrosBar"></div>
+  </div>
+
+</div>
+
+<!-- ===== BIEN-ÊTRE ===== -->
+<div class="panel" id="panel-bienetre">
+
+  <!-- Humeur & Énergie du jour -->
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">😴 Sommeil cette nuit</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Couché</div>
+          <input class="inp" type="time" id="sleepBed" style="width:110px" oninput="saveSleep()"/>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Levé</div>
+          <input class="inp" type="time" id="sleepWake" style="width:110px" oninput="saveSleep()"/>
+        </div>
+        <div id="sleepDuration" style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">—</div>
+      </div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Qualité</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="sleepQualityBtns">
+        <div onclick="saveSleepQuality(1)" id="sq-1" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s;white-space:nowrap">😴 Mauvaise</div>
+        <div onclick="saveSleepQuality(2)" id="sq-2" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s;white-space:nowrap">😐 Moyenne</div>
+        <div onclick="saveSleepQuality(3)" id="sq-3" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s;white-space:nowrap">😊 Bonne</div>
+        <div onclick="saveSleepQuality(4)" id="sq-4" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s;white-space:nowrap">🌟 Excellente</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚡ Humeur & Énergie</div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Énergie (1–5)</div>
+        <div style="display:flex;gap:6px" id="energyBtns">
+          <div onclick="saveEnergy(1)" id="en-1" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s">1</div>
+          <div onclick="saveEnergy(2)" id="en-2" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s">2</div>
+          <div onclick="saveEnergy(3)" id="en-3" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s">3</div>
+          <div onclick="saveEnergy(4)" id="en-4" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s">4</div>
+          <div onclick="saveEnergy(5)" id="en-5" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s">5</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Humeur</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="moodBtns">
+          <div onclick="saveMood('😤')" id="mood-0" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border);transition:all 0.15s">😤</div>
+          <div onclick="saveMood('😔')" id="mood-1" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border);transition:all 0.15s">😔</div>
+          <div onclick="saveMood('😐')" id="mood-2" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border);transition:all 0.15s">😐</div>
+          <div onclick="saveMood('🙂')" id="mood-3" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border);transition:all 0.15s">🙂</div>
+          <div onclick="saveMood('😄')" id="mood-4" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border);transition:all 0.15s">😄</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Journal gratitude -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🙏 Gratitude du jour <span style="font-size:0.6rem;color:var(--text-muted);font-family:'DM Mono',monospace;font-weight:400;letter-spacing:1px">— 1 phrase suffit</span></div>
+    <textarea class="inp" id="gratitudeText" rows="2" style="width:100%;resize:none;font-size:0.78rem"
+      placeholder="Aujourd'hui je suis reconnaissant pour..." oninput="saveGratitude()"></textarea>
+    <div style="margin-top:10px">
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Note du jour (optionnel)</div>
+      <input class="inp" type="text" id="bienetrNote" placeholder="Une pensée, une observation..." style="width:100%" oninput="saveGratitude()"/>
+    </div>
+  </div>
+
+  <!-- Rétrospective hebdo -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">📝 Rétrospective hebdomadaire</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Prends 5 min le dimanche soir. Contre le perfectionnisme, tu te juges sur la semaine entière — pas sur chaque jour.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div style="font-size:0.62rem;color:#4adb8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">✅ Ce qui a bien marché</div>
+        <textarea class="inp" id="retroGood" rows="2" style="width:100%;resize:none;font-size:0.75rem" placeholder="Ex: 4 séances sport, 5 jours de langues..." oninput="saveRetro()"></textarea>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:#f05a5a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⚠️ Ce qui a bloqué</div>
+        <textarea class="inp" id="retroBlock" rows="2" style="width:100%;resize:none;font-size:0.75rem" placeholder="Ex: manque de sommeil mercredi..." oninput="saveRetro()"></textarea>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">🎯 1 ajustement pour la semaine prochaine</div>
+        <input class="inp" type="text" id="retroNext" placeholder="Ex: coucher à 23h max" style="width:100%" oninput="saveRetro()"/>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-primary" onclick="saveRetroEntry()">Sauvegarder cette semaine →</button>
+    </div>
+  </div>
+
+  <!-- Historique bien-être -->
+  <div class="card">
+    <div class="card-title">📊 Historique énergie (7 derniers jours)</div>
+    <div id="energyHistory"></div>
+  </div>
+
+</div>
+
+<!-- ===== NUTRITION ===== -->
+<div class="panel" id="panel-nutrition">
+
+  <!-- Info carences -->
+  <div style="background:linear-gradient(135deg,rgba(74,219,138,0.07),rgba(72,202,228,0.07));border:1px solid rgba(74,219,138,0.2);border-radius:var(--radius);padding:18px;margin-bottom:20px">
+    <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#4adb8a;margin-bottom:6px">Suivi micronutriments</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.6">Coche les aliments consommés aujourd'hui. Le score de couverture nutritionnelle se calcule automatiquement — <strong style="color:var(--text)">focus particulier sur B9, B12, Fer, Magnésium et Vitamine D</strong> qui sont les carences les plus fréquentes chez les sportifs actifs.</div>
+  </div>
+
+  <!-- Checklist aliments du jour -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🥦 Aliments consommés aujourd'hui <span id="nutritionDate" style="color:var(--text-muted);font-size:0.65rem"></span></div>
+    <div id="nutritionChecklist"></div>
+  </div>
+
+  <!-- Score carences -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🔬 Couverture nutritionnelle du jour</div>
+    <div id="carencesscore"></div>
+  </div>
+
+  <!-- Guide anti-carences -->
+  <div class="card">
+    <div class="card-title">📋 Guide anti-carences — Aliments clés</div>
+    <div id="carence_guide"></div>
+  </div>
+
+</div>
+
+<!-- ===== INVESTISSEMENTS ===== -->
+<div class="panel" id="panel-invest">
+
+  <!-- Ajouter position -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Ajouter une position</div>
+    <div class="add-row">
+      <input class="inp" type="text" id="invTicker" placeholder="Ticker (ex: AIR.PA)" style="width:110px"/>
+      <input class="inp" type="text" id="invName" placeholder="Nom (ex: Airbus)" style="flex:1;min-width:120px"/>
+      <select class="inp" id="invType">
+        <option value="Action">📈 Action</option>
+        <option value="ETF">🌍 ETF</option>
+        <option value="Crypto">🪙 Crypto</option>
+        <option value="Oblig.">📄 Obligation</option>
+      </select>
+      <select class="inp" id="invEnvelope">
+        <option value="PEA">🇫🇷 PEA</option>
+        <option value="CTO">🌍 CTO</option>
+        <option value="AV">🏦 AV</option>
+        <option value="Crypto">🪙 Wallet</option>
+      </select>
+      <input class="inp" type="number" id="invQty" placeholder="Qté" style="width:70px" min="0" step="any"/>
+      <input class="inp" type="number" id="invPRU" placeholder="PRU (€)" style="width:90px" step="any"/>
+      <input class="inp" type="number" id="invCurrent" placeholder="Cours actuel" style="width:110px" step="any"/>
+      <button class="btn btn-primary" onclick="addPosition()">+</button>
+    </div>
+  </div>
+
+  <!-- Tableau portefeuille -->
+  <div class="card" style="margin-bottom:20px;overflow-x:auto">
+    <div class="card-title">Portefeuille</div>
+    <div id="portfolioTable"></div>
+  </div>
+
+  <!-- Stats globales -->
+  <div class="grid-3" style="margin-bottom:20px" id="portfolioStats"></div>
+
+  <!-- Répartition -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Répartition par enveloppe</div>
+      <div id="allocEnvelope"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Répartition par type</div>
+      <div id="allocType"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CULTURE ===== -->
+<div class="panel" id="panel-culture">
+
+  <!-- Ajouter contenu -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Ajouter un contenu</div>
+    <div class="add-row">
+      <input class="inp" type="text" id="cultTitle" placeholder="Titre / sujet" style="flex:2;min-width:140px"/>
+      <select class="inp" id="cultType">
+        <option value="Livre">📖 Livre</option>
+        <option value="Article">📰 Article</option>
+        <option value="Podcast">🎧 Podcast</option>
+        <option value="Vidéo">🎬 Vidéo</option>
+        <option value="Documentaire">🎥 Documentaire</option>
+      </select>
+      <select class="inp" id="cultTheme">
+        <option value="Géopolitique">🌐 Géopolitique</option>
+        <option value="Économie">📈 Économie</option>
+        <option value="Tech">💻 Tech</option>
+        <option value="Histoire">🏛️ Histoire</option>
+        <option value="Science">🔬 Science</option>
+        <option value="Autre">📦 Autre</option>
+      </select>
+      <button class="btn btn-primary" onclick="addCultItem()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="cultFilters">
+    <button class="btn btn-primary" onclick="setCultFilter('all')">Tous</button>
+    <button class="btn" onclick="setCultFilter('todo')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">À faire</button>
+    <button class="btn" onclick="setCultFilter('done')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">Terminés</button>
+  </div>
+
+  <div id="cultList"></div>
+
+  <!-- Stats -->
+  <div class="card section-gap">
+    <div class="card-title">Stats culture</div>
+    <div id="cultStats"></div>
+  </div>
+
+</div>
+
+<!-- ===== FORMATION ===== -->
+<div class="panel" id="panel-formation">
+
+  <!-- Certifications suggérées -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🏅 Certifications recommandées</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Clique sur une certification pour l'ajouter à tes modules. Tu peux aussi en ajouter une personnalisée ci-dessous.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px" id="certSuggestions"></div>
+
+    <!-- Ajouter certification personnalisée -->
+    <div style="border-top:1px solid var(--border);padding-top:16px">
+      <div style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px">+ Ajouter une certification personnalisée</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="certCustomName" placeholder="Nom (ex: Voltaire, TOEIC…)" style="flex:2;min-width:160px"/>
+        <select class="inp" id="certCustomCat">
+          <option value="Langues">🌍 Langues</option>
+          <option value="Comptabilité">🧾 Comptabilité</option>
+          <option value="Finance">💶 Finance</option>
+          <option value="IT">💻 IT</option>
+          <option value="Data">📊 Data</option>
+          <option value="Bureautique">📋 Bureautique</option>
+          <option value="Logiciel">🖥️ Logiciel</option>
+          <option value="Autre">📦 Autre</option>
+        </select>
+        <input class="inp" type="text" id="certCustomDuree" placeholder="Durée (ex: 2 mois)" style="width:130px"/>
+        <input class="inp" type="text" id="certCustomDesc" placeholder="Description courte" style="flex:2;min-width:160px"/>
+        <button class="btn btn-primary" onclick="addCustomCert()">+ Ajouter</button>
+      </div>
+    </div>
+
+    <!-- Certifications personnalisées -->
+    <div id="certCustomList" style="margin-top:14px"></div>
+  </div>
+
+  <!-- Logiciels à maîtriser -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">💻 Logiciels à maîtriser — par domaine</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Clique sur un logiciel pour l'ajouter à tes modules de formation.</div>
+    <div id="logicielsSuggestions"></div>
+  </div>
+
+  <!-- Roadmap Formateur / Plateforme -->
+  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.2)">
+    <div class="card-title" style="color:var(--accent)">🚀 Objectif ultime — Devenir Formateur & Créer ta Plateforme</div>
+    <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:20px;line-height:1.6">
+      Voici la feuille de route complète, étape par étape. Chaque phase est réaliste et construite sur la précédente.
+    </div>
+    <div id="roadmapFormateur"></div>
+  </div>
+
+  <!-- Ajouter un module -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Ajouter un module personnalisé</div>
+    <div class="add-row">
+      <input class="inp" type="text" id="modName" placeholder="Nom du module" style="flex:2;min-width:140px"/>
+      <select class="inp" id="modCat">
+        <option value="Logiciel">💻 Logiciel</option>
+        <option value="Comptabilité">🧾 Comptabilité</option>
+        <option value="Bureautique">📊 Bureautique</option>
+        <option value="Certification">🏅 Certification</option>
+        <option value="Métier">🏢 Métier</option>
+        <option value="Autre">📦 Autre</option>
+      </select>
+      <input class="inp" type="number" id="modTotal" placeholder="Nb leçons" style="width:110px" min="1"/>
+      <button class="btn btn-primary" onclick="addModule()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Modules grid -->
+  <div class="grid-2" id="modulesGrid"></div>
+
+  <!-- Récap formation -->
+  <div class="grid-2 section-gap">
+    <div class="card">
+      <div class="card-title">Progression globale</div>
+      <div id="formationSummary"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Stats</div>
+      <div id="formationStats"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== BUDGET ===== -->
+<div class="panel" id="panel-budget">
+
+  <div class="budget-header">
+    <div>
+      <div class="budget-title">Mois en cours</div>
+      <div class="budget-month" id="budgetMonth">—</div>
+    </div>
+    <div class="balance-pill balance-pos" id="balancePill">Solde : +0 €</div>
+  </div>
+
+  <div class="income-expense-row">
+    <div class="ie-card">
+      <div class="ie-label">Revenus</div>
+      <div class="ie-value income" id="totalIncome">0 €</div>
+    </div>
+    <div class="ie-card">
+      <div class="ie-label">Dépenses</div>
+      <div class="ie-value expense" id="totalExpense">0 €</div>
+    </div>
+  </div>
+
+  <!-- Ajouter transaction -->
+  <div class="card section-gap">
+    <div class="card-title">Ajouter une transaction</div>
+    <div class="add-row">
+      <input class="inp inp-amount" type="number" id="txAmount" placeholder="Montant (€)" />
+      <input class="inp inp-label" type="text" id="txLabel" placeholder="Description" />
+      <select class="inp" id="txCat">
+        <option value="Salaire">💰 Salaire</option>
+        <option value="Logement">🏠 Logement</option>
+        <option value="Alimentation">🛒 Alimentation</option>
+        <option value="Transport">🚗 Transport</option>
+        <option value="Loisirs">🎮 Loisirs</option>
+        <option value="Épargne">💎 Épargne</option>
+        <option value="Santé">❤️ Santé</option>
+        <option value="Abonnements">📱 Abonnements</option>
+        <option value="Autre">📦 Autre</option>
+      </select>
+      <select class="inp" id="txType">
+        <option value="income">↑ Revenu</option>
+        <option value="expense">↓ Dépense</option>
+      </select>
+      <button class="btn btn-primary" onclick="addTransaction()">+ Ajouter</button>
+    </div>
+  </div>
+
+  <div class="grid-2 section-gap">
+    <!-- Par catégorie -->
+    <div class="card">
+      <div class="card-title">Par catégorie (dépenses)</div>
+      <div id="catBreakdown"></div>
+    </div>
+
+    <!-- Transactions récentes -->
+    <div class="card">
+      <div class="card-title">Transactions récentes</div>
+      <div class="tx-list" id="txList"></div>
+    </div>
+  </div>
+
+  <!-- Épargne -->
+  <div class="card section-gap">
+    <div class="card-title">Objectif épargne mensuel</div>
+    <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+      <div class="savings-ring-wrap">
+        <svg class="ring" width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="#2a2a35" stroke-width="9"/>
+          <circle cx="55" cy="55" r="46" fill="none" stroke="#c8f04a" stroke-width="9"
+            stroke-linecap="round"
+            stroke-dasharray="289"
+            stroke-dashoffset="289"
+            transform="rotate(-90 55 55)"
+            id="savingsArc"/>
+          <text x="55" y="52" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="#e8e8f0" id="savingsPct">0%</text>
+          <text x="55" y="68" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#6b6b80">épargné</text>
+        </svg>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Objectif mensuel</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input class="inp" type="number" id="savingsGoal" placeholder="Ex : 200" style="width:120px" oninput="updateSavings()"/>
+          <span style="font-size:0.75rem;color:var(--text-muted)">€ / mois</span>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;">Épargne enregistrée ce mois : <span id="savingsReal" style="color:var(--accent)">0 €</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ======= STATE =======
+function today_init() { return new Date().toISOString().slice(0, 10); }
+let state = JSON.parse(localStorage.getItem('chris_dashboard') || 'null') || {
+  days: {},
+  transactions: [],
+  savingsGoal: '',
+  modules: [
+    { id: 1, name: 'Sage 100 Comptabilité', cat: 'Logiciel', total: 10, done: 0, color: '#c8f04a' },
+    { id: 2, name: 'Excel avancé', cat: 'Bureautique', total: 8, done: 0, color: '#48cae4' },
+    { id: 3, name: 'Fiscalité entreprise', cat: 'Comptabilité', total: 6, done: 0, color: '#f4a261' },
+    { id: 4, name: 'Droit du travail', cat: 'Métier', total: 5, done: 0, color: '#7b5ea7' },
+  ],
+  sportExos: [
+    { id: 1, name: 'Échauffement 5 min', days: ['Lun','Mer','Ven'], done: {} },
+    { id: 2, name: 'Pompes 3×15', days: ['Lun','Mer','Ven'], done: {} },
+    { id: 3, name: 'Squats 3×20', days: ['Lun','Mer','Ven'], done: {} },
+    { id: 4, name: 'Gainage 3×45s', days: ['Lun','Mer','Ven'], done: {} },
+    { id: 5, name: 'Shadow boxing 10 min', days: ['Mar','Jeu'], done: {} },
+    { id: 6, name: 'Footwork + déplacements', days: ['Mar','Jeu'], done: {} },
+    { id: 7, name: 'Course / natation', days: ['Sam'], done: {} },
+  ],
+  langues: {
+    es: { grammaire: [
+      { id: 1, name: 'Les articles définis/indéfinis', done: false },
+      { id: 2, name: 'Le présent de l\'indicatif', done: false },
+      { id: 3, name: 'Ser vs Estar', done: false },
+      { id: 4, name: 'Les pronoms personnels', done: false },
+    ], vocab: [], sessions: {} },
+    it: { grammaire: [
+      { id: 1, name: 'Les articles (il, la, i, le…)', done: false },
+      { id: 2, name: 'Le présent indicatif (-are/-ere/-ire)', done: false },
+      { id: 3, name: 'Essere vs Avere', done: false },
+    ], vocab: [], sessions: {} },
+    ru: { grammaire: [
+      { id: 1, name: 'L\'alphabet cyrillique', done: false },
+      { id: 2, name: 'Prononciation des voyelles', done: false },
+      { id: 3, name: 'Les pronoms personnels', done: false },
+      { id: 4, name: 'Le présent des verbes être/avoir', done: false },
+    ], vocab: [], sessions: {} },
+    en: { grammaire: [
+      { id: 1, name: 'Present Perfect vs Simple Past', done: false },
+      { id: 2, name: 'Modal verbs (can/could/would/should)', done: false },
+      { id: 3, name: 'Conditionals (0/1/2/3)', done: false },
+      { id: 4, name: 'Articles (a/an/the/zero article)', done: false },
+      { id: 5, name: 'Passive voice', done: false },
+      { id: 6, name: 'Reported speech', done: false },
+    ], vocab: [
+      { id: 10, mot: 'To leverage', trad: 'Tirer parti de / exploiter', maitrise: 0 },
+      { id: 11, mot: 'Nonetheless', trad: 'Néanmoins / malgré tout', maitrise: 0 },
+      { id: 12, mot: 'Straightforward', trad: 'Simple / direct / évident', maitrise: 0 },
+      { id: 13, mot: 'To acknowledge', trad: 'Reconnaître / admettre', maitrise: 0 },
+      { id: 14, mot: 'Insight', trad: 'Compréhension approfondie', maitrise: 0 },
+    ], sessions: {} },
+  },
+  repas: {},
+  culture: [
+    { id: 101, title: 'BBC Global News Podcast', type: 'Podcast', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+    { id: 102, title: 'The Economist — dernière édition', type: 'Article', theme: 'Économie', done: false, date: today_init(), note: '' },
+    { id: 103, title: 'Lex Fridman #400 — Sam Altman', type: 'Vidéo', theme: 'Tech', done: false, date: today_init(), note: '' },
+    { id: 104, title: 'Arte — Le dessous des cartes', type: 'Documentaire', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+    { id: 105, title: 'Sapiens — Yuval Noah Harari', type: 'Livre', theme: 'Histoire', done: false, date: today_init(), note: '' },
+    { id: 106, title: 'TED Talk — How AI is changing science', type: 'Vidéo', theme: 'Science', done: false, date: today_init(), note: '' },
+    { id: 107, title: 'Géopolitique profonde — Podcast FR', type: 'Podcast', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+    { id: 108, title: 'Netflix — Explained (série docu)', type: 'Documentaire', theme: 'Science', done: false, date: today_init(), note: '' },
+  ],
+  cultFilter: 'all',
+  objectifs: [
+    { id: 1, title: 'Atteindre le niveau C1 en anglais', cat: 'Langues', horizon: 'Moyen terme', deadline: '', note: 'Passer le Cambridge B2/C1 ou IELTS 7+', done: false, date: today_init() },
+    { id: 2, title: 'Obtenir la certification Excel Expert (MOS)', cat: 'Formation', horizon: 'Court terme', deadline: '', note: 'Indispensable en compta/finance', done: false, date: today_init() },
+    { id: 3, title: 'Courir un 10km en moins de 50 min', cat: 'Sport', horizon: 'Moyen terme', deadline: '', note: 'Progresser après le 5km', done: false, date: today_init() },
+    { id: 4, title: 'Constituer un fonds d\'urgence de 3 mois de charges', cat: 'Finance', horizon: 'Moyen terme', deadline: '', note: 'Sécurité financière de base', done: false, date: today_init() },
+    { id: 5, title: 'Décrocher un poste dans un éditeur logiciel / ESN cible', cat: 'Carrière', horizon: 'Court terme', deadline: '', note: 'Transition en cours — rester focus', done: false, date: today_init() },
+    { id: 6, title: 'Devenir formateur indépendant certifié Qualiopi', cat: 'Carrière', horizon: 'Long terme', deadline: '', note: 'Objectif ultime Phase 3 de la roadmap', done: false, date: today_init() },
+    { id: 7, title: 'Lancer ma plateforme de formation en ligne', cat: 'Carrière', horizon: 'Long terme', deadline: '', note: 'Phase 4 roadmap — niche compta/IT', done: false, date: today_init() },
+  ],
+  objFilter: 'all',
+  bienetre: {},
+  retros: [],
+  positions: [],
+  nutrition: {},
+};
+
+// ======= BIEN-ÊTRE =======
+function getBienetrDay() {
+  if (!state.bienetre) state.bienetre = {};
+  const t = today();
+  if (!state.bienetre[t]) state.bienetre[t] = { bed:'', wake:'', sleepQ:0, energy:0, mood:'', gratitude:'', note:'' };
+  return state.bienetre[t];
+}
+function saveSleep() {
+  const d = getBienetrDay();
+  d.bed = document.getElementById('sleepBed').value;
+  d.wake = document.getElementById('sleepWake').value;
+  if (d.bed && d.wake) {
+    const [bh,bm] = d.bed.split(':').map(Number);
+    let [wh,wm] = d.wake.split(':').map(Number);
+    let diff = (wh*60+wm) - (bh*60+bm);
+    if (diff < 0) diff += 24*60;
+    const h = Math.floor(diff/60), m = diff%60;
+    document.getElementById('sleepDuration').textContent = `${h}h${m>0?m+'min':''}`;
+    document.getElementById('sleepDuration').style.color = h >= 7 ? '#4adb8a' : h >= 6 ? '#f4a261' : '#f05a5a';
+  }
+  save();
+}
+function saveSleepQuality(q) {
+  const d = getBienetrDay(); d.sleepQ = q; save();
+  document.querySelectorAll('[id^="sq-"]').forEach(el => {
+    const n = parseInt(el.id.split('-')[1]);
+    el.style.background = n === q ? '#7b5ea7' : 'var(--surface2)';
+    el.style.color = n === q ? '#fff' : 'var(--text-muted)';
+    el.style.borderColor = n === q ? '#7b5ea7' : 'var(--border)';
+  });
+}
+function saveEnergy(n) {
+  const d = getBienetrDay(); d.energy = n; save();
+  const colors = ['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+  document.querySelectorAll('[id^="en-"]').forEach(el => {
+    const v = parseInt(el.id.split('-')[1]);
+    el.style.background = v <= n ? colors[n] : 'var(--surface2)';
+    el.style.color = v <= n ? '#0e0e11' : 'var(--text-muted)';
+    el.style.borderColor = v <= n ? colors[n] : 'var(--border)';
+  });
+}
+function saveMood(emoji) {
+  const d = getBienetrDay(); d.mood = emoji; save();
+  const moods = ['😤','😔','😐','🙂','😄'];
+  moods.forEach((e,i) => {
+    const el = document.getElementById('mood-'+i);
+    if (el) { el.style.background = e===emoji ? '#7b5ea7' : 'var(--surface2)'; el.style.borderColor = e===emoji ? '#7b5ea7' : 'var(--border)'; }
+  });
+}
+function saveGratitude() {
+  const d = getBienetrDay();
+  d.gratitude = document.getElementById('gratitudeText').value;
+  d.note = document.getElementById('bienetrNote').value;
+  save();
+}
+function saveRetro() {
+  if (!state.currentRetro) state.currentRetro = {};
+  state.currentRetro.good = document.getElementById('retroGood').value;
+  state.currentRetro.block = document.getElementById('retroBlock').value;
+  state.currentRetro.next = document.getElementById('retroNext').value;
+  save();
+}
+function saveRetroEntry() {
+  if (!state.retros) state.retros = [];
+  const entry = {
+    id: Date.now(), date: today(),
+    week: getWeekNumber(new Date()),
+    good: document.getElementById('retroGood').value,
+    block: document.getElementById('retroBlock').value,
+    next: document.getElementById('retroNext').value,
+  };
+  state.retros.unshift(entry);
+  ['retroGood','retroBlock','retroNext'].forEach(id => document.getElementById(id).value = '');
+  save(); renderBienetre(); showToast('Rétrospective sauvegardée ✓');
+}
+function renderBienetre() {
+  if (!state.bienetre) state.bienetre = {};
+  const d = getBienetrDay();
+  const t = today();
+  document.getElementById('sleepBed').value = d.bed || '';
+  document.getElementById('sleepWake').value = d.wake || '';
+  if (d.bed && d.wake) saveSleep();
+  if (d.sleepQ) saveSleepQuality(d.sleepQ);
+  if (d.energy) saveEnergy(d.energy);
+  if (d.mood) saveMood(d.mood);
+  if (d.gratitude) document.getElementById('gratitudeText').value = d.gratitude;
+  if (d.note) document.getElementById('bienetrNote').value = d.note;
+  if (state.currentRetro) {
+    if (state.currentRetro.good) document.getElementById('retroGood').value = state.currentRetro.good;
+    if (state.currentRetro.block) document.getElementById('retroBlock').value = state.currentRetro.block;
+    if (state.currentRetro.next) document.getElementById('retroNext').value = state.currentRetro.next;
+  }
+  // Historique énergie
+  const weekDates = getWeekDates();
+  const histEl = document.getElementById('energyHistory');
+  const maxE = 5;
+  histEl.innerHTML = `
+    <div style="display:flex;align-items:flex-end;gap:8px;height:80px;margin-bottom:8px">
+      ${weekDates.map((d,i) => {
+        const day = state.bienetre[d] || {};
+        const e = day.energy || 0;
+        const pct = (e/maxE)*100;
+        const colors = ['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+        const isT = d === t;
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="font-size:0.65rem;color:${e>0?colors[e]:'var(--text-muted)'}">${e>0?e:'-'}</div>
+          <div style="width:100%;background:var(--border);border-radius:4px;overflow:hidden;height:${Math.max(4,pct*0.7)}px;
+            background:${e>0?colors[e]:'var(--border)'};border-radius:4px;min-height:4px"></div>
+          <div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'}">${DAYS_FR[i]}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="font-size:0.65rem;color:var(--text-muted)">Humeur : ${weekDates.map((d,i) => (state.bienetre[d]||{}).mood || '○').join('  ')}</div>
+  `;
+}
+
+// ======= NUTRITION =======
+const ALIMENTS = [
+  // B12
+  { name: 'Œufs', emoji:'🥚', nutrients: {B12:1.1, B9:0.2, Fer:0.2, Mg:0.1, VitD:0.4, Zinc:0.2, Iode:0.2} },
+  { name: 'Saumon', emoji:'🐟', nutrients: {B12:1.0, B9:0.1, Fer:0.2, Mg:0.2, VitD:1.0, Zinc:0.1, Omega3:1.0} },
+  { name: 'Thon', emoji:'🐠', nutrients: {B12:0.9, B9:0.1, Fer:0.3, Mg:0.2, VitD:0.6, Zinc:0.1} },
+  { name: 'Viande rouge', emoji:'🥩', nutrients: {B12:1.0, B9:0.1, Fer:1.0, Mg:0.1, Zinc:0.8} },
+  { name: 'Poulet', emoji:'🍗', nutrients: {B12:0.5, B9:0.2, Fer:0.3, Mg:0.2, Zinc:0.4} },
+  // B9
+  { name: 'Épinards', emoji:'🥬', nutrients: {B9:1.0, Fer:0.6, Mg:0.5, VitC:0.5, B12:0} },
+  { name: 'Lentilles', emoji:'🫘', nutrients: {B9:0.9, Fer:0.7, Mg:0.4, Zinc:0.3, B12:0} },
+  { name: 'Brocolis', emoji:'🥦', nutrients: {B9:0.5, VitC:1.0, Fer:0.2, Mg:0.2, B12:0} },
+  { name: 'Pois chiches', emoji:'🫛', nutrients: {B9:0.8, Fer:0.5, Mg:0.3, Zinc:0.2, B12:0} },
+  // Magnésium
+  { name: 'Amandes', emoji:'🥜', nutrients: {Mg:1.0, Fer:0.2, Zinc:0.3, B9:0.1, B12:0} },
+  { name: 'Chocolat noir', emoji:'🍫', nutrients: {Mg:0.8, Fer:0.4, Zinc:0.2, B9:0.1} },
+  { name: 'Flocons d\'avoine', emoji:'🌾', nutrients: {Mg:0.5, Fer:0.3, B9:0.2, Zinc:0.2} },
+  { name: 'Banane', emoji:'🍌', nutrients: {Mg:0.3, B9:0.1, VitC:0.3, B12:0} },
+  // Vitamine D
+  { name: 'Yaourt nature', emoji:'🥛', nutrients: {VitD:0.3, B12:0.4, Calcium:0.5, Iode:0.4, B9:0.1} },
+  { name: 'Fromage', emoji:'🧀', nutrients: {VitD:0.2, B12:0.6, Calcium:0.8, Iode:0.3} },
+  { name: 'Sardines', emoji:'🐡', nutrients: {VitD:0.8, B12:0.9, Omega3:0.9, Calcium:0.4, Fer:0.3} },
+  // Autres
+  { name: 'Patate douce', emoji:'🍠', nutrients: {VitA:1.0, B9:0.2, Mg:0.2, VitC:0.4} },
+  { name: 'Fruits rouges', emoji:'🍓', nutrients: {VitC:0.8, B9:0.3, Fer:0.1, B12:0} },
+  { name: 'Noix', emoji:'🌰', nutrients: {Omega3:0.7, Mg:0.6, Zinc:0.2, B9:0.1} },
+  { name: 'Pain complet', emoji:'🍞', nutrients: {Mg:0.3, B9:0.3, Fer:0.2, Zinc:0.2} },
+];
+
+const NUTRIENTS_INFO = {
+  B12: { label:'Vitamine B12', color:'#48cae4', goal:'Énergie, système nerveux, formation globules rouges' },
+  B9:  { label:'Vitamine B9 (Folate)', color:'#4adb8a', goal:'Synthèse ADN, grossesse, fatigue' },
+  Fer: { label:'Fer', color:'#f05a5a', goal:'Transport oxygène, endurance sportive' },
+  Mg:  { label:'Magnésium', color:'#7b5ea7', goal:'Récupération musculaire, sommeil, stress' },
+  VitD:{ label:'Vitamine D', color:'#f4a261', goal:'Os, immunité, moral — souvent carencé en hiver' },
+  Zinc:{ label:'Zinc', color:'#c8f04a', goal:'Immunité, testostérone, cicatrisation' },
+  Omega3:{ label:'Oméga-3', color:'#9b8cff', goal:'Anti-inflammatoire, cerveau, récupération sport' },
+};
+
+function toggleNutrition(alimName) {
+  if (!state.nutrition) state.nutrition = {};
+  const t = today();
+  if (!state.nutrition[t]) state.nutrition[t] = [];
+  const idx = state.nutrition[t].indexOf(alimName);
+  if (idx > -1) state.nutrition[t].splice(idx, 1);
+  else state.nutrition[t].push(alimName);
+  save(); renderNutrition();
+}
+
+function renderNutrition() {
+  if (!state.nutrition) state.nutrition = {};
+  const t = today();
+  const checked = state.nutrition[t] || [];
+  document.getElementById('nutritionDate').textContent = '— ' + new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+
+  // Checklist
+  document.getElementById('nutritionChecklist').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">
+      ${ALIMENTS.map(a => {
+        const on = checked.includes(a.name);
+        return `<div onclick="toggleNutrition('${a.name}')" style="display:flex;align-items:center;gap:8px;padding:10px 12px;
+          border-radius:8px;cursor:pointer;transition:all 0.15s;
+          background:${on?'rgba(74,219,138,0.12)':'var(--surface2)'};
+          border:1px solid ${on?'rgba(74,219,138,0.4)':'var(--border)'}">
+          <span style="font-size:1.1rem">${a.emoji}</span>
+          <div style="flex:1">
+            <div style="font-size:0.72rem;font-weight:${on?700:400};color:${on?'#4adb8a':'var(--text)'}">${a.name}</div>
+          </div>
+          <div style="width:16px;height:16px;border-radius:4px;flex-shrink:0;
+            background:${on?'#4adb8a':'var(--surface)'};border:2px solid ${on?'#4adb8a':'var(--border)'};
+            display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#0e0e11">${on?'✓':''}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  // Score carences
+  const scores = {};
+  Object.keys(NUTRIENTS_INFO).forEach(k => scores[k] = 0);
+  checked.forEach(name => {
+    const alim = ALIMENTS.find(a => a.name === name);
+    if (alim) Object.entries(alim.nutrients).forEach(([k,v]) => { if (scores[k]!==undefined) scores[k] = Math.min(1, (scores[k]||0)+v); });
+  });
+
+  document.getElementById('carencesscore').innerHTML = Object.entries(NUTRIENTS_INFO).map(([key, info]) => {
+    const pct = Math.round((scores[key]||0)*100);
+    const color = pct >= 80 ? '#4adb8a' : pct >= 40 ? '#f4a261' : '#f05a5a';
+    return `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <div>
+            <span style="font-size:0.75rem;font-weight:600;color:var(--text)">${info.label}</span>
+            <span style="font-size:0.6rem;color:var(--text-muted);margin-left:8px">${info.goal}</span>
+          </div>
+          <span style="font-size:0.72rem;font-weight:700;color:${color};min-width:40px;text-align:right">${pct}%</span>
+        </div>
+        <div class="prog-bar-bg">
+          <div class="prog-bar-fill" style="width:${pct}%;background:${info.color}"></div>
+        </div>
+        ${pct < 40 ? `<div style="font-size:0.62rem;color:#f05a5a;margin-top:3px">⚠️ Couverture faible — pense à ajouter des sources aujourd'hui</div>` : ''}
+      </div>`;
+  }).join('');
+
+  // Guide
+  document.getElementById('carence_guide').innerHTML = Object.entries(NUTRIENTS_INFO).map(([key, info]) => {
+    const sources = ALIMENTS.filter(a => (a.nutrients[key]||0) >= 0.5).map(a => `${a.emoji} ${a.name}`).join(', ');
+    return `
+      <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${info.color};flex-shrink:0"></div>
+          <div style="font-size:0.75rem;font-weight:600;color:var(--text)">${info.label}</div>
+        </div>
+        <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:3px">${info.goal}</div>
+        <div style="font-size:0.65rem;color:var(--accent)">Meilleures sources : ${sources || '—'}</div>
+      </div>`;
+  }).join('');
+}
+
+// ======= INVESTISSEMENTS =======
+function addPosition() {
+  const ticker = document.getElementById('invTicker').value.trim().toUpperCase();
+  const name = document.getElementById('invName').value.trim();
+  const type = document.getElementById('invType').value;
+  const envelope = document.getElementById('invEnvelope').value;
+  const qty = parseFloat(document.getElementById('invQty').value) || 0;
+  const pru = parseFloat(document.getElementById('invPRU').value) || 0;
+  const current = parseFloat(document.getElementById('invCurrent').value) || 0;
+  if (!name) { showToast('Renseigne au moins un nom !'); return; }
+  if (!state.positions) state.positions = [];
+  state.positions.push({ id: Date.now(), ticker, name, type, envelope, qty, pru, current });
+  ['invTicker','invName','invQty','invPRU','invCurrent'].forEach(id => document.getElementById(id).value = '');
+  save(); renderPortfolio(); showToast('Position ajoutée ✓');
+}
+
+function updateCurrent(id, val) {
+  const pos = state.positions.find(p => p.id === id);
+  if (pos) { pos.current = parseFloat(val)||0; save(); renderPortfolio(); }
+}
+
+function deletePosition(id) {
+  state.positions = state.positions.filter(p => p.id !== id);
+  save(); renderPortfolio();
+}
+
+function renderPortfolio() {
+  if (!state.positions) state.positions = [];
+  const positions = state.positions;
+
+  // Table
+  const tableEl = document.getElementById('portfolioTable');
+  if (positions.length === 0) {
+    tableEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune position — ajoute ton portefeuille</div>';
+  } else {
+    tableEl.innerHTML = `
+      <table style="width:100%;border-collapse:collapse;font-size:0.72rem">
+        <thead>
+          <tr style="color:var(--text-muted);font-size:0.6rem;letter-spacing:1px;text-transform:uppercase">
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">Valeur</th>
+            <th style="text-align:center;padding:6px 4px;border-bottom:1px solid var(--border)">Env.</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Qté</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">PRU</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Cours</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Valorisation</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">+/- val.</th>
+            <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Perf %</th>
+            <th style="padding:6px 4px;border-bottom:1px solid var(--border)"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${positions.map(p => {
+            const invest = p.pru * p.qty;
+            const valeur = p.current * p.qty;
+            const pnl = valeur - invest;
+            const perf = invest > 0 ? (pnl/invest*100) : 0;
+            const perfColor = perf >= 0 ? '#4adb8a' : '#f05a5a';
+            return `<tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px;"><div style="font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type}</div></td>
+              <td style="text-align:center;padding:4px"><span style="font-size:0.6rem;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text-muted)">${p.envelope}</span></td>
+              <td style="text-align:right;padding:4px;color:var(--text-muted)">${p.qty}</td>
+              <td style="text-align:right;padding:4px;color:var(--text-muted)">${p.pru.toFixed(2)} €</td>
+              <td style="text-align:right;padding:4px">
+                <input type="number" value="${p.current}" step="0.01" onchange="updateCurrent(${p.id},this.value)"
+                  style="width:75px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;
+                  padding:3px 6px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/>
+              </td>
+              <td style="text-align:right;padding:4px;color:var(--text);font-weight:600">${valeur.toFixed(0)} €</td>
+              <td style="text-align:right;padding:4px;color:${perfColor};font-weight:600">${pnl>=0?'+':''}${pnl.toFixed(0)} €</td>
+              <td style="text-align:right;padding:4px;color:${perfColor};font-weight:700">${perf>=0?'+':''}${perf.toFixed(1)}%</td>
+              <td style="padding:4px"><button class="btn btn-danger" onclick="deletePosition(${p.id})">✕</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // Stats globales
+  const totalInvest = positions.reduce((s,p) => s + p.pru*p.qty, 0);
+  const totalValeur = positions.reduce((s,p) => s + p.current*p.qty, 0);
+  const totalPnl = totalValeur - totalInvest;
+  const totalPerf = totalInvest > 0 ? totalPnl/totalInvest*100 : 0;
+  const pnlColor = totalPnl >= 0 ? '#4adb8a' : '#f05a5a';
+
+  document.getElementById('portfolioStats').innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">${totalValeur.toFixed(0)} €</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valorisation totale</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPnl>=0?'+':''}${totalPnl.toFixed(0)} €</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Plus/moins-value</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPerf>=0?'+':''}${totalPerf.toFixed(1)}%</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Performance globale</div>
+    </div>`;
+
+  // Répartitions
+  const byEnv = {}, byType = {};
+  positions.forEach(p => {
+    const v = p.current*p.qty;
+    byEnv[p.envelope] = (byEnv[p.envelope]||0)+v;
+    byType[p.type] = (byType[p.type]||0)+v;
+  });
+  const envColors = { PEA:'#c8f04a', CTO:'#48cae4', AV:'#7b5ea7', Crypto:'#f4a261' };
+  const typeColors = { Action:'#c8f04a', ETF:'#48cae4', Crypto:'#f4a261', 'Oblig.':'#9b8cff' };
+
+  const renderAlloc = (data, colors, elId) => {
+    const total = Object.values(data).reduce((s,v)=>s+v,0);
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (total === 0) { el.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune donnée</div>'; return; }
+    el.innerHTML = Object.entries(data).sort((a,b)=>b[1]-a[1]).map(([k,v]) => {
+      const pct = Math.round(v/total*100);
+      return `<div class="summary-row">
+        <div class="summary-label"><div class="dot" style="background:${colors[k]||'#6b6b80'}"></div>${k}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="prog-bar-bg" style="width:80px;margin:0"><div class="prog-bar-fill" style="width:${pct}%;background:${colors[k]||'#6b6b80'}"></div></div>
+          <div class="summary-val">${pct}%</div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+  renderAlloc(byEnv, envColors, 'allocEnvelope');
+  renderAlloc(byType, typeColors, 'allocType');
+}
+
+// ======= OBJECTIFS =======
+const OBJ_CAT_COLORS = {
+  'Carrière': '#c8f04a', 'Finance': '#4adb8a', 'Langues': '#f4a261',
+  'Sport': '#48cae4', 'Personnel': '#7b5ea7', 'Formation': '#9b8cff', 'Autre': '#6b6b80'
+};
+const OBJ_HORIZON_COLORS = { 'Court terme': '#f05a5a', 'Moyen terme': '#f4a261', 'Long terme': '#48cae4' };
+let objFilter = 'all';
+
+function addObjectif() {
+  const title = document.getElementById('objTitle').value.trim();
+  const cat = document.getElementById('objCat').value;
+  const horizon = document.getElementById('objHorizon').value;
+  const deadline = document.getElementById('objDeadline').value;
+  const note = document.getElementById('objNote').value.trim();
+  if (!title) { showToast('Écris ton objectif !'); return; }
+  if (!state.objectifs) state.objectifs = [];
+  state.objectifs.push({ id: Date.now(), title, cat, horizon, deadline, note, done: false, date: today() });
+  document.getElementById('objTitle').value = '';
+  document.getElementById('objNote').value = '';
+  document.getElementById('objDeadline').value = '';
+  save(); renderObjectifs(); showToast('Objectif ajouté ✓');
+}
+
+function toggleObjectif(id) {
+  const obj = state.objectifs.find(o => o.id === id);
+  if (obj) { obj.done = !obj.done; save(); renderObjectifs(); showToast(obj.done ? '🏆 Objectif atteint !' : 'Remis en cours'); }
+}
+
+function deleteObjectif(id) {
+  state.objectifs = state.objectifs.filter(o => o.id !== id);
+  save(); renderObjectifs();
+}
+
+function setObjFilter(f) {
+  objFilter = f;
+  document.querySelectorAll('#objFilters .btn').forEach(b => {
+    b.style.background = 'var(--surface2)'; b.style.color = 'var(--text-muted)'; b.style.border = '1px solid var(--border)';
+  });
+  event.target.style.background = 'var(--accent)'; event.target.style.color = '#0e0e11'; event.target.style.border = 'none';
+  renderObjectifs();
+}
+
+function getDaysLeft(deadline) {
+  if (!deadline) return null;
+  const diff = Math.ceil((new Date(deadline) - new Date()) / 86400000);
+  return diff;
+}
+
+function renderObjectifs() {
+  if (!state.objectifs) state.objectifs = [];
+  let items = [...state.objectifs];
+  if (objFilter === 'done') items = items.filter(o => o.done);
+  else if (objFilter !== 'all') items = items.filter(o => o.horizon === objFilter && !o.done);
+  else items = items.filter(o => !o.done).concat(items.filter(o => o.done));
+
+  const list = document.getElementById('objList');
+  if (items.length === 0) {
+    list.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun objectif ici — ajoutes-en un !</div>';
+  } else {
+    list.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">' +
+      items.map(obj => {
+        const daysLeft = getDaysLeft(obj.deadline);
+        const urgency = daysLeft !== null ? (daysLeft < 0 ? '🔴 En retard' : daysLeft < 14 ? `🟠 J-${daysLeft}` : `🟢 J-${daysLeft}`) : '';
+        const color = OBJ_CAT_COLORS[obj.cat] || '#6b6b80';
+        const hColor = OBJ_HORIZON_COLORS[obj.horizon] || '#6b6b80';
+        return `
+        <div style="background:var(--surface);border:1px solid ${obj.done ? 'var(--border)' : color};border-radius:var(--radius);padding:18px;
+          opacity:${obj.done ? 0.55 : 1};position:relative;overflow:hidden;transition:all 0.2s">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:${color};border-radius:3px 0 0 3px"></div>
+          <div style="padding-left:8px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+                  <span style="font-size:0.6rem;padding:3px 10px;border-radius:999px;background:${color}22;color:${color};border:1px solid ${color}44;letter-spacing:1px;text-transform:uppercase">${obj.cat}</span>
+                  <span style="font-size:0.6rem;padding:3px 10px;border-radius:999px;background:${hColor}22;color:${hColor};border:1px solid ${hColor}44;letter-spacing:1px">${obj.horizon}</span>
+                  ${urgency ? `<span style="font-size:0.65rem;color:var(--text-muted)">${urgency}</span>` : ''}
+                  ${obj.done ? '<span style="font-size:0.65rem;color:#4adb8a;font-weight:700">✓ ATTEINT</span>' : ''}
+                </div>
+                <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:${obj.done ? 'var(--text-muted)' : 'var(--text)'};
+                  text-decoration:${obj.done ? 'line-through' : 'none'};margin-bottom:${obj.note ? '6px' : '0'}">${obj.title}</div>
+                ${obj.note ? `<div style="font-size:0.7rem;color:var(--text-muted);font-style:italic">${obj.note}</div>` : ''}
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+                <div onclick="toggleObjectif(${obj.id})" style="cursor:pointer;padding:6px 14px;border-radius:999px;font-size:0.65rem;font-weight:600;
+                  background:${obj.done ? 'rgba(74,219,138,0.15)' : 'var(--surface2)'};
+                  border:1px solid ${obj.done ? 'rgba(74,219,138,0.4)' : 'var(--border)'};
+                  color:${obj.done ? '#4adb8a' : 'var(--text-muted)'};letter-spacing:1px;text-transform:uppercase;white-space:nowrap">
+                  ${obj.done ? '✓ Atteint' : '○ En cours'}
+                </div>
+                <button class="btn btn-danger" onclick="deleteObjectif(${obj.id})">✕</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  // Stats
+  const total = state.objectifs.length;
+  const done = state.objectifs.filter(o => o.done).length;
+  const byCat = {};
+  state.objectifs.filter(o => !o.done).forEach(o => { byCat[o.cat] = (byCat[o.cat]||0)+1; });
+  const overdue = state.objectifs.filter(o => !o.done && o.deadline && getDaysLeft(o.deadline) < 0).length;
+
+  document.getElementById('objStats').innerHTML = `
+    <div class="grid-3">
+      <div style="text-align:center;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${total}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Objectifs totaux</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:#4adb8a">${done}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Atteints 🏆</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+        <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:${overdue > 0 ? '#f05a5a' : 'var(--text-muted)'}">${overdue}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">En retard</div>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      ${Object.entries(byCat).map(([cat, n]) => `
+        <div class="summary-row">
+          <div class="summary-label"><div class="dot" style="background:${OBJ_CAT_COLORS[cat]||'#6b6b80'}"></div>${cat}</div>
+          <div class="summary-val">${n} en cours</div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+
+// ======= CERTIFICATIONS =======
+const CERTIFICATIONS = [
+  // Langues
+  { name: 'TOEIC (Test of English for International Communication)', cat: 'Langues', color: '#48cae4', difficulty: '⭐⭐', desc: 'Référence mondiale en anglais professionnel, reconnu par toutes les entreprises FR', duree: '1–2 mois' },
+  { name: 'Cambridge B2 First / C1 Advanced', cat: 'Langues', color: '#48cae4', difficulty: '⭐⭐⭐', desc: 'Certification anglais reconnue internationalement, objectif C1', duree: '3–6 mois' },
+  { name: 'Certificat Voltaire (orthographe & grammaire FR)', cat: 'Langues', color: '#48cae4', difficulty: '⭐⭐', desc: 'Très apprécié des recruteurs FR — valorise tes écrits professionnels', duree: '1–2 mois' },
+  { name: 'DELE (Espagnol)', cat: 'Langues', color: '#48cae4', difficulty: '⭐⭐', desc: 'Certification officielle espagnol, niveaux A1 à C2', duree: '2–4 mois' },
+  { name: 'DELF / DALF (Français langue étrangère)', cat: 'Langues', color: '#48cae4', difficulty: '⭐⭐', desc: 'Utile si tu formes des apprenants étrangers', duree: '1–3 mois' },
+  // Comptabilité / Finance
+  { name: 'DCG (Diplôme Comptabilité Gestion)', cat: 'Comptabilité', color: '#f4a261', difficulty: '⭐⭐⭐', desc: 'Référence nationale, reconnu partout en France', duree: '2–3 ans' },
+  { name: 'DSCG (Diplôme Supérieur CG)', cat: 'Comptabilité', color: '#f4a261', difficulty: '⭐⭐⭐⭐', desc: 'Niveau Bac+5, mène au DEC (Expert-Comptable)', duree: '2 ans' },
+  { name: 'CFA Level 1 (Chartered Financial Analyst)', cat: 'Finance', color: '#4adb8a', difficulty: '⭐⭐⭐⭐', desc: 'Gold standard en finance de marché et gestion d\'actifs', duree: '6–12 mois' },
+  { name: 'AMF — Certification Professionnelle', cat: 'Finance', color: '#4adb8a', difficulty: '⭐⭐', desc: 'Obligatoire pour travailler dans les marchés financiers en France', duree: '1–3 mois' },
+  // Informatique
+  { name: 'Microsoft Office Specialist (MOS) Excel Expert', cat: 'Bureautique', color: '#c8f04a', difficulty: '⭐⭐', desc: 'Certification officielle Microsoft, très recherchée en compta/finance', duree: '1–2 mois' },
+  { name: 'Google Data Analytics Certificate', cat: 'Data', color: '#48cae4', difficulty: '⭐⭐', desc: 'Analyse de données, SQL, Tableau — accessible et reconnu', duree: '3–6 mois' },
+  { name: 'Power BI Data Analyst (PL-300)', cat: 'Data', color: '#48cae4', difficulty: '⭐⭐⭐', desc: 'Certification Microsoft Power BI, très demandée en finance', duree: '2–4 mois' },
+  { name: 'CompTIA A+ (support informatique)', cat: 'IT', color: '#9b8cff', difficulty: '⭐⭐', desc: 'Base solide en support IT, reconnue mondialement', duree: '2–4 mois' },
+  { name: 'ITIL 4 Foundation', cat: 'IT', color: '#9b8cff', difficulty: '⭐⭐', desc: 'Gestion des services IT, très utile en ESN/support', duree: '1–2 mois' },
+  { name: 'AWS Cloud Practitioner', cat: 'Cloud', color: '#7b5ea7', difficulty: '⭐⭐', desc: 'Intro au cloud AWS, incontournable en IT', duree: '1–3 mois' },
+  { name: 'Sage Certified Consultant', cat: 'Logiciel', color: '#f05a5a', difficulty: '⭐⭐', desc: 'Certification officielle Sage — parfaite pour ton profil', duree: '1–3 mois' },
+];
+
+function addCustomCert() {
+  const name = document.getElementById('certCustomName').value.trim();
+  const cat = document.getElementById('certCustomCat').value;
+  const duree = document.getElementById('certCustomDuree').value.trim();
+  const desc = document.getElementById('certCustomDesc').value.trim();
+  if (!name) { showToast('Donne un nom à la certification !'); return; }
+  if (!state.customCerts) state.customCerts = [];
+  state.customCerts.push({ id: Date.now(), name, cat, duree: duree || '—', desc: desc || '', difficulty: '⭐⭐' });
+  document.getElementById('certCustomName').value = '';
+  document.getElementById('certCustomDuree').value = '';
+  document.getElementById('certCustomDesc').value = '';
+  save(); renderCustomCerts(); showToast('Certification ajoutée ✓');
+}
+
+function deleteCustomCert(id) {
+  state.customCerts = state.customCerts.filter(c => c.id !== id);
+  save(); renderCustomCerts();
+}
+
+function renderCustomCerts() {
+  if (!state.customCerts) state.customCerts = [];
+  const el = document.getElementById('certCustomList');
+  if (!el) return;
+  if (state.customCerts.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <div style="font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Mes certifications personnalisées</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+      ${state.customCerts.map(cert => {
+        const color = CERT_CAT_COLORS[cert.cat] || '#6b6b80';
+        return `<div style="background:var(--surface2);border:1px solid ${color}44;border-radius:10px;padding:14px;position:relative">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${color}22;color:${color};border:1px solid ${color}44;letter-spacing:1px;text-transform:uppercase">${cert.cat}</span>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span style="font-size:0.65rem;color:var(--text-muted)">${cert.duree}</span>
+              <button class="btn btn-danger" onclick="deleteCustomCert(${cert.id})">✕</button>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">${cert.name}</div>
+          ${cert.desc ? `<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:8px">${cert.desc}</div>` : ''}
+          <div onclick="addCertAsModule('${cert.name.replace(/'/g,"\\'")}','${cert.cat}')"
+            style="font-size:0.62rem;color:${color};letter-spacing:1px;text-transform:uppercase;cursor:pointer">+ Ajouter aux modules →</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+const CERT_CAT_COLORS = {
+  'Comptabilité': '#f4a261', 'Finance': '#4adb8a', 'Bureautique': '#c8f04a',
+  'Data': '#48cae4', 'IT': '#9b8cff', 'Cloud': '#7b5ea7', 'Logiciel': '#f05a5a'
+};
+
+function addCertAsModule(certName, certCat) {
+  if (!state.modules) state.modules = [];
+  if (state.modules.find(m => m.name === certName)) { showToast('Déjà dans tes modules !'); return; }
+  state.modules.push({
+    id: Date.now(), name: certName, cat: 'Certification',
+    total: 10, done: 0, color: CERT_CAT_COLORS[certCat] || '#c8f04a'
+  });
+  save(); renderFormation(); showToast('Certification ajoutée aux modules ✓');
+}
+
+function renderCertifications() {
+  const el = document.getElementById('certSuggestions');
+  if (!el) return;
+  el.innerHTML = CERTIFICATIONS.map(cert => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;
+      cursor:pointer;transition:border-color 0.2s"
+      onmouseover="this.style.borderColor='${CERT_CAT_COLORS[cert.cat]||'var(--accent)'}'"
+      onmouseout="this.style.borderColor='var(--border)'"
+      onclick="addCertAsModule('${cert.name.replace(/'/g,"\\'")}','${cert.cat}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${CERT_CAT_COLORS[cert.cat]||'#6b6b80'}22;
+          color:${CERT_CAT_COLORS[cert.cat]||'#6b6b80'};border:1px solid ${CERT_CAT_COLORS[cert.cat]||'#6b6b80'}44;
+          letter-spacing:1px;text-transform:uppercase">${cert.cat}</span>
+        <span style="font-size:0.65rem;color:var(--text-muted)">${cert.duree}</span>
+      </div>
+      <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3">${cert.name}</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:8px">${cert.desc}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.65rem">${cert.difficulty} difficulté</span>
+        <span style="font-size:0.62rem;color:${CERT_CAT_COLORS[cert.cat]||'var(--accent)'};letter-spacing:1px;text-transform:uppercase">+ Ajouter →</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ======= LOGICIELS =======
+const LOGICIELS = {
+  '🧾 Comptabilité & Gestion': [
+    { name: 'Sage 100 Comptabilité', desc: 'Référence PME en France, indispensable', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'Sage 100 Paie & RH', desc: 'Gestion des fiches de paie, cotisations', niveau: 'Important', color: '#f4a261' },
+    { name: 'Cegid Comptabilité', desc: 'Très utilisé dans les cabinets comptables', niveau: 'Important', color: '#f4a261' },
+    { name: 'QuickBooks', desc: 'Standard international, utile pour freelances', niveau: 'Utile', color: '#c8f04a' },
+    { name: 'EBP Comptabilité Pro', desc: 'Alternative Sage, répandu en TPE/PME', niveau: 'Utile', color: '#c8f04a' },
+    { name: 'Pennylane', desc: 'Logiciel comptable nouvelle génération (cloud)', niveau: 'Tendance', color: '#9b8cff' },
+  ],
+  '📊 Data & Bureautique': [
+    { name: 'Excel (niveau Expert)', desc: 'Tableaux croisés, VBA, Power Query — base absolue', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'Power BI', desc: 'Visualisation de données, tableaux de bord dynamiques', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'Google Sheets', desc: 'Indispensable en environnement cloud/startup', niveau: 'Important', color: '#f4a261' },
+    { name: 'Tableau', desc: 'Concurrent Power BI, très demandé en finance', niveau: 'Important', color: '#f4a261' },
+    { name: 'Notion', desc: 'Organisation, documentation, wiki personnel/pro', niveau: 'Utile', color: '#c8f04a' },
+    { name: 'Airtable', desc: 'Base de données no-code, utile pour gestion', niveau: 'Utile', color: '#c8f04a' },
+  ],
+  '💻 IT & Support': [
+    { name: 'Active Directory / Azure AD', desc: 'Gestion des utilisateurs, incontournable en ESN', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'Microsoft 365 Admin', desc: 'Exchange, Teams, SharePoint — support niveau 1/2', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'ServiceNow / GLPI', desc: 'Outils ITSM pour tickets et gestion incidents', niveau: 'Important', color: '#f4a261' },
+    { name: 'Intune (MDM)', desc: 'Gestion des appareils mobiles en entreprise', niveau: 'Important', color: '#f4a261' },
+    { name: 'PowerShell', desc: 'Automatisation tâches admin Windows', niveau: 'Utile', color: '#c8f04a' },
+    { name: 'VMware / Hyper-V', desc: 'Virtualisation, bases cloud', niveau: 'Utile', color: '#c8f04a' },
+  ],
+  '🎓 Création de contenus & Formation': [
+    { name: 'Articulate Storyline / Rise', desc: 'Standard e-learning pour créer des cours interactifs', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'Canva Pro', desc: 'Supports visuels, slides, thumbnails pour cours', niveau: 'Prioritaire', color: '#f05a5a' },
+    { name: 'OBS Studio', desc: 'Enregistrement et streaming de cours vidéo (gratuit)', niveau: 'Important', color: '#f4a261' },
+    { name: 'Camtasia', desc: 'Enregistrement écran + montage vidéo pédagogique', niveau: 'Important', color: '#f4a261' },
+    { name: 'WordPress + LMS (LearnDash)', desc: 'Créer sa propre plateforme de formation', niveau: 'Utile', color: '#c8f04a' },
+    { name: 'Moodle', desc: 'LMS open-source, utilisé en organismes de formation', niveau: 'Utile', color: '#c8f04a' },
+  ],
+};
+
+const NIVEAU_COLORS = { 'Prioritaire': '#f05a5a', 'Important': '#f4a261', 'Utile': '#c8f04a', 'Tendance': '#9b8cff' };
+
+function addLogicielAsModule(name) {
+  if (!state.modules) state.modules = [];
+  if (state.modules.find(m => m.name === name)) { showToast('Déjà dans tes modules !'); return; }
+  state.modules.push({ id: Date.now(), name, cat: 'Logiciel', total: 8, done: 0, color: '#c8f04a' });
+  save(); renderFormation(); showToast('Logiciel ajouté aux modules ✓');
+}
+
+function renderLogiciels() {
+  const el = document.getElementById('logicielsSuggestions');
+  if (!el) return;
+  el.innerHTML = Object.entries(LOGICIELS).map(([domaine, logiciels]) => `
+    <div style="margin-bottom:18px">
+      <div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:10px">${domaine}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">
+        ${logiciels.map(l => `
+          <div onclick="addLogicielAsModule('${l.name.replace(/'/g,"\\'")}') "
+            style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;
+            cursor:pointer;transition:border-color 0.2s"
+            onmouseover="this.style.borderColor='${NIVEAU_COLORS[l.niveau]}'"
+            onmouseout="this.style.borderColor='var(--border)'">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px">
+              <div style="font-size:0.78rem;font-weight:600;color:var(--text)">${l.name}</div>
+              <span style="font-size:0.55rem;padding:2px 7px;border-radius:999px;white-space:nowrap;margin-left:6px;
+                background:${NIVEAU_COLORS[l.niveau]}22;color:${NIVEAU_COLORS[l.niveau]};
+                border:1px solid ${NIVEAU_COLORS[l.niveau]}44;letter-spacing:1px;text-transform:uppercase">${l.niveau}</span>
+            </div>
+            <div style="font-size:0.65rem;color:var(--text-muted)">${l.desc}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ======= ROADMAP FORMATEUR =======
+const ROADMAP = [
+  {
+    phase: 'Phase 1', title: 'Construire la légitimité', horizon: '0–12 mois', color: '#f05a5a',
+    icon: '🧱',
+    steps: [
+      'Maîtriser 2–3 logiciels métier au niveau expert (Sage, Excel, Power BI)',
+      'Obtenir au moins 1 certification reconnue (MOS Expert, ITIL, DCG…)',
+      'Accumuler 2–3 ans d\'expérience terrain (support IT, compta, logiciels)',
+      'Documenter tes apprentissages : notes, tutoriels personnels, fiches mémo',
+      'Créer un profil LinkedIn soigné avec tes certifications et compétences',
+    ]
+  },
+  {
+    phase: 'Phase 2', title: 'Premiers pas en formation', horizon: '6–18 mois', color: '#f4a261',
+    icon: '🎤',
+    steps: [
+      'Animer des formations internes dans ton entreprise (même informelles)',
+      'Proposer des tutos/guides à des collègues — valider la pédagogie',
+      'Passer le titre professionnel "Formateur Professionnel d\'Adultes" (RNCP)',
+      'Obtenir le numéro de déclaration d\'activité de formateur (Préfecture)',
+      'Créer tes premiers supports : slides Canva, PDF, vidéos courtes OBS',
+      'Se faire référencer sur des plateformes freelance (Malt, ComeUp, LinkedIn)',
+    ]
+  },
+  {
+    phase: 'Phase 3', title: 'Certification Qualiopi & statut officiel', horizon: '12–24 mois', color: '#c8f04a',
+    icon: '📜',
+    steps: [
+      'Créer une micro-entreprise ou SASU (statut formateur indépendant)',
+      'Monter un dossier Qualiopi (obligatoire pour financement CPF/OPCO)',
+      'Obtenir Qualiopi via un organisme certificateur (Bureau Veritas, Afnor…)',
+      'Se référencer sur Mon Compte Formation (CPF) — démultiplie les clients',
+      'Trouver tes 2–3 premières missions de formation (entreprises, particuliers)',
+      'Rejoindre un réseau de formateurs indépendants pour partager les missions',
+    ]
+  },
+  {
+    phase: 'Phase 4', title: 'Créer ta plateforme de formation en ligne', horizon: '18–36 mois', color: '#4adb8a',
+    icon: '🌐',
+    steps: [
+      'Choisir ta niche : ex. "Sage pour TPE/PME", "Excel pour comptables", "IT support"',
+      'Créer 1 formation complète (5–10h) avec Articulate ou Camtasia',
+      'Option A — Plateforme hébergée : Teachable, Podia, Systeme.io (0 code requis)',
+      'Option B — Plateforme propre : WordPress + LearnDash ou Moodle (plus flexible)',
+      'Lancer sur Udemy / OpenClassrooms pour tester et générer des avis',
+      'Construire une audience : newsletter, LinkedIn, YouTube (tutos gratuits → funnel)',
+      'Monétisation : formation payante, abonnement mensuel, coaching 1-to-1',
+    ]
+  },
+  {
+    phase: 'Phase 5', title: 'Scaler & automatiser', horizon: '3 ans+', color: '#9b8cff',
+    icon: '⚡',
+    steps: [
+      'Multiplier les formations (catalogue) sur plusieurs sujets de ta niche',
+      'Déléguer : recrutement d\'autres formateurs sous ta marque',
+      'Partenariats avec des entreprises pour formations intra (contrats récurrents)',
+      'Créer une marque forte : nom, logo, site pro, témoignages clients',
+      'Revenus passifs : formations en accès libre 24h/24 sur ta plateforme',
+      'Objectif réaliste : 2 000–5 000 €/mois nets en indépendant confirmé',
+    ]
+  },
+];
+
+function renderRoadmap() {
+  const el = document.getElementById('roadmapFormateur');
+  if (!el) return;
+  el.innerHTML = ROADMAP.map((phase, i) => `
+    <div style="display:flex;gap:16px;margin-bottom:20px">
+      <!-- Timeline -->
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+        <div style="width:40px;height:40px;border-radius:50%;background:${phase.color}22;border:2px solid ${phase.color};
+          display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${phase.icon}</div>
+        ${i < ROADMAP.length - 1 ? `<div style="width:2px;flex:1;background:linear-gradient(${phase.color},${ROADMAP[i+1].color});margin:4px 0;min-height:20px"></div>` : ''}
+      </div>
+      <!-- Content -->
+      <div style="flex:1;padding-bottom:8px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+          <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${phase.color}22;color:${phase.color};
+            border:1px solid ${phase.color}44;letter-spacing:1px;text-transform:uppercase;font-weight:700">${phase.phase}</span>
+          <span style="font-family:'Syne',sans-serif;font-size:0.92rem;font-weight:700;color:var(--text)">${phase.title}</span>
+          <span style="font-size:0.65rem;color:var(--text-muted)">⏱ ${phase.horizon}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          ${phase.steps.map(step => `
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.72rem;color:var(--text-muted);line-height:1.5">
+              <span style="color:${phase.color};flex-shrink:0;margin-top:2px">▸</span>
+              <span>${step}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ======= PROJECTS CONFIG =======
+const DAYS_FR = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+const QUOTES = [
+  { text: "La discipline est le pont entre les objectifs et les accomplissements.", author: "Jim Rohn" },
+  { text: "Chaque jour sans action est un jour perdu.", author: "Anonyme" },
+  { text: "La régularité bat l'intensité, toujours.", author: "Anonyme" },
+  { text: "Un homme qui maîtrise son temps maîtrise sa vie.", author: "Anonyme" },
+  { text: "Les petits progrès quotidiens mènent aux grands résultats.", author: "Anonyme" },
+  { text: "Le succès n'est que la somme de petits efforts répétés chaque jour.", author: "Robert Collier" },
+];
+
+const PROJECTS = [
+  { id: 'langues', icon: '🌍', name: 'Langues', goal: '30 min / jour', color: '#c8f04a', weekGoalMin: 150 },
+  { id: 'devPerso', icon: '🧠', name: 'Dév. Personnel', goal: '20 min / jour', color: '#7b5ea7', weekGoalMin: 100 },
+  { id: 'culture', icon: '📚', name: 'Culture', goal: '20 min / jour', color: '#f4a261', weekGoalMin: 100 },
+  { id: 'sport', icon: '💪', name: 'Sport', goal: '25 min / jour', color: '#48cae4', weekGoalMin: 125 },
+];
+
+const CAT_COLORS = {
+  'Salaire': '#4adb8a', 'Logement': '#7b5ea7', 'Alimentation': '#f4a261',
+  'Transport': '#48cae4', 'Loisirs': '#c8f04a', 'Épargne': '#4adb8a',
+  'Santé': '#f05a5a', 'Abonnements': '#9b8cff', 'Autre': '#6b6b80',
+};
+
+// ======= UTILS =======
+function save() { localStorage.setItem('chris_dashboard', JSON.stringify(state)); }
+
+function today() { return new Date().toISOString().slice(0, 10); }
+
+function getWeekDates() {
+  const now = new Date();
+  const day = now.getDay() === 0 ? 7 : now.getDay(); // Mon=1
+  const dates = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - day + i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+  return dates;
+}
+
+function getWeekNumber(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 4 - (d.getDay()||7));
+  const yearStart = new Date(d.getFullYear(),0,1);
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ======= TAB =======
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ======= INIT HEADER =======
+function initHeader() {
+  const now = new Date();
+  const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById('headerDate').textContent = now.toLocaleDateString('fr-FR', opts);
+  document.getElementById('weekBadge').textContent = `Semaine ${getWeekNumber(now)}`;
+  document.getElementById('budgetMonth').textContent = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+  const q = QUOTES[now.getDay() % QUOTES.length];
+  document.getElementById('quoteText').textContent = `"${q.text}"`;
+  document.getElementById('quoteAuthor').textContent = q.author;
+}
+
+// ======= FOCUS DU JOUR =======
+function initFocus() {
+  const now = new Date();
+  const dayIdx = (now.getDay() + 6) % 7; // 0=Lun
+  const schedule = [
+    { text: 'Langues + Sport', time: '30 min langues · 25 min sport' },
+    { text: 'Langues + Dev perso', time: '30 min langues · 20 min dév. perso' },
+    { text: 'Sport + Culture', time: '25 min sport · 20 min culture' },
+    { text: 'Langues + Dev perso', time: '30 min langues · 20 min dév. perso' },
+    { text: 'Sport + Culture', time: '25 min sport · 20 min culture' },
+    { text: 'Langues + Rattrapage libre', time: '30 min langues · session libre' },
+    { text: '🔋 Récupération', time: 'Repos actif · lecture légère' },
+  ];
+  const s = schedule[dayIdx];
+  document.getElementById('focusTodayText').textContent = s.text;
+  document.getElementById('focusTodayTime').textContent = s.time;
+}
+
+// ======= PROJECTS =======
+function toggleDay(projId, dateStr) {
+  if (!state.days[dateStr]) state.days[dateStr] = {};
+  state.days[dateStr][projId] = !state.days[dateStr][projId];
+  save();
+  renderProjects();
+  renderWeekSummary();
+}
+
+function renderProjects() {
+  const weekDates = getWeekDates();
+  const todayStr = today();
+  const grid = document.getElementById('projectsGrid');
+  grid.innerHTML = '';
+
+  PROJECTS.forEach(proj => {
+    let doneDays = 0;
+    weekDates.forEach(d => {
+      if (state.days[d]?.[proj.id]) doneDays++;
+    });
+    const pct = Math.round((doneDays / 7) * 100);
+    const todayDone = state.days[todayStr]?.[proj.id];
+
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.style.setProperty('--proj-color', proj.color);
+
+    const dotsHtml = weekDates.map((d, i) => {
+      const done = state.days[d]?.[proj.id];
+      const isToday = d === todayStr;
+      return `<div class="day-dot ${done ? 'done' : ''}" 
+        style="${isToday ? 'border-color:' + proj.color + ';' : ''}"
+        onclick="toggleDay('${proj.id}','${d}')"
+        title="${d}">${DAYS_FR[i]}</div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="proj-header">
+        <div>
+          <div class="proj-icon">${proj.icon}</div>
+          <div class="proj-name">${proj.name}</div>
+          <div class="proj-goal">${proj.goal}</div>
+        </div>
+        <div class="proj-minutes">
+          <div class="proj-today" style="color:${todayDone ? proj.color : 'var(--text-muted)'}">
+            ${todayDone ? '✓' : '○'}
+          </div>
+          <div class="proj-today-label">aujourd'hui</div>
+        </div>
+      </div>
+      <div class="day-dots">${dotsHtml}</div>
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" style="width:${pct}%;background:${proj.color}"></div>
+      </div>
+      <div class="prog-label">
+        <span>${doneDays}/7 jours</span>
+        <span>${pct}%</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderWeekSummary() {
+  const weekDates = getWeekDates();
+  let totalMin = 0;
+  const summaryEl = document.getElementById('weekSummary');
+  summaryEl.innerHTML = '';
+
+  PROJECTS.forEach(proj => {
+    let done = 0;
+    weekDates.forEach(d => { if (state.days[d]?.[proj.id]) done++; });
+    const mins = done * Math.round(proj.weekGoalMin / 5); // avg per session
+    totalMin += mins;
+
+    const row = document.createElement('div');
+    row.className = 'summary-row';
+    row.innerHTML = `
+      <div class="summary-label">
+        <div class="dot" style="background:${proj.color}"></div>
+        ${proj.icon} ${proj.name}
+      </div>
+      <div class="summary-val">${mins} min</div>
+    `;
+    summaryEl.appendChild(row);
+  });
+
+  document.getElementById('totalWeek').textContent = totalMin;
+}
+
+// ======= SPORT =======
+const SPORT_DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const SPORT_COLORS = ['#48cae4','#c8f04a','#f4a261','#7b5ea7','#4adb8a','#f05a5a','#9b8cff'];
+
+function addSportExo() {
+  const val = document.getElementById('sportExoInput').value.trim();
+  if (!val) return;
+  if (!state.sportExos) state.sportExos = [];
+  state.sportExos.push({ id: Date.now(), name: val, days: ['Lun','Mar','Mer','Jeu','Ven'], done: {} });
+  document.getElementById('sportExoInput').value = '';
+  save(); renderSport();
+}
+
+function toggleSportDay(exoId, day) {
+  const exo = state.sportExos.find(e => e.id === exoId);
+  if (!exo) return;
+  if (exo.days.includes(day)) exo.days = exo.days.filter(d => d !== day);
+  else exo.days.push(day);
+  save(); renderSport();
+}
+
+function toggleSportDone(exoId) {
+  const exo = state.sportExos.find(e => e.id === exoId);
+  if (!exo) return;
+  const t = today();
+  exo.done[t] = !exo.done[t];
+  save(); renderSport();
+}
+
+function deleteSportExo(id) {
+  state.sportExos = state.sportExos.filter(e => e.id !== id);
+  save(); renderSport();
+}
+
+function renderSport() {
+  if (!state.sportExos) state.sportExos = [];
+  const todayStr = today();
+  const todayDay = SPORT_DAYS[(new Date().getDay() + 6) % 7];
+
+  // Programme hebdo
+  const weekGrid = document.getElementById('sportWeekGrid');
+  weekGrid.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr repeat(7,36px);gap:6px;align-items:center;margin-bottom:6px">
+      <div style="font-size:0.6rem;color:var(--text-muted)">Exercice</div>
+      ${SPORT_DAYS.map(d => `<div style="font-size:0.62rem;color:${d===todayDay?'var(--accent)':'var(--text-muted)'};text-align:center;font-weight:${d===todayDay?700:400}">${d}</div>`).join('')}
+    </div>
+    ${state.sportExos.map((exo, i) => `
+      <div style="display:grid;grid-template-columns:1fr repeat(7,36px);gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:0.75rem;color:var(--text);display:flex;align-items:center;gap:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:${SPORT_COLORS[i%7]};flex-shrink:0;display:inline-block"></span>
+          ${exo.name}
+          <span onclick="deleteSportExo(${exo.id})" style="cursor:pointer;color:var(--text-muted);font-size:0.65rem;margin-left:4px">✕</span>
+        </div>
+        ${SPORT_DAYS.map(d => `
+          <div onclick="toggleSportDay(${exo.id},'${d}')"
+            style="width:28px;height:28px;border-radius:6px;cursor:pointer;margin:auto;
+            background:${exo.days.includes(d) ? SPORT_COLORS[i%7] : 'var(--surface2)'};
+            border:1px solid ${exo.days.includes(d) ? SPORT_COLORS[i%7] : 'var(--border)'}">
+          </div>`).join('')}
+      </div>`).join('')}
+  `;
+
+  // Checklist du jour
+  const todayExos = state.sportExos.filter(e => e.days.includes(todayDay));
+  const checklist = document.getElementById('sportChecklist');
+  if (todayExos.length === 0) {
+    checklist.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);padding:12px 0">Repos aujourd\'hui 🔋</div>';
+  } else {
+    checklist.innerHTML = todayExos.map(exo => `
+      <div onclick="toggleSportDone(${exo.id})"
+        style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
+        <div style="width:20px;height:20px;border-radius:5px;flex-shrink:0;
+          background:${exo.done[todayStr] ? '#48cae4' : 'var(--surface2)'};
+          border:2px solid ${exo.done[todayStr] ? '#48cae4' : 'var(--border)'};
+          display:flex;align-items:center;justify-content:center;font-size:0.75rem">
+          ${exo.done[todayStr] ? '✓' : ''}
+        </div>
+        <span style="font-size:0.78rem;color:${exo.done[todayStr] ? 'var(--text-muted)' : 'var(--text)'};
+          text-decoration:${exo.done[todayStr] ? 'line-through' : 'none'}">${exo.name}</span>
+      </div>`).join('');
+  }
+
+  // Stats semaine
+  const weekDates = getWeekDates();
+  const totalDone = state.sportExos.reduce((s, e) => s + weekDates.filter(d => e.done[d]).length, 0);
+  const totalPossible = state.sportExos.reduce((s, e) => {
+    return s + weekDates.filter(d => {
+      const di = (new Date(d).getDay() + 6) % 7;
+      return e.days.includes(SPORT_DAYS[di]);
+    }).length;
+  }, 0);
+  const seancesThisWeek = new Set(weekDates.filter(d => {
+    const di = (new Date(d).getDay() + 6) % 7;
+    return state.sportExos.some(e => e.days.includes(SPORT_DAYS[di]));
+  })).size;
+  const seancesDone = new Set(weekDates.filter(d => state.sportExos.some(e => e.done[d]))).size;
+
+  document.getElementById('sportStats').innerHTML = `
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#48cae4"></div>Séances faites</div><div class="summary-val">${seancesDone} / ${seancesThisWeek}</div></div>
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#c8f04a"></div>Exos cochés</div><div class="summary-val">${totalDone} / ${totalPossible}</div></div>
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#f4a261"></div>Complétion</div><div class="summary-val">${totalPossible > 0 ? Math.round(totalDone/totalPossible*100) : 0}%</div></div>
+  `;
+}
+
+// ======= LANGUES =======
+let currentLang = 'es';
+const LANG_LABELS = { es: '🇪🇸 Espagnol', it: '🇮🇹 Italien', ru: '🇷🇺 Russe', en: '🇬🇧 Anglais' };
+const LANG_COLORS = { es: '#f4a261', it: '#4adb8a', ru: '#f05a5a', en: '#48cae4' };
+
+function switchLang(lang) {
+  currentLang = lang;
+  ['es','it','ru','en'].forEach(l => {
+    const btn = document.getElementById('ltab-' + l);
+    if (l === lang) { btn.style.background = 'var(--accent)'; btn.style.color = '#0e0e11'; btn.style.border = 'none'; }
+    else { btn.style.background = 'var(--surface2)'; btn.style.color = 'var(--text-muted)'; btn.style.border = '1px solid var(--border)'; }
+  });
+  renderLangues();
+}
+
+function addGrammaire(lang) {
+  const val = document.getElementById('gram-input-' + lang).value.trim();
+  if (!val) return;
+  state.langues[lang].grammaire.push({ id: Date.now(), name: val, done: false });
+  document.getElementById('gram-input-' + lang).value = '';
+  save(); renderLangues();
+}
+
+function toggleGrammaire(lang, id) {
+  const item = state.langues[lang].grammaire.find(g => g.id === id);
+  if (item) { item.done = !item.done; save(); renderLangues(); }
+}
+
+function deleteGrammaire(lang, id) {
+  state.langues[lang].grammaire = state.langues[lang].grammaire.filter(g => g.id !== id);
+  save(); renderLangues();
+}
+
+function addVocab(lang) {
+  const mot = document.getElementById('vocab-mot-' + lang).value.trim();
+  const trad = document.getElementById('vocab-trad-' + lang).value.trim();
+  if (!mot) return;
+  state.langues[lang].vocab.push({ id: Date.now(), mot, trad, maitrise: 0 });
+  document.getElementById('vocab-mot-' + lang).value = '';
+  document.getElementById('vocab-trad-' + lang).value = '';
+  save(); renderLangues();
+}
+
+function cycleVocab(lang, id) {
+  const item = state.langues[lang].vocab.find(v => v.id === id);
+  if (item) { item.maitrise = (item.maitrise + 1) % 4; save(); renderLangues(); }
+}
+
+function deleteVocab(lang, id) {
+  state.langues[lang].vocab = state.langues[lang].vocab.filter(v => v.id !== id);
+  save(); renderLangues();
+}
+
+function toggleSession(lang) {
+  const t = today();
+  if (!state.langues[lang].sessions) state.langues[lang].sessions = {};
+  state.langues[lang].sessions[t] = !state.langues[lang].sessions[t];
+  save(); renderLangues();
+}
+
+function renderLangues() {
+  const lang = currentLang;
+  const data = state.langues[lang];
+  const color = LANG_COLORS[lang];
+  const todayStr = today();
+  const weekDates = getWeekDates();
+
+  const maitriseLevels = [
+    { label: '❓ Inconnu', color: 'var(--border)' },
+    { label: '👀 Vu', color: '#f4a261' },
+    { label: '🔄 En cours', color: '#48cae4' },
+    { label: '✅ Maîtrisé', color: '#4adb8a' },
+  ];
+
+  const gramDone = data.grammaire.filter(g => g.done).length;
+  const gramTotal = data.grammaire.length;
+  const sessions = weekDates.filter(d => data.sessions?.[d]).length;
+
+  document.getElementById('langPanel').innerHTML = `
+    <div class="grid-2" style="margin-bottom:20px">
+      <!-- Grammaire -->
+      <div class="card">
+        <div class="card-title" style="color:${color}">Grammaire · ${gramDone}/${gramTotal}</div>
+        <div class="prog-bar-bg" style="margin-bottom:14px">
+          <div class="prog-bar-fill" style="width:${gramTotal>0?Math.round(gramDone/gramTotal*100):0}%;background:${color}"></div>
+        </div>
+        ${data.grammaire.map(g => `
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div onclick="toggleGrammaire('${lang}',${g.id})" style="width:18px;height:18px;border-radius:4px;flex-shrink:0;cursor:pointer;
+              background:${g.done ? color : 'var(--surface2)'};border:2px solid ${g.done ? color : 'var(--border)'};
+              display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${g.done?'✓':''}</div>
+            <span style="flex:1;font-size:0.75rem;color:${g.done?'var(--text-muted)':'var(--text)'};text-decoration:${g.done?'line-through':'none'}">${g.name}</span>
+            <span onclick="deleteGrammaire('${lang}',${g.id})" style="cursor:pointer;color:var(--text-muted);font-size:0.65rem">✕</span>
+          </div>`).join('')}
+        <div class="add-row" style="margin-top:12px">
+          <input class="inp" type="text" id="gram-input-${lang}" placeholder="Ajouter une règle..." style="flex:1"/>
+          <button class="btn btn-primary" onclick="addGrammaire('${lang}')">+</button>
+        </div>
+      </div>
+
+      <!-- Sessions semaine -->
+      <div class="card">
+        <div class="card-title" style="color:${color}">Sessions cette semaine</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          ${weekDates.map((d,i) => {
+            const done = data.sessions?.[d];
+            const isT = d === todayStr;
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="font-size:0.58rem;color:${isT?color:'var(--text-muted)'};">${DAYS_FR[i]}</div>
+              <div style="width:34px;height:34px;border-radius:8px;cursor:pointer;
+                background:${done?color:'var(--surface2)'};border:1px solid ${isT?color:'var(--border)'};
+                display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:${done?'#0e0e11':'var(--text-muted)'};"
+                onclick="toggleSession('${lang}')" title="${d}">${done?'✓':'○'}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="summary-row"><div class="summary-label"><div class="dot" style="background:${color}"></div>Sessions faites</div><div class="summary-val">${sessions}/7</div></div>
+        <div class="summary-row"><div class="summary-label"><div class="dot" style="background:var(--accent)"></div>Mots de vocab</div><div class="summary-val">${data.vocab.length}</div></div>
+        <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#4adb8a"></div>Mots maîtrisés</div><div class="summary-val">${data.vocab.filter(v=>v.maitrise===3).length}</div></div>
+      </div>
+    </div>
+
+    <!-- Vocabulaire -->
+    <div class="card">
+      <div class="card-title" style="color:${color}">Vocabulaire (${data.vocab.length} mots)</div>
+      <div class="add-row" style="margin-bottom:14px">
+        <input class="inp" type="text" id="vocab-mot-${lang}" placeholder="Mot en ${LANG_LABELS[lang].split(' ')[1]}" style="flex:1"/>
+        <input class="inp" type="text" id="vocab-trad-${lang}" placeholder="Traduction FR" style="flex:1"/>
+        <button class="btn btn-primary" onclick="addVocab('${lang}')">+ Ajouter</button>
+      </div>
+      <div style="display:flex;gap:8px;font-size:0.62rem;color:var(--text-muted);margin-bottom:10px;flex-wrap:wrap">
+        ${maitriseLevels.map(m => `<span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:${m.color};display:inline-block"></span>${m.label}</span>`).join('')}
+        <span style="color:var(--text-muted)">(cliquer sur le mot pour changer le niveau)</span>
+      </div>
+      ${data.vocab.length === 0 ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun mot ajouté</div>' : ''}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+        ${data.vocab.map(v => `
+          <div onclick="cycleVocab('${lang}',${v.id})" style="cursor:pointer;padding:10px 12px;border-radius:8px;
+            background:var(--surface2);border:1px solid ${maitriseLevels[v.maitrise].color};
+            display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <div>
+              <div style="font-size:0.8rem;font-weight:600;color:var(--text)">${v.mot}</div>
+              <div style="font-size:0.68rem;color:var(--text-muted)">${v.trad}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="width:8px;height:8px;border-radius:50%;background:${maitriseLevels[v.maitrise].color};flex-shrink:0"></div>
+              <span onclick="event.stopPropagation();deleteVocab('${lang}',${v.id})" style="cursor:pointer;color:var(--text-muted);font-size:0.65rem">✕</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ======= REPAS =======
+let repasDate = today();
+const REPAS_SLOTS = [
+  { id: 'matin', label: 'Petit-déjeuner', icon: '🌅', color: '#f4a261' },
+  { id: 'midi', label: 'Déjeuner', icon: '☀️', color: '#c8f04a' },
+  { id: 'soir', label: 'Dîner', icon: '🌙', color: '#7b5ea7' },
+];
+
+const MACRO_FOODS = {
+  'Œufs': { p: 13, c: 1, f: 11 }, 'Poulet': { p: 31, c: 0, f: 3 },
+  'Riz': { p: 3, c: 28, f: 0 }, 'Patate douce': { p: 2, c: 20, f: 0 },
+  'Yaourt': { p: 8, c: 6, f: 3 }, 'Avocat': { p: 2, c: 9, f: 15 },
+  'Saumon': { p: 25, c: 0, f: 13 }, 'Thon': { p: 30, c: 0, f: 1 },
+  'Lentilles': { p: 9, c: 20, f: 0 }, 'Légumes': { p: 2, c: 7, f: 0 },
+};
+
+function repasNav(dir) {
+  const d = new Date(repasDate);
+  d.setDate(d.getDate() + dir);
+  repasDate = d.toISOString().slice(0, 10);
+  renderRepas();
+}
+
+function repasGoToday() { repasDate = today(); renderRepas(); }
+
+function saveRepasItem(slot, field, val) {
+  if (!state.repas[repasDate]) state.repas[repasDate] = {};
+  if (!state.repas[repasDate][slot]) state.repas[repasDate][slot] = { content: '', proteins: '', calories: '', note: '' };
+  state.repas[repasDate][slot][field] = val;
+  save(); updateMacros();
+}
+
+function updateMacros() {
+  const dayData = state.repas[repasDate] || {};
+  let totalP = 0, totalC = 0, totalF = 0, totalCal = 0;
+  REPAS_SLOTS.forEach(s => {
+    const slot = dayData[s.id] || {};
+    const cal = parseFloat(slot.calories) || 0;
+    const prot = parseFloat(slot.proteins) || 0;
+    totalCal += cal;
+    totalP += prot;
+    totalC += cal > 0 && prot > 0 ? Math.max(0, (cal - prot*4) / 4) : 0;
+  });
+  const goalCal = 2000, goalP = 150;
+  const pctCal = Math.min(100, Math.round(totalCal / goalCal * 100));
+  const pctP = Math.min(100, Math.round(totalP / goalP * 100));
+
+  document.getElementById('macrosBar').innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">
+        <span>🔥 Calories</span><span style="color:var(--accent)">${totalCal} / ${goalCal} kcal</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pctCal}%;background:#f4a261"></div></div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-bottom:4px">
+        <span>💪 Protéines</span><span style="color:var(--accent)">${totalP}g / ${goalP}g</span>
+      </div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pctP}%;background:#48cae4"></div></div>
+    </div>
+    <div style="font-size:0.65rem;color:var(--text-muted);margin-top:10px">Objectifs estimés · modifiables selon ton programme</div>
+  `;
+}
+
+function renderRepas() {
+  const d = new Date(repasDate);
+  const opts = { weekday: 'long', day: 'numeric', month: 'long' };
+  document.getElementById('repasDateLabel').textContent = d.toLocaleDateString('fr-FR', opts);
+
+  const dayData = state.repas[repasDate] || {};
+  const grid = document.getElementById('repasCards');
+  grid.innerHTML = '';
+
+  REPAS_SLOTS.forEach(slot => {
+    const slotData = dayData[slot.id] || {};
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--slot-color', slot.color);
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <span style="font-size:1.4rem">${slot.icon}</span>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:${slot.color}">${slot.label}</div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Contenu</div>
+        <textarea class="inp" rows="3" style="width:100%;resize:none;font-size:0.75rem"
+          placeholder="Ex: 2 œufs, flocons d'avoine, banane..."
+          oninput="saveRepasItem('${slot.id}','content',this.value)">${slotData.content || ''}</textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Protéines (g)</div>
+          <input class="inp" type="number" style="width:100%" placeholder="Ex: 30"
+            value="${slotData.proteins || ''}"
+            oninput="saveRepasItem('${slot.id}','proteins',this.value)"/>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Calories (kcal)</div>
+          <input class="inp" type="number" style="width:100%" placeholder="Ex: 450"
+            value="${slotData.calories || ''}"
+            oninput="saveRepasItem('${slot.id}','calories',this.value)"/>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Note</div>
+        <input class="inp" type="text" style="width:100%" placeholder="Observation, ressenti..."
+          value="${slotData.note || ''}"
+          oninput="saveRepasItem('${slot.id}','note',this.value)"/>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  updateMacros();
+}
+
+// ======= CULTURE =======
+const CULT_COLORS = {
+  'Géopolitique': '#48cae4', 'Économie': '#c8f04a', 'Tech': '#7b5ea7',
+  'Histoire': '#f4a261', 'Science': '#4adb8a', 'Autre': '#6b6b80'
+};
+const CULT_ICONS = {
+  'Livre': '📖', 'Article': '📰', 'Podcast': '🎧', 'Vidéo': '🎬', 'Documentaire': '🎥'
+};
+
+let cultFilter = 'all';
+
+function addCultItem() {
+  const title = document.getElementById('cultTitle').value.trim();
+  const type = document.getElementById('cultType').value;
+  const theme = document.getElementById('cultTheme').value;
+  if (!title) { showToast('Ajoute un titre !'); return; }
+  if (!state.culture) state.culture = [];
+  state.culture.push({ id: Date.now(), title, type, theme, done: false, date: today(), note: '' });
+  document.getElementById('cultTitle').value = '';
+  save(); renderCulture(); showToast('Contenu ajouté ✓');
+}
+
+function toggleCult(id) {
+  const item = state.culture.find(c => c.id === id);
+  if (item) { item.done = !item.done; save(); renderCulture(); }
+}
+
+function deleteCult(id) {
+  state.culture = state.culture.filter(c => c.id !== id);
+  save(); renderCulture();
+}
+
+function setCultFilter(f) {
+  cultFilter = f;
+  document.querySelectorAll('#cultFilters .btn').forEach(b => {
+    b.style.background = 'var(--surface2)'; b.style.color = 'var(--text-muted)'; b.style.border = '1px solid var(--border)';
+  });
+  event.target.style.background = 'var(--accent)'; event.target.style.color = '#0e0e11'; event.target.style.border = 'none';
+  renderCulture();
+}
+
+function renderCulture() {
+  if (!state.culture) state.culture = [];
+  let items = state.culture;
+  if (cultFilter === 'todo') items = items.filter(c => !c.done);
+  if (cultFilter === 'done') items = items.filter(c => c.done);
+
+  const list = document.getElementById('cultList');
+  if (items.length === 0) {
+    list.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun contenu ici</div>';
+  } else {
+    list.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">` +
+      items.map(item => `
+        <div style="background:var(--surface);border:1px solid ${item.done ? 'var(--border)' : CULT_COLORS[item.theme]||'var(--border)'};
+          border-radius:var(--radius);padding:16px;opacity:${item.done?0.6:1};transition:all 0.2s">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:1.2rem">${CULT_ICONS[item.type]||'📦'}</span>
+              <div>
+                <div style="font-size:0.8rem;font-weight:600;color:var(--text);text-decoration:${item.done?'line-through':'none'}">${item.title}</div>
+                <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px">${item.type} · <span style="color:${CULT_COLORS[item.theme]||'var(--text-muted)'}">${item.theme}</span></div>
+              </div>
+            </div>
+            <button class="btn btn-danger" onclick="deleteCult(${item.id})">✕</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div onclick="toggleCult(${item.id})" style="cursor:pointer;padding:6px 14px;border-radius:999px;font-size:0.65rem;font-weight:600;
+              background:${item.done?'rgba(74,219,138,0.15)':'var(--surface2)'};
+              border:1px solid ${item.done?'rgba(74,219,138,0.4)':'var(--border)'};
+              color:${item.done?'#4adb8a':'var(--text-muted)'};letter-spacing:1px;text-transform:uppercase">
+              ${item.done ? '✓ Terminé' : '○ À faire'}
+            </div>
+            <div style="font-size:0.62rem;color:var(--text-muted)">${item.date}</div>
+          </div>
+        </div>`).join('') + '</div>';
+  }
+
+  // Stats
+  const done = state.culture.filter(c => c.done).length;
+  const total = state.culture.length;
+  const byType = {};
+  state.culture.forEach(c => { byType[c.type] = (byType[c.type]||0)+1; });
+  document.getElementById('cultStats').innerHTML = `
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:var(--accent)"></div>Total contenus</div><div class="summary-val">${total}</div></div>
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#4adb8a"></div>Terminés</div><div class="summary-val">${done}</div></div>
+    <div class="summary-row"><div class="summary-label"><div class="dot" style="background:#f4a261"></div>En cours / à faire</div><div class="summary-val">${total - done}</div></div>
+    ${Object.entries(byType).map(([t,n]) => `<div class="summary-row"><div class="summary-label"><div class="dot" style="background:var(--text-muted)"></div>${CULT_ICONS[t]||''} ${t}</div><div class="summary-val">${n}</div></div>`).join('')}
+  `;
+}
+
+// ======= FORMATION =======
+const MOD_CAT_COLORS = {
+  'Logiciel': '#c8f04a', 'Comptabilité': '#f4a261',
+  'Bureautique': '#48cae4', 'Métier': '#7b5ea7', 'Autre': '#6b6b80'
+};
+const MOD_CAT_EMOJI = {
+  'Logiciel': '💻', 'Comptabilité': '🧾', 'Bureautique': '📊', 'Métier': '🏢', 'Autre': '📦'
+};
+
+function addModule() {
+  const name = document.getElementById('modName').value.trim();
+  const cat = document.getElementById('modCat').value;
+  const total = parseInt(document.getElementById('modTotal').value) || 5;
+  if (!name) { showToast('Donne un nom au module !'); return; }
+  state.modules.push({
+    id: Date.now(), name, cat, total, done: 0,
+    color: MOD_CAT_COLORS[cat] || '#6b6b80'
+  });
+  document.getElementById('modName').value = '';
+  document.getElementById('modTotal').value = '';
+  save(); renderFormation(); showToast('Module ajouté ✓');
+}
+
+function deleteModule(id) {
+  state.modules = state.modules.filter(m => m.id !== id);
+  save(); renderFormation();
+}
+
+function updateModuleDone(id, val) {
+  const mod = state.modules.find(m => m.id === id);
+  if (!mod) return;
+  mod.done = Math.max(0, Math.min(mod.total, val));
+  save(); renderFormation();
+}
+
+function renderFormation() {
+  if (!state.modules) state.modules = [];
+  const grid = document.getElementById('modulesGrid');
+  grid.innerHTML = '';
+
+  state.modules.forEach(mod => {
+    const pct = mod.total > 0 ? Math.round((mod.done / mod.total) * 100) : 0;
+    const color = mod.color || MOD_CAT_COLORS[mod.cat] || '#6b6b80';
+    const done = mod.done >= mod.total;
+
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.style.setProperty('--proj-color', color);
+    card.innerHTML = `
+      <div class="proj-header">
+        <div>
+          <div class="proj-icon">${MOD_CAT_EMOJI[mod.cat] || '📦'}</div>
+          <div class="proj-name">${mod.name}</div>
+          <div class="proj-goal" style="color:${color};opacity:0.8">${mod.cat}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          ${done ? `<div style="background:${color};color:#0e0e11;border-radius:999px;padding:3px 10px;font-size:0.6rem;font-weight:700;letter-spacing:1px">✓ TERMINÉ</div>` : ''}
+          <button class="btn btn-danger" onclick="deleteModule(${mod.id})">✕</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <span style="font-size:0.7rem;color:var(--text-muted)">Leçons :</span>
+        <button onclick="updateModuleDone(${mod.id}, ${mod.done - 1})"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:1rem;line-height:1">−</button>
+        <span style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:${color}">${mod.done}</span>
+        <span style="font-size:0.7rem;color:var(--text-muted)">/ ${mod.total}</span>
+        <button onclick="updateModuleDone(${mod.id}, ${mod.done + 1})"
+          style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:1rem;line-height:1">+</button>
+      </div>
+
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="prog-label">
+        <span>${mod.done} leçon${mod.done > 1 ? 's' : ''} complétée${mod.done > 1 ? 's' : ''}</span>
+        <span>${pct}%</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Récap
+  const summaryEl = document.getElementById('formationSummary');
+  summaryEl.innerHTML = '';
+  state.modules.forEach(mod => {
+    const pct = mod.total > 0 ? Math.round((mod.done / mod.total) * 100) : 0;
+    const color = mod.color || MOD_CAT_COLORS[mod.cat] || '#6b6b80';
+    const row = document.createElement('div');
+    row.className = 'summary-row';
+    row.innerHTML = `
+      <div class="summary-label">
+        <div class="dot" style="background:${color}"></div>
+        ${mod.name}
+      </div>
+      <div class="summary-val">${pct}%</div>
+    `;
+    summaryEl.appendChild(row);
+  });
+
+  if (state.modules.length === 0) {
+    summaryEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun module</div>';
+  }
+
+  // Stats
+  const statsEl = document.getElementById('formationStats');
+  const total = state.modules.length;
+  const finished = state.modules.filter(m => m.done >= m.total && m.total > 0).length;
+  const totalLessons = state.modules.reduce((s, m) => s + m.done, 0);
+  const globalPct = state.modules.reduce((s, m) => s + (m.total > 0 ? m.done / m.total : 0), 0);
+  const avgPct = total > 0 ? Math.round((globalPct / total) * 100) : 0;
+
+  statsEl.innerHTML = `
+    <div class="summary-row">
+      <div class="summary-label"><div class="dot" style="background:var(--accent)"></div>Modules actifs</div>
+      <div class="summary-val">${total}</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-label"><div class="dot" style="background:var(--success)"></div>Terminés</div>
+      <div class="summary-val">${finished}</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-label"><div class="dot" style="background:var(--accent4)"></div>Leçons faites</div>
+      <div class="summary-val">${totalLessons}</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-label"><div class="dot" style="background:var(--accent3)"></div>Progression moy.</div>
+      <div class="summary-val">${avgPct}%</div>
+    </div>
+  `;
+}
+
+// ======= BUDGET =======
+function addTransaction() {
+  const amount = parseFloat(document.getElementById('txAmount').value);
+  const label = document.getElementById('txLabel').value.trim();
+  const cat = document.getElementById('txCat').value;
+  const type = document.getElementById('txType').value;
+
+  if (!amount || !label) { showToast('Remplis montant + description !'); return; }
+
+  state.transactions.push({
+    id: Date.now(),
+    amount,
+    label,
+    cat,
+    type,
+    date: today()
+  });
+
+  document.getElementById('txAmount').value = '';
+  document.getElementById('txLabel').value = '';
+  save();
+  renderBudget();
+  showToast(type === 'income' ? '+ Revenu ajouté ✓' : '− Dépense ajoutée ✓');
+}
+
+function deleteTransaction(id) {
+  state.transactions = state.transactions.filter(t => t.id !== id);
+  save();
+  renderBudget();
+}
+
+function renderBudget() {
+  // Filter current month
+  const now = new Date();
+  const monthStr = now.toISOString().slice(0, 7);
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+
+  const income = txs.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+  const expense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const balance = income - expense;
+
+  document.getElementById('totalIncome').textContent = income.toFixed(0) + ' €';
+  document.getElementById('totalExpense').textContent = expense.toFixed(0) + ' €';
+
+  const pill = document.getElementById('balancePill');
+  pill.textContent = `Solde : ${balance >= 0 ? '+' : ''}${balance.toFixed(0)} €`;
+  pill.className = 'balance-pill ' + (balance >= 0 ? 'balance-pos' : 'balance-neg');
+
+  // Categories
+  const cats = {};
+  txs.filter(t => t.type === 'expense').forEach(t => {
+    cats[t.cat] = (cats[t.cat] || 0) + t.amount;
+  });
+
+  const catEl = document.getElementById('catBreakdown');
+  catEl.innerHTML = '';
+  const maxCat = Math.max(...Object.values(cats), 1);
+
+  if (Object.keys(cats).length === 0) {
+    catEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune dépense ce mois</div>';
+  } else {
+    Object.entries(cats).sort((a,b) => b[1]-a[1]).forEach(([cat, amt]) => {
+      const row = document.createElement('div');
+      row.className = 'cat-row';
+      const emoji = { Logement:'🏠',Alimentation:'🛒',Transport:'🚗',Loisirs:'🎮',Santé:'❤️',Abonnements:'📱',Autre:'📦',Épargne:'💎' }[cat] || '📦';
+      row.innerHTML = `
+        <div class="cat-emoji">${emoji}</div>
+        <div class="cat-info">
+          <div class="cat-name">${cat}</div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${(amt/maxCat*100)}%;background:${CAT_COLORS[cat]||'#6b6b80'}"></div></div>
+        </div>
+        <div class="cat-amount neg">${amt.toFixed(0)} €</div>
+      `;
+      catEl.appendChild(row);
+    });
+  }
+
+  // Transactions list (last 8)
+  const listEl = document.getElementById('txList');
+  listEl.innerHTML = '';
+  const recent = [...state.transactions].reverse().slice(0, 8);
+
+  if (recent.length === 0) {
+    listEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune transaction</div>';
+  } else {
+    recent.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'tx-item';
+      const color = t.type === 'income' ? '#4adb8a' : (CAT_COLORS[t.cat] || '#6b6b80');
+      item.innerHTML = `
+        <div class="tx-cat-dot" style="background:${color}"></div>
+        <div style="flex:1">
+          <div class="tx-name">${t.label}</div>
+          <div class="tx-cat">${t.cat} · ${t.date}</div>
+        </div>
+        <div class="tx-amount ${t.type === 'income' ? 'pos' : 'neg'}">
+          ${t.type === 'income' ? '+' : '−'}${t.amount.toFixed(0)} €
+        </div>
+        <button class="btn btn-danger" onclick="deleteTransaction(${t.id})">✕</button>
+      `;
+      listEl.appendChild(item);
+    });
+  }
+
+  // Savings
+  updateSavings();
+}
+
+function updateSavings() {
+  const goalInput = document.getElementById('savingsGoal');
+  const goal = parseFloat(goalInput.value) || parseFloat(state.savingsGoal) || 0;
+  state.savingsGoal = goalInput.value;
+  save();
+
+  const now = new Date();
+  const monthStr = now.toISOString().slice(0, 7);
+  const saved = state.transactions
+    .filter(t => t.date.startsWith(monthStr) && t.cat === 'Épargne' && t.type === 'expense')
+    .reduce((s, t) => s + t.amount, 0);
+
+  document.getElementById('savingsReal').textContent = saved.toFixed(0) + ' €';
+
+  const pct = goal > 0 ? Math.min(saved / goal, 1) : 0;
+  const circ = 289;
+  document.getElementById('savingsArc').style.strokeDashoffset = circ - (circ * pct);
+  document.getElementById('savingsPct').textContent = Math.round(pct * 100) + '%';
+}
+
+// ======= AUTO-REFRESH À MINUIT =======
+function scheduleMidnightRefresh() {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0); // prochain minuit
+  const msUntilMidnight = midnight - now;
+
+  setTimeout(() => {
+    initHeader();
+    initFocus();
+    renderProjects();
+    renderWeekSummary();
+    renderBudget();
+    scheduleMidnightRefresh(); // replanifie pour le lendemain
+  }, msUntilMidnight);
+}
+
+// ======= BOOT =======
+// ======= BOOT — initialisation robuste =======
+function getDefaultState() {
+  return {
+    days: {},
+    transactions: [],
+    savingsGoal: '',
+    modules: [
+      { id: 1, name: 'Sage 100 Comptabilité', cat: 'Logiciel', total: 10, done: 0, color: '#c8f04a' },
+      { id: 2, name: 'Excel avancé', cat: 'Bureautique', total: 8, done: 0, color: '#48cae4' },
+      { id: 3, name: 'Fiscalité entreprise', cat: 'Comptabilité', total: 6, done: 0, color: '#f4a261' },
+      { id: 4, name: 'Droit du travail', cat: 'Métier', total: 5, done: 0, color: '#7b5ea7' },
+    ],
+    sportExos: [
+      { id: 1, name: 'Échauffement 5 min', days: ['Lun','Mer','Ven'], done: {} },
+      { id: 2, name: 'Pompes 3×15', days: ['Lun','Mer','Ven'], done: {} },
+      { id: 3, name: 'Squats 3×20', days: ['Lun','Mer','Ven'], done: {} },
+      { id: 4, name: 'Gainage 3×45s', days: ['Lun','Mer','Ven'], done: {} },
+      { id: 5, name: 'Shadow boxing 10 min', days: ['Mar','Jeu'], done: {} },
+      { id: 6, name: 'Footwork + déplacements', days: ['Mar','Jeu'], done: {} },
+      { id: 7, name: 'Course / natation', days: ['Sam'], done: {} },
+    ],
+    langues: {
+      es: { grammaire: [
+        { id: 1, name: "Les articles définis/indéfinis", done: false },
+        { id: 2, name: "Le présent de l'indicatif", done: false },
+        { id: 3, name: "Ser vs Estar", done: false },
+        { id: 4, name: "Les pronoms personnels", done: false },
+      ], vocab: [], sessions: {} },
+      it: { grammaire: [
+        { id: 1, name: "Les articles (il, la, i, le…)", done: false },
+        { id: 2, name: "Le présent indicatif (-are/-ere/-ire)", done: false },
+        { id: 3, name: "Essere vs Avere", done: false },
+      ], vocab: [], sessions: {} },
+      ru: { grammaire: [
+        { id: 1, name: "L'alphabet cyrillique", done: false },
+        { id: 2, name: "Prononciation des voyelles", done: false },
+        { id: 3, name: "Les pronoms personnels", done: false },
+        { id: 4, name: "Le présent des verbes être/avoir", done: false },
+      ], vocab: [], sessions: {} },
+      en: { grammaire: [
+        { id: 1, name: 'Present Perfect vs Simple Past', done: false },
+        { id: 2, name: 'Modal verbs (can/could/would/should)', done: false },
+        { id: 3, name: 'Conditionals (0/1/2/3)', done: false },
+        { id: 4, name: 'Articles (a/an/the/zero article)', done: false },
+        { id: 5, name: 'Passive voice', done: false },
+        { id: 6, name: 'Reported speech', done: false },
+      ], vocab: [
+        { id: 10, mot: 'To leverage', trad: 'Tirer parti de / exploiter', maitrise: 0 },
+        { id: 11, mot: 'Nonetheless', trad: 'Néanmoins / malgré tout', maitrise: 0 },
+        { id: 12, mot: 'Straightforward', trad: 'Simple / direct / évident', maitrise: 0 },
+        { id: 13, mot: 'To acknowledge', trad: 'Reconnaître / admettre', maitrise: 0 },
+        { id: 14, mot: 'Insight', trad: 'Compréhension approfondie', maitrise: 0 },
+      ], sessions: {} },
+    },
+    repas: {},
+    culture: [
+      { id: 101, title: 'BBC Global News Podcast', type: 'Podcast', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+      { id: 102, title: 'The Economist — dernière édition', type: 'Article', theme: 'Économie', done: false, date: today_init(), note: '' },
+      { id: 103, title: 'Lex Fridman — Sam Altman', type: 'Vidéo', theme: 'Tech', done: false, date: today_init(), note: '' },
+      { id: 104, title: 'Arte — Le dessous des cartes', type: 'Documentaire', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+      { id: 105, title: 'Sapiens — Yuval Noah Harari', type: 'Livre', theme: 'Histoire', done: false, date: today_init(), note: '' },
+      { id: 106, title: 'TED Talk — How AI is changing science', type: 'Vidéo', theme: 'Science', done: false, date: today_init(), note: '' },
+      { id: 107, title: 'Géopolitique profonde — Podcast FR', type: 'Podcast', theme: 'Géopolitique', done: false, date: today_init(), note: '' },
+      { id: 108, title: 'Netflix — Explained (série docu)', type: 'Documentaire', theme: 'Science', done: false, date: today_init(), note: '' },
+    ],
+    cultFilter: 'all',
+    objectifs: [
+      { id: 1, title: 'Atteindre le niveau C1 en anglais', cat: 'Langues', horizon: 'Moyen terme', deadline: '', note: 'Passer le Cambridge B2/C1 ou IELTS 7+', done: false, date: today_init() },
+      { id: 2, title: 'Obtenir la certification Excel Expert (MOS)', cat: 'Formation', horizon: 'Court terme', deadline: '', note: 'Indispensable en compta/finance', done: false, date: today_init() },
+      { id: 3, title: 'Courir un 10km en moins de 50 min', cat: 'Sport', horizon: 'Moyen terme', deadline: '', note: 'Progresser après le 5km', done: false, date: today_init() },
+      { id: 4, title: "Constituer un fonds d'urgence de 3 mois de charges", cat: 'Finance', horizon: 'Moyen terme', deadline: '', note: 'Sécurité financière de base', done: false, date: today_init() },
+      { id: 5, title: 'Décrocher un poste dans un éditeur logiciel / ESN cible', cat: 'Carrière', horizon: 'Court terme', deadline: '', note: 'Transition en cours — rester focus', done: false, date: today_init() },
+      { id: 6, title: 'Devenir formateur indépendant certifié Qualiopi', cat: 'Carrière', horizon: 'Long terme', deadline: '', note: 'Objectif ultime Phase 3 de la roadmap', done: false, date: today_init() },
+      { id: 7, title: 'Lancer ma plateforme de formation en ligne', cat: 'Carrière', horizon: 'Long terme', deadline: '', note: 'Phase 4 roadmap — niche compta/IT', done: false, date: today_init() },
+    ],
+    objFilter: 'all',
+    bienetre: {},
+    retros: [],
+    currentRetro: {},
+    positions: [],
+    nutrition: {},
+    customCerts: [
+      { id: 1, name: 'TOEIC', cat: 'Langues', duree: '1–2 mois', desc: 'Certification anglais professionnel', difficulty: '⭐⭐' },
+      { id: 2, name: 'Certificat Voltaire', cat: 'Langues', duree: '1–2 mois', desc: 'Orthographe & grammaire française', difficulty: '⭐⭐' },
+    ],
+  };
+}
+
+// Merge : préserve les données existantes, comble les propriétés manquantes
+function mergeState(saved, defaults) {
+  const merged = Object.assign({}, defaults);
+  for (const key of Object.keys(defaults)) {
+    if (saved[key] !== undefined && saved[key] !== null) {
+      // Pour les objets non-tableaux, on merge récursivement
+      if (typeof defaults[key] === 'object' && !Array.isArray(defaults[key]) && defaults[key] !== null) {
+        merged[key] = Object.assign({}, defaults[key], saved[key]);
+      } else {
+        merged[key] = saved[key];
+      }
+    }
+  }
+  // S'assurer que les sous-langues sont toutes présentes
+  for (const lang of ['es','it','ru','en']) {
+    if (!merged.langues[lang]) merged.langues[lang] = defaults.langues[lang];
+    if (!merged.langues[lang].sessions) merged.langues[lang].sessions = {};
+    if (!merged.langues[lang].vocab) merged.langues[lang].vocab = [];
+    if (!merged.langues[lang].grammaire) merged.langues[lang].grammaire = [];
+  }
+  return merged;
+}
+
+try {
+  const raw = localStorage.getItem('chris_dashboard');
+  const saved = raw ? JSON.parse(raw) : null;
+  if (saved) {
+    state = mergeState(saved, getDefaultState());
+  } else {
+    state = getDefaultState();
+  }
+} catch(e) {
+  console.warn('State corrompu, réinitialisation propre', e);
+  state = getDefaultState();
+}
+save();
+
+initHeader();
+initFocus();
+renderProjects();
+renderWeekSummary();
+renderBudget();
+renderFormation();
+renderCertifications();
+renderCustomCerts();
+renderLogiciels();
+renderRoadmap();
+renderObjectifs();
+renderSport();
+renderLangues();
+renderRepas();
+renderCulture();
+renderBienetre();
+renderNutrition();
+renderPortfolio();
+if (state.savingsGoal) document.getElementById('savingsGoal').value = state.savingsGoal;
+scheduleMidnightRefresh();
+</script>
+</body>
+</html>
