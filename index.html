@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard · Chris v2.01</title>
+<title>Dashboard · Chris v2.02</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -108,6 +108,47 @@
   .ai-typing span { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: bounce 1s infinite; }
   .ai-typing span:nth-child(2) { animation-delay: 0.15s; } .ai-typing span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+  /* DARK/LIGHT MODE */
+  body.light-mode {
+    --bg: #f4f4f8; --surface: #ffffff; --surface2: #eeeef4; --border: #d0d0e0;
+    --text: #1a1a2e; --text-muted: #7070a0; --accent: #5a8a00;
+  }
+  body.light-mode .tab.active { color: #fff; }
+
+  /* THEME TOGGLE */
+  .theme-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 50; width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer; background: var(--surface2); border: 1px solid var(--border); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .theme-toggle:hover { transform: scale(1.1); }
+
+  /* ALERTS */
+  .alert-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; font-size: 0.75rem; animation: fadeIn 0.3s ease; }
+  .alert-warn { background: rgba(244,162,97,0.12); border: 1px solid rgba(244,162,97,0.3); color: #f4a261; }
+  .alert-danger { background: rgba(240,90,90,0.12); border: 1px solid rgba(240,90,90,0.3); color: #f05a5a; }
+  .alert-info { background: rgba(200,240,74,0.08); border: 1px solid rgba(200,240,74,0.2); color: var(--accent); }
+
+  /* BADGES */
+  .badge { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; text-align: center; transition: all 0.2s; }
+  .badge.unlocked { border-color: #f4a261; background: rgba(244,162,97,0.08); }
+  .badge.locked { opacity: 0.35; filter: grayscale(0.8); }
+  .badge-icon { font-size: 1.8rem; }
+  .badge-name { font-size: 0.62rem; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+  .badge-desc { font-size: 0.58rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* CALENDAR */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-header { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 4px; letter-spacing: 1px; text-transform: uppercase; }
+  .cal-day { min-height: 70px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 4px; cursor: pointer; transition: border-color 0.15s; position: relative; }
+  .cal-day:hover { border-color: var(--accent); }
+  .cal-day.today { border-color: var(--accent); background: rgba(200,240,74,0.06); }
+  .cal-day.other-month { opacity: 0.3; }
+  .cal-day-num { font-size: 0.65rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .cal-event { font-size: 0.52rem; padding: 1px 4px; border-radius: 3px; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* SYNTHESE KPI */
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+  .kpi-value { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; margin-bottom: 4px; }
+  .kpi-label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+  .kpi-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -119,7 +160,7 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.01 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.02 — Dashboard Personnel</div>
   </div>
 </div>
 
@@ -136,6 +177,8 @@
   <button class="tab" onclick="switchTab('budget')">💶 Budget</button>
   <button class="tab" onclick="switchTab('formation')">🎓 Formation</button>
   <button class="tab" onclick="switchTab('tempslibres')">🎮 Temps libres</button>
+  <button class="tab" onclick="switchTab('calendrier')">📅 Calendrier</button>
+  <button class="tab" onclick="switchTab('synthese')">📊 Synthèse</button>
 </div>
 
 <!-- ===== TEMPS ===== -->
@@ -601,6 +644,52 @@
   </div>
 </div>
 
+<!-- ===== CALENDRIER ===== -->
+<div class="panel" id="panel-calendrier">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="btn" onclick="calNav(-1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">◀</button>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--accent)" id="calMonthLabel">—</div>
+      <button class="btn" onclick="calNav(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">▶</button>
+      <button class="btn btn-primary" onclick="calGoToday()">Aujourd'hui</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="calLegend"></div>
+  </div>
+  <div class="card">
+    <div class="cal-grid" id="calDaysHeader"></div>
+    <div class="cal-grid" style="margin-top:4px" id="calGrid"></div>
+  </div>
+  <!-- Détail jour sélectionné -->
+  <div class="card section-gap" id="calDayDetail" style="display:none">
+    <div class="card-title" id="calDayDetailTitle">—</div>
+    <div id="calDayDetailContent"></div>
+  </div>
+</div>
+
+<!-- ===== SYNTHÈSE ===== -->
+<div class="panel" id="panel-synthese">
+  <!-- Alertes -->
+  <div id="alertsContainer" style="margin-bottom:20px"></div>
+
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px" id="kpiGrid"></div>
+
+  <!-- Badges -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🏆 Badges & Récompenses</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px" id="badgesGrid"></div>
+  </div>
+
+  <!-- Export PDF -->
+  <div class="card" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
+    <div class="card-title" style="color:var(--accent)">📤 Export rapport mensuel</div>
+    <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px">Génère un résumé PDF de ta progression du mois — objectifs, sport, langues, budget.</div>
+    <button class="btn btn-primary" onclick="exportPDF()">📄 Générer le PDF</button>
+  </div>
+</div>
+
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Changer le thème">🌙</button>
+
 <div class="toast" id="toast"></div>
 <script>
 // ======= TODAY INIT =======
@@ -689,7 +778,7 @@ function getDefaultState() {
       {id:1,name:'TOEIC',cat:'Langues',duree:'1–2 mois',desc:'Certification anglais professionnel',difficulty:'⭐⭐'},
       {id:2,name:'Certificat Voltaire',cat:'Langues',duree:'1–2 mois',desc:'Orthographe & grammaire française',difficulty:'⭐⭐'},
     ],
-    todos:[], achats:[],
+    todos:[], achats:[], unlockedBadges:[],
   };
 }
 
@@ -1166,6 +1255,12 @@ function renderLangues(){
   <div class="card">
     <div class="card-title" style="color:${color}">💬 Expressions à connaître</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px">${res.expressions.map(e=>`<div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;color:var(--text)">${e}</div>`).join('')}</div>
+  </div>
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
+    <div class="card-title" style="color:var(--accent)">🤖 Suggestions de mots IA</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère 8 nouveaux mots/expressions adaptés à ton niveau actuel.</div>
+    <button class="btn btn-primary" onclick="suggestWords('${lang}')">✨ Suggérer des mots</button>
+    <div id="wordSuggestResult-${lang}" style="margin-top:12px"></div>
   </div>`;
 }
 
@@ -1486,6 +1581,358 @@ function renderTempsLibres(){
   document.getElementById('achatList').innerHTML=state.achats.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun achat</div>':state.achats.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleAchat(${a.id})" style="width:20px;height:20px;border-radius:5px;flex-shrink:0;cursor:pointer;background:${a.done?'#4adb8a':'var(--surface2)'};border:2px solid ${a.done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${a.done?'✓':''}</div><div style="flex:1"><div style="font-size:0.75rem;color:${a.done?'var(--text-muted)':'var(--text)'};text-decoration:${a.done?'line-through':'none'}">${a.text}</div>${a.price>0?`<div style="font-size:0.62rem;color:var(--text-muted)">${a.price.toLocaleString('fr-FR')} €</div>`:''}</div><span style="font-size:0.55rem;padding:2px 6px;border-radius:999px;background:${ACH_CAT_COLORS[a.cat]||'#6b6b80'}22;color:${ACH_CAT_COLORS[a.cat]||'#6b6b80'};border:1px solid ${ACH_CAT_COLORS[a.cat]||'#6b6b80'}44">${a.cat}</span><button class="btn btn-danger" onclick="deleteAchat(${a.id})">✕</button></div>`).join('');
 }
 
+// ======= THEME DARK/LIGHT =======
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('chris_theme', isLight ? 'light' : 'dark');
+}
+function initTheme() {
+  const saved = localStorage.getItem('chris_theme');
+  if (saved === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
+}
+
+// ======= ALERTES =======
+function renderAlerts() {
+  const alerts = [];
+  const weekDates = getWeekDates(), todayStr = today();
+
+  // Sport — pas de séance depuis 2 jours
+  const sportDays = weekDates.filter(d => {
+    const di = (new Date(d).getDay()+6)%7;
+    return (state.sportExos||[]).some(e => e.days.includes(SPORT_DAYS[di]) && e.done[d]);
+  });
+  const lastSport = sportDays.sort().reverse()[0];
+  if (lastSport) {
+    const daysSince = Math.floor((new Date(todayStr) - new Date(lastSport)) / 86400000);
+    if (daysSince >= 2) alerts.push({type:'warn', msg:`💪 Pas de séance sport depuis ${daysSince} jours — retour prévu aujourd'hui ?`});
+  } else {
+    alerts.push({type:'warn', msg:'💪 Aucune séance sport cochée cette semaine encore !'});
+  }
+
+  // Budget — dépenses > 80% du revenu
+  const monthStr = new Date().toISOString().slice(0,7);
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t => t.type==='income').reduce((s,t) => s+t.amount, 0);
+  const expense = txs.filter(t => t.type==='expense').reduce((s,t) => s+t.amount, 0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p) => s+p.amount, 0);
+  if (income > 0 && (expense + prelevTotal) / income > 0.8)
+    alerts.push({type:'danger', msg:`💶 Dépenses à ${Math.round((expense+prelevTotal)/income*100)}% de tes revenus ce mois — surveille le budget !`});
+
+  // Objectifs en retard
+  const overdue = (state.objectifs||[]).filter(o => !o.done && o.deadline && Math.ceil((new Date(o.deadline)-new Date())/86400000) < 0);
+  if (overdue.length > 0)
+    alerts.push({type:'danger', msg:`🎯 ${overdue.length} objectif${overdue.length>1?'s':''} en retard : ${overdue.map(o=>o.title).join(', ')}`});
+
+  // Langues — pas de session depuis 3 jours
+  const enSessions = Object.entries((state.langues?.en?.sessions||{})).filter(([d,v])=>v).map(([d])=>d).sort().reverse();
+  if (enSessions.length === 0 || Math.floor((new Date(todayStr)-new Date(enSessions[0]))/86400000) >= 3)
+    alerts.push({type:'info', msg:'🌍 Pas de session anglais depuis 3+ jours — 15 min suffisent !'});
+
+  // Bonne nouvelle si tout va bien
+  if (alerts.length === 0)
+    alerts.push({type:'info', msg:'✅ Tout est sur les rails cette semaine — continue comme ça !'});
+
+  const el = document.getElementById('alertsContainer');
+  if (!el) return;
+  el.innerHTML = alerts.map(a => `<div class="alert-banner alert-${a.type}"><span style="font-size:1rem">⚡</span>${a.msg}</div>`).join('');
+}
+
+// ======= BADGES =======
+const BADGES_DEF = [
+  { id:'sport7', icon:'🏃', name:'7 jours sport', desc:'Séance chaque jour sur une semaine', check: () => { const wd=getWeekDates(); return wd.every(d=>(state.sportExos||[]).some(e=>e.done[d])); }},
+  { id:'sport30', icon:'💪', name:'Sportif du mois', desc:'20+ séances sport ce mois', check: () => { const m=new Date().toISOString().slice(0,7); let c=0; Object.entries(state.days||{}).forEach(([d,v])=>{ if(d.startsWith(m)&&v.sport)c++; }); return c>=20; }},
+  { id:'lang7', icon:'🌍', name:'Linguiste', desc:'7 sessions de langues cette semaine', check: () => { const wd=getWeekDates(); return wd.every(d=>Object.values(state.langues||{}).some(l=>l.sessions?.[d])); }},
+  { id:'lang50', icon:'📚', name:'50 mots', desc:'50 mots de vocabulaire ajoutés', check: () => Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0) >= 50 },
+  { id:'budget', icon:'💶', name:'Gestionnaire', desc:'10 transactions enregistrées', check: () => (state.transactions||[]).length >= 10 },
+  { id:'epargne', icon:'💎', name:'Épargnant', desc:'Objectif épargne atteint ce mois', check: () => { const m=new Date().toISOString().slice(0,7),goal=parseFloat(state.savingsGoal)||0; if(!goal)return false; const saved=(state.transactions||[]).filter(t=>t.date.startsWith(m)&&t.cat==='Épargne').reduce((s,t)=>s+t.amount,0); return saved>=goal; }},
+  { id:'obj1', icon:'🎯', name:'Premier objectif', desc:'1 objectif atteint', check: () => (state.objectifs||[]).some(o=>o.done) },
+  { id:'obj5', icon:'🏆', name:'Achiever', desc:'5 objectifs atteints', check: () => (state.objectifs||[]).filter(o=>o.done).length >= 5 },
+  { id:'formation', icon:'🎓', name:'En formation', desc:'3 modules de formation en cours', check: () => (state.modules||[]).length >= 3 },
+  { id:'certif', icon:'🏅', name:'Certifié', desc:'1 module de formation terminé', check: () => (state.modules||[]).some(m=>m.done>=m.total&&m.total>0) },
+  { id:'culture10', icon:'🧠', name:'Cultivé', desc:'10 contenus culturels ajoutés', check: () => (state.culture||[]).length >= 10 },
+  { id:'streak', icon:'🔥', name:'Streak 5j', desc:'5 jours consécutifs d\'activité', check: () => { let streak=0; const today_=today(); for(let i=0;i<7;i++){const d=new Date(today_);d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);const dayData=state.days?.[ds]||{};if(Object.values(dayData).some(v=>v))streak++;else break;} return streak>=5; }},
+];
+
+function renderBadges() {
+  const el = document.getElementById('badgesGrid'); if (!el) return;
+  if (!state.unlockedBadges) state.unlockedBadges = [];
+  const newlyUnlocked = [];
+  BADGES_DEF.forEach(b => {
+    try { if (b.check() && !state.unlockedBadges.includes(b.id)) { state.unlockedBadges.push(b.id); newlyUnlocked.push(b.name); } } catch(e) {}
+  });
+  if (newlyUnlocked.length > 0) { save(); newlyUnlocked.forEach(n => showToast(`🏆 Badge débloqué : ${n} !`)); }
+  el.innerHTML = BADGES_DEF.map(b => {
+    const unlocked = state.unlockedBadges.includes(b.id);
+    return `<div class="badge ${unlocked?'unlocked':'locked'}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div>${unlocked?'<div style="font-size:0.6rem;color:#f4a261;font-weight:700;margin-top:4px">✓ DÉBLOQUÉ</div>':''}</div>`;
+  }).join('');
+}
+
+// ======= KPIs SYNTHÈSE =======
+function renderKPIs() {
+  const el = document.getElementById('kpiGrid'); if (!el) return;
+  const weekDates = getWeekDates(), todayStr = today();
+  const monthStr = new Date().toISOString().slice(0,7);
+
+  // Sport sessions cette semaine
+  const sportSessions = new Set(weekDates.filter(d => (state.sportExos||[]).some(e => e.done[d]))).size;
+
+  // Langues sessions cette semaine
+  const langSessions = weekDates.filter(d => Object.values(state.langues||{}).some(l => l.sessions?.[d])).length;
+
+  // Énergie moyenne cette semaine
+  const energies = weekDates.map(d => (state.bienetre?.[d]?.energy)||0).filter(e => e > 0);
+  const avgEnergy = energies.length > 0 ? (energies.reduce((s,e)=>s+e,0)/energies.length).toFixed(1) : '—';
+
+  // Budget solde
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p)=>s+p.amount,0);
+  const balance = income - expense - prelevTotal;
+
+  // Objectifs en cours
+  const objEnCours = (state.objectifs||[]).filter(o=>!o.done).length;
+  const objDone = (state.objectifs||[]).filter(o=>o.done).length;
+
+  // Mots vocab total
+  const totalVocab = Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0);
+
+  // Badges débloqués
+  const badges = (state.unlockedBadges||[]).length;
+
+  const kpis = [
+    {label:'Séances sport', value:sportSessions, sub:'cette semaine', color:'#48cae4'},
+    {label:'Sessions langues', value:langSessions, sub:'cette semaine', color:'#c8f04a'},
+    {label:'Énergie moy.', value:avgEnergy, sub:'/5 cette semaine', color:'#f4a261'},
+    {label:'Solde budget', value:(balance>=0?'+':'')+balance.toFixed(0)+'€', sub:'ce mois', color:balance>=0?'#4adb8a':'#f05a5a'},
+    {label:'Objectifs actifs', value:objEnCours, sub:`${objDone} atteints`, color:'#7b5ea7'},
+    {label:'Mots appris', value:totalVocab, sub:'total vocabulaire', color:'#9b8cff'},
+    {label:'Badges', value:badges, sub:`/${BADGES_DEF.length} débloqués`, color:'#f4a261'},
+    {label:'Modules formation', value:(state.modules||[]).length, sub:`${(state.modules||[]).filter(m=>m.done>=m.total&&m.total>0).length} terminés`, color:'#c8f04a'},
+  ];
+
+  el.innerHTML = kpis.map(k => `<div class="kpi-card"><div class="kpi-value" style="color:${k.color}">${k.value}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+}
+
+// ======= CALENDRIER =======
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+const CAL_EVENT_COLORS = {
+  sport: '#48cae4', langues: '#c8f04a', culture: '#f4a261',
+  objectif: '#f05a5a', budget: '#4adb8a', bienetre: '#7b5ea7'
+};
+
+function calNav(dir) { calMonth += dir; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calGoToday() { calYear=new Date().getFullYear(); calMonth=new Date().getMonth(); renderCalendar(); }
+
+function getCalEvents(dateStr) {
+  const events = [];
+  const dayOfWeek = SPORT_DAYS[(new Date(dateStr).getDay()+6)%7];
+
+  // Sport — séances faites
+  const sportDone = (state.sportExos||[]).filter(e => e.done[dateStr]);
+  if (sportDone.length > 0) events.push({type:'sport', label:`💪 ${sportDone.length} exo${sportDone.length>1?'s':''}`});
+
+  // Sport — programmé
+  const sportPlanned = (state.sportExos||[]).filter(e => e.days.includes(dayOfWeek) && !e.done[dateStr]);
+  if (sportPlanned.length > 0 && new Date(dateStr) >= new Date(today())) events.push({type:'sport', label:`📋 ${sportPlanned.length} prévu${sportPlanned.length>1?'s':''}`});
+
+  // Langues — sessions
+  const langDone = Object.entries(state.langues||{}).filter(([l,d])=>d.sessions?.[dateStr]);
+  if (langDone.length > 0) events.push({type:'langues', label:`🌍 ${langDone.map(([l])=>l.toUpperCase()).join('/')}`});
+
+  // Activités journalières cochées
+  const dayActivities = state.days?.[dateStr] || {};
+  if (dayActivities.langues) events.push({type:'langues', label:'🌍 Langues ✓'});
+  if (dayActivities.devPerso) events.push({type:'bienetre', label:'🧠 Dev perso ✓'});
+  if (dayActivities.culture) events.push({type:'culture', label:'📚 Culture ✓'});
+
+  // Objectifs avec deadline ce jour
+  (state.objectifs||[]).filter(o => o.deadline === dateStr).forEach(o => {
+    events.push({type:'objectif', label:`🎯 ${o.title.substring(0,20)}${o.title.length>20?'…':''}`});
+  });
+
+  // Énergie
+  const energy = state.bienetre?.[dateStr]?.energy;
+  if (energy) events.push({type:'bienetre', label:`⚡ Énergie ${energy}/5`});
+
+  return events;
+}
+
+function renderCalendar() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('calMonthLabel').textContent = `${months[calMonth]} ${calYear}`;
+
+  // Header jours
+  document.getElementById('calDaysHeader').innerHTML = DAYS_FR.map(d => `<div class="cal-header">${d}</div>`).join('');
+
+  // Calcul des jours
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay = new Date(calYear, calMonth+1, 0);
+  const startDow = (firstDay.getDay()+6)%7; // Lun=0
+  const todayStr = today();
+
+  let cells = '';
+
+  // Jours du mois précédent
+  for (let i = 0; i < startDow; i++) {
+    const d = new Date(calYear, calMonth, -startDow+i+1);
+    const ds = d.toISOString().slice(0,10);
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day other-month" onclick="showCalDay('${ds}')"><div class="cal-day-num">${d.getDate()}</div>${events.slice(0,2).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}</div>`;
+  }
+
+  // Jours du mois courant
+  for (let day = 1; day <= lastDay.getDate(); day++) {
+    const d = new Date(calYear, calMonth, day);
+    const ds = d.toISOString().slice(0,10);
+    const isToday = ds === todayStr;
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day ${isToday?'today':''}" onclick="showCalDay('${ds}')"><div class="cal-day-num" style="color:${isToday?'var(--accent)':'var(--text)'}">${day}${isToday?' •':''}</div>${events.slice(0,3).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}${events.length>3?`<div style="font-size:0.5rem;color:var(--text-muted)">+${events.length-3} autres</div>`:''}</div>`;
+  }
+
+  // Jours du mois suivant
+  const remaining = 42 - startDow - lastDay.getDate();
+  for (let i = 1; i <= remaining; i++) {
+    const d = new Date(calYear, calMonth+1, i);
+    const ds = d.toISOString().slice(0,10);
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day other-month" onclick="showCalDay('${ds}')"><div class="cal-day-num">${i}</div>${events.slice(0,2).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}</div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = cells;
+
+  // Légende
+  document.getElementById('calLegend').innerHTML = Object.entries(CAL_EVENT_COLORS).map(([k,c]) => `<div style="display:flex;align-items:center;gap:4px;font-size:0.6rem;color:var(--text-muted)"><div style="width:10px;height:10px;border-radius:2px;background:${c}"></div>${k}</div>`).join('');
+}
+
+function showCalDay(dateStr) {
+  const detailEl = document.getElementById('calDayDetail');
+  const titleEl = document.getElementById('calDayDetailTitle');
+  const contentEl = document.getElementById('calDayDetailContent');
+  const events = getCalEvents(dateStr);
+  const d = new Date(dateStr);
+  titleEl.textContent = d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  if (events.length === 0) {
+    contentEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);padding:8px 0">Aucune activité ce jour.</div>';
+  } else {
+    contentEl.innerHTML = events.map(e => `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${CAL_EVENT_COLORS[e.type]};flex-shrink:0"></div><div style="font-size:0.75rem;color:var(--text)">${e.label}</div></div>`).join('');
+  }
+  detailEl.style.display = 'block';
+  detailEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ======= SUGGESTIONS MOTS IA =======
+async function suggestWords(lang) {
+  const data = state.langues[lang];
+  const color = LANG_COLORS[lang];
+  const existing = data.vocab.map(v=>v.mot).join(', ');
+  const level = data.vocab.filter(v=>v.maitrise===3).length > 10 ? 'intermédiaire/avancé' : 'débutant/intermédiaire';
+  const el = document.getElementById('wordSuggestResult-'+lang);
+  if (!el) return;
+  el.innerHTML = '<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:800,
+        system:`Tu es un professeur de langue. Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks. Format exact: [{"mot":"word","trad":"traduction en français"}]`,
+        messages:[{role:'user', content:`Suggère 8 mots/expressions utiles en ${LANG_LABELS[lang]} pour un apprenant niveau ${level}. Mots déjà connus à éviter: ${existing||'aucun'}. Privilégie le vocabulaire professionnel, du quotidien et des expressions idiomatiques.`}]
+      })
+    });
+    const d2 = await res.json();
+    const text = d2.content?.[0]?.text || '[]';
+    const words = JSON.parse(text);
+    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px">${words.map(w=>`<div onclick="addSuggestedWord('${lang}','${w.mot.replace(/'/g,"\\'")}','${w.trad.replace(/'/g,"\\'")}'')" style="padding:10px 12px;background:var(--surface2);border:1px solid ${color}44;border-radius:8px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='${color}44'"><div style="font-size:0.8rem;font-weight:600;color:var(--text)">${w.mot}</div><div style="font-size:0.68rem;color:var(--text-muted)">${w.trad}</div><div style="font-size:0.58rem;color:${color};margin-top:4px;text-transform:uppercase;letter-spacing:1px">+ Ajouter</div></div>`).join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = '<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie dans quelques secondes.</div>';
+  }
+}
+
+function addSuggestedWord(lang, mot, trad) {
+  if (!state.langues[lang]) return;
+  if (state.langues[lang].vocab.find(v => v.mot === mot)) { showToast('Mot déjà dans ta liste !'); return; }
+  state.langues[lang].vocab.push({id: Date.now(), mot, trad, maitrise: 0});
+  save(); renderLangues(); showToast(`"${mot}" ajouté ✓`);
+}
+
+// ======= EXPORT PDF =======
+function exportPDF() {
+  const monthStr = new Date().toISOString().slice(0,7);
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const monthLabel = months[new Date().getMonth()] + ' ' + new Date().getFullYear();
+
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p)=>s+p.amount,0);
+  const balance = income - expense - prelevTotal;
+
+  const weekDates = getWeekDates();
+  const sportSessions = new Set(weekDates.filter(d=>(state.sportExos||[]).some(e=>e.done[d]))).size;
+  const langSessions = weekDates.filter(d=>Object.values(state.langues||{}).some(l=>l.sessions?.[d])).length;
+  const objDone = (state.objectifs||[]).filter(o=>o.done).length;
+  const totalVocab = Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0);
+  const badges = (state.unlockedBadges||[]).length;
+  const modules = (state.modules||[]);
+  const modDone = modules.filter(m=>m.done>=m.total&&m.total>0).length;
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rapport ${monthLabel}</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 40px;color:#1a1a2e;line-height:1.6}
+    h1{font-size:2rem;color:#0e0e11;border-bottom:3px solid #c8f04a;padding-bottom:12px}
+    h2{font-size:1.2rem;color:#333;margin-top:32px;margin-bottom:12px;padding:8px 12px;background:#f4f4f8;border-left:4px solid #c8f04a}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+    .kpi{text-align:center;padding:16px;border:1px solid #ddd;border-radius:8px}
+    .kpi-val{font-size:2rem;font-weight:700;color:#5a8a00}
+    .kpi-lab{font-size:0.7rem;text-transform:uppercase;color:#666;letter-spacing:1px}
+    .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:0.85rem}
+    .pos{color:#2a7a3a;font-weight:700} .neg{color:#c0392b;font-weight:700}
+    .badge-chip{display:inline-block;padding:3px 10px;border-radius:999px;background:#fff3cd;color:#856404;font-size:0.75rem;margin:2px;border:1px solid #ffc107}
+    .footer{margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:0.7rem;color:#999;text-align:center}
+  </style></head><body>
+  <h1>📊 Rapport mensuel — ${monthLabel}</h1>
+  <p style="color:#666;font-size:0.85rem">Généré le ${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+
+  <h2>🏆 KPIs de la semaine</h2>
+  <div class="grid">
+    <div class="kpi"><div class="kpi-val">${sportSessions}</div><div class="kpi-lab">Séances sport</div></div>
+    <div class="kpi"><div class="kpi-val">${langSessions}</div><div class="kpi-lab">Sessions langues</div></div>
+    <div class="kpi"><div class="kpi-val">${totalVocab}</div><div class="kpi-lab">Mots appris</div></div>
+    <div class="kpi"><div class="kpi-val">${objDone}</div><div class="kpi-lab">Objectifs atteints</div></div>
+    <div class="kpi"><div class="kpi-val">${modDone}/${modules.length}</div><div class="kpi-lab">Modules formation</div></div>
+    <div class="kpi"><div class="kpi-val">${badges}/${BADGES_DEF.length}</div><div class="kpi-lab">Badges débloqués</div></div>
+  </div>
+
+  <h2>💶 Budget ${monthLabel}</h2>
+  <div class="row"><span>Revenus</span><span class="pos">+${income.toFixed(0)} €</span></div>
+  <div class="row"><span>Dépenses</span><span class="neg">−${expense.toFixed(0)} €</span></div>
+  <div class="row"><span>Prélèvements auto</span><span class="neg">−${prelevTotal.toFixed(0)} €</span></div>
+  <div class="row" style="font-weight:700;font-size:1rem"><span>Solde</span><span class="${balance>=0?'pos':'neg'}">${balance>=0?'+':''}${balance.toFixed(0)} €</span></div>
+
+  <h2>🎯 Objectifs en cours</h2>
+  ${(state.objectifs||[]).filter(o=>!o.done).map(o=>`<div class="row"><span>${o.title}</span><span style="color:#666">${o.horizon}${o.deadline?' · échéance '+o.deadline:''}</span></div>`).join('')||'<div style="color:#999">Aucun objectif en cours</div>'}
+
+  <h2>🎓 Formation</h2>
+  ${modules.map(m=>{const pct=m.total>0?Math.round(m.done/m.total*100):0;return `<div class="row"><span>${m.name}</span><span style="color:${pct>=100?'#2a7a3a':'#666'}">${pct}% ${pct>=100?'✓ Terminé':''}</span></div>`;}).join('')||'<div style="color:#999">Aucun module</div>'}
+
+  <h2>🏅 Badges débloqués</h2>
+  <div style="margin:8px 0">${(state.unlockedBadges||[]).map(id=>{const b=BADGES_DEF.find(b=>b.id===id);return b?`<span class="badge-chip">${b.icon} ${b.name}</span>`:''}).join('')||'<span style="color:#999">Aucun badge encore</span>'}</div>
+
+  <div class="footer">Dashboard Personnel Chris v2.02 — Généré automatiquement</div>
+  </body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `rapport-${monthStr}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Rapport généré ✓');
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -1500,6 +1947,7 @@ chartScript.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd
 chartScript.onload=()=>{renderBudget();};
 document.head.appendChild(chartScript);
 
+initTheme();
 initHeader();
 initFocus();
 renderProjects();
@@ -1519,6 +1967,10 @@ renderBienetre();
 renderNutrition();
 renderPortfolio();
 renderTempsLibres();
+renderCalendar();
+renderBadges();
+renderKPIs();
+renderAlerts();
 if(state.savingsGoal)document.getElementById('savingsGoal').value=state.savingsGoal;
 scheduleMidnightRefresh();
 </script>
