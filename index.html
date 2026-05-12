@@ -317,6 +317,54 @@
     <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="saveRetroEntry()">Sauvegarder →</button></div>
   </div>
   <div class="card"><div class="card-title">📊 Historique énergie (7 jours)</div><div id="energyHistory"></div></div>
+
+  <!-- Méditation -->
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(123,94,167,0.08),rgba(72,202,228,0.06));border-color:rgba(123,94,167,0.2)">
+    <div class="card-title" style="color:#9b8cff">🧘 Méditation guidée</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Choisis une durée et un type de session. Le timer démarre avec un son de cloche.</div>
+
+    <!-- Sélection type + durée -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Type</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="meditTypeBtns">
+          <button class="btn btn-primary" id="mtype-respiration" onclick="setMeditType('respiration')">🌬️ Respiration</button>
+          <button class="btn" id="mtype-pleine-conscience" onclick="setMeditType('pleine-conscience')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🧠 Pleine conscience</button>
+          <button class="btn" id="mtype-body-scan" onclick="setMeditType('body-scan')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🫁 Body scan</button>
+          <button class="btn" id="mtype-visualisation" onclick="setMeditType('visualisation')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">✨ Visualisation</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Durée</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" id="mdur-5" onclick="setMeditDur(5)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">5 min</button>
+          <button class="btn btn-primary" id="mdur-10" onclick="setMeditDur(10)">10 min</button>
+          <button class="btn" id="mdur-15" onclick="setMeditDur(15)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">15 min</button>
+          <button class="btn" id="mdur-20" onclick="setMeditDur(20)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">20 min</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timer méditation -->
+    <div style="text-align:center;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:16px">
+      <div style="font-family:'DM Serif Display',serif;font-size:4rem;color:#9b8cff;line-height:1;margin-bottom:8px" id="meditDisplay">10:00</div>
+      <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px" id="meditStatus">Prêt</div>
+      <!-- Cercle de respiration animé -->
+      <div id="breathCircle" style="width:80px;height:80px;border-radius:50%;background:rgba(123,94,167,0.15);border:2px solid rgba(123,94,167,0.3);margin:0 auto 16px;transition:all 4s ease;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#9b8cff;letter-spacing:1px"></div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="startMedit()" id="meditStartBtn" style="background:#9b8cff">▶ Commencer</button>
+        <button class="btn" onclick="pauseMedit()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">⏸ Pause</button>
+        <button class="btn" onclick="resetMedit()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- Instruction de la session -->
+    <div id="meditInstruction" style="font-size:0.72rem;color:var(--text-muted);line-height:1.7;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:14px"></div>
+
+    <!-- Stats méditation -->
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px" id="meditStats"></div>
+  </div>
+
 </div>
 
 
@@ -376,20 +424,89 @@
 </div>
 
 
-<!-- ===== INVESTISSEMENTS ===== -->
+
 <!-- ===== INVESTISSEMENTS ===== -->
 <div class="panel" id="panel-invest">
-  <!-- Sous-onglets sections -->
-  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="invSectionTabs">
-    <button class="inv-section-tab active" onclick="switchInvSection('livrets')">🏦 Livrets</button>
-    <button class="inv-section-tab" onclick="switchInvSection('bourse')">📈 Bourse</button>
-    <button class="inv-section-tab" onclick="switchInvSection('noncote')">🏢 Non coté</button>
-    <button class="inv-section-tab" onclick="switchInvSection('crypto')">🪙 Crypto</button>
-    <button class="inv-section-tab" onclick="switchInvSection('oblig')">📄 Obligations</button>
+
+  <!-- Sous-onglets enveloppes -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap" id="invEnvTabs">
+    <button class="btn btn-primary" id="invtab-pea" onclick="switchInvEnv('pea')">🇫🇷 PEA</button>
+    <button class="btn" id="invtab-cto" onclick="switchInvEnv('cto')" style="background:transparent;border:none;color:var(--text-muted)">🌍 CTO</button>
+    <button class="btn" id="invtab-av" onclick="switchInvEnv('av')" style="background:transparent;border:none;color:var(--text-muted)">🏦 AV</button>
+    <button class="btn" id="invtab-livrets" onclick="switchInvEnv('livrets')" style="background:transparent;border:none;color:var(--text-muted)">💰 Livrets</button>
+    <button class="btn" id="invtab-crypto" onclick="switchInvEnv('crypto')" style="background:transparent;border:none;color:var(--text-muted)">🪙 Crypto</button>
+    <button class="btn" id="invtab-noncote" onclick="switchInvEnv('noncote')" style="background:transparent;border:none;color:var(--text-muted)">🏢 Non coté</button>
+    <button class="btn" id="invtab-oblig" onclick="switchInvEnv('oblig')" style="background:transparent;border:none;color:var(--text-muted)">📄 Obligations</button>
+  </div>
+
+  <!-- PEA -->
+  <div id="inv-pea" class="inv-env-section">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#c8f04a">🇫🇷 PEA — Plan d'Épargne en Actions</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Enveloppe fiscalement avantageuse après 5 ans — actions européennes uniquement.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="pea-ticker" placeholder="Ticker (ex: AIR.PA)" style="width:120px"/>
+        <input class="inp" type="text" id="pea-name" placeholder="Nom (ex: Airbus)" style="flex:1;min-width:120px"/>
+        <select class="inp" id="pea-type"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option></select>
+        <input class="inp" type="number" id="pea-qty" placeholder="Qté" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="pea-pru" placeholder="PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('pea')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('pea')">🔄 Actualiser les cours</button>
+      <div id="pea-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="pea-table"></div></div>
+    <div class="grid-3" id="pea-stats"></div>
+  </div>
+
+  <!-- CTO -->
+  <div id="inv-cto" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#48cae4">🌍 CTO — Compte-Titres Ordinaire</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Sans plafond, toutes zones géographiques — plus flexible mais fiscalité moins avantageuse.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="cto-ticker" placeholder="Ticker (ex: MSFT)" style="width:120px"/>
+        <input class="inp" type="text" id="cto-name" placeholder="Nom (ex: Microsoft)" style="flex:1;min-width:120px"/>
+        <select class="inp" id="cto-type"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option><option value="Crypto">🪙 Crypto</option></select>
+        <input class="inp" type="number" id="cto-qty" placeholder="Qté" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="cto-pru" placeholder="PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('cto')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('cto')">🔄 Actualiser les cours</button>
+      <div id="cto-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="cto-table"></div></div>
+    <div class="grid-3" id="cto-stats"></div>
+  </div>
+
+  <!-- AV -->
+  <div id="inv-av" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#9b8cff">🏦 Assurance-Vie</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Enveloppe fiscale avantageuse après 8 ans — fonds euros + unités de compte.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="av-ticker" placeholder="Ticker ou code ISIN" style="width:130px"/>
+        <input class="inp" type="text" id="av-name" placeholder="Nom du fonds/UC" style="flex:1;min-width:120px"/>
+        <select class="inp" id="av-type"><option value="Fonds euros">💎 Fonds euros</option><option value="ETF">🌍 ETF</option><option value="Action">📈 Action</option><option value="SCPI">🏠 SCPI</option></select>
+        <input class="inp" type="number" id="av-qty" placeholder="Parts" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="av-pru" placeholder="VL/PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('av')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('av')">🔄 Actualiser les cours</button>
+      <div id="av-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="av-table"></div></div>
+    <div class="grid-3" id="av-stats"></div>
   </div>
 
   <!-- Livrets -->
-  <div id="inv-livrets" class="inv-section">
+  <div id="inv-livrets" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter un livret</div>
       <div class="add-row">
@@ -403,45 +520,8 @@
     <div id="livretsList"></div>
   </div>
 
-  <!-- Bourse -->
-  <div id="inv-bourse" class="inv-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter une position</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="invTicker" placeholder="Ticker (ex: AIR.PA)" style="width:120px"/>
-        <input class="inp" type="text" id="invName" placeholder="Nom" style="flex:1;min-width:120px"/>
-        <select class="inp" id="invType"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option></select>
-        <select class="inp" id="invEnvelope"><option value="PEA">🇫🇷 PEA</option><option value="CTO">🌍 CTO</option><option value="AV">🏦 AV</option></select>
-        <input class="inp" type="number" id="invQty" placeholder="Qté" style="width:70px" step="any"/>
-        <input class="inp" type="number" id="invPRU" placeholder="PRU (€)" style="width:90px" step="any"/>
-        <button class="btn btn-primary" onclick="addPosition()">+</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="refreshAllPrices()">🔄 Actualiser les cours</button>
-      <div id="lastRefresh" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
-    </div>
-    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div class="card-title">Portefeuille boursier</div><div id="portfolioTable"></div></div>
-    <div class="grid-3" id="portfolioStats"></div>
-  </div>
-
-  <!-- Non coté -->
-  <div id="inv-noncote" class="inv-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter un investissement non coté</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="ncName" placeholder="Nom (ex: SCPI, SCI, startup…)" style="flex:2"/>
-        <select class="inp" id="ncType"><option value="SCPI">🏠 SCPI</option><option value="Startup">🚀 Startup</option><option value="Immobilier">🏗️ Immobilier</option><option value="Crowdfunding">👥 Crowdfunding</option><option value="Autre">📦 Autre</option></select>
-        <input class="inp" type="number" id="ncMontant" placeholder="Montant investi (€)" style="width:150px"/>
-        <input class="inp" type="number" id="ncRendement" placeholder="Rendement %" style="width:110px" step="0.1"/>
-        <button class="btn btn-primary" onclick="addNonCote()">+</button>
-      </div>
-    </div>
-    <div id="nonCoteList"></div>
-  </div>
-
   <!-- Crypto -->
-  <div id="inv-crypto" class="inv-section" style="display:none">
+  <div id="inv-crypto" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter une crypto</div>
       <div class="add-row">
@@ -456,8 +536,23 @@
     <div id="cryptoList"></div>
   </div>
 
+  <!-- Non coté -->
+  <div id="inv-noncote" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">Ajouter un investissement non coté</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="ncName" placeholder="Nom (ex: SCPI, startup…)" style="flex:2"/>
+        <select class="inp" id="ncType"><option value="SCPI">🏠 SCPI</option><option value="Startup">🚀 Startup</option><option value="Immobilier">🏗️ Immobilier</option><option value="Crowdfunding">👥 Crowdfunding</option><option value="Autre">📦 Autre</option></select>
+        <input class="inp" type="number" id="ncMontant" placeholder="Montant investi (€)" style="width:150px"/>
+        <input class="inp" type="number" id="ncRendement" placeholder="Rendement %" style="width:110px" step="0.1"/>
+        <button class="btn btn-primary" onclick="addNonCote()">+</button>
+      </div>
+    </div>
+    <div id="nonCoteList"></div>
+  </div>
+
   <!-- Obligations -->
-  <div id="inv-oblig" class="inv-section" style="display:none">
+  <div id="inv-oblig" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter une obligation</div>
       <div class="add-row">
@@ -471,20 +566,40 @@
     <div id="obligList"></div>
   </div>
 
+  <!-- DCA Tracker -->
+  <div class="card section-gap">
+    <div class="card-title">📅 DCA — Versements programmés</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Suivi de tes investissements automatiques mensuels.</div>
+    <div class="add-row" style="margin-top:0;margin-bottom:16px">
+      <input class="inp" type="text" id="dcaName" placeholder="Ex: SXR8, Microsoft..." style="flex:1"/>
+      <select class="inp" id="dcaEnv"><option value="CTO">CTO</option><option value="PEA">PEA</option><option value="AV">AV</option></select>
+      <input class="inp" type="number" id="dcaAmount" placeholder="Montant €/mois" style="width:130px"/>
+      <input class="inp" type="number" id="dcaDay" placeholder="Jour du mois" style="width:110px" min="1" max="31"/>
+      <button class="btn btn-primary" onclick="addDCA()">+ Ajouter</button>
+    </div>
+    <div id="dcaList"></div>
+    <div id="dcaTotal" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)"></div>
+  </div>
+
   <!-- Vue globale patrimoine -->
-  <div class="card section-gap"><div class="card-title">🏦 Vue globale patrimoine</div><div id="patrimoineGlobal"></div></div>
+  <div class="card section-gap">
+    <div class="card-title">🏦 Vue globale patrimoine</div>
+    <div id="patrimoineGlobal"></div>
+  </div>
 
   <!-- Conseil IA -->
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
-    <div class="card-title" style="color:var(--accent)">🤖 Conseil investissement IA</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Basé sur ton profil et la situation des marchés — conseil non contractuel, à croiser avec d'autres sources.</div>
+    <div class="card-title" style="color:var(--accent)">🤖 Conseil investissement — IA</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Conseil non contractuel, à croiser avec d'autres sources.</div>
     <div id="investAdviceChat" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div>
     <div style="display:flex;gap:8px">
-      <input class="inp" type="text" id="investQuestion" placeholder="Ex: Quelles actions acheter en ce moment ? Diversifier mon PEA ?" style="flex:1"/>
+      <input class="inp" type="text" id="investQuestion" placeholder="Ex: Diversifier mon PEA ? Quelles actions en ce moment ?" style="flex:1"/>
       <button class="btn btn-primary" onclick="askInvestAdvice()">Demander →</button>
     </div>
   </div>
+
 </div>
+
 
 
 <!-- ===== FORMATION ===== -->
@@ -1049,7 +1164,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, meditSessions:{}, dcaList:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -1304,28 +1419,6 @@ function saveRetroEntry() {
   ['retroGood','retroBlock','retroNext'].forEach(id=>document.getElementById(id).value='');
   save(); renderBienetre(); showToast('Rétrospective sauvegardée ✓');
 }
-function renderBienetre() {
-  if(!state.bienetre)state.bienetre={};
-  const d=getBienetrDay(), t=today();
-  document.getElementById('sleepBed').value=d.bed||''; document.getElementById('sleepWake').value=d.wake||'';
-  if(d.bed&&d.wake)saveSleep(); if(d.sleepQ)saveSleepQuality(d.sleepQ); if(d.energy)saveEnergy(d.energy); if(d.mood)saveMood(d.mood);
-  if(d.gratitude)document.getElementById('gratitudeText').value=d.gratitude;
-  if(d.note)document.getElementById('bienetrNote').value=d.note;
-  if(state.currentRetro){
-    if(state.currentRetro.good)document.getElementById('retroGood').value=state.currentRetro.good;
-    if(state.currentRetro.block)document.getElementById('retroBlock').value=state.currentRetro.block;
-    if(state.currentRetro.next)document.getElementById('retroNext').value=state.currentRetro.next;
-  }
-  const weekDates=getWeekDates();
-  const histEl=document.getElementById('energyHistory');
-  const colors=['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
-  histEl.innerHTML=`<div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:8px">${weekDates.map((d,i)=>{
-    const day=state.bienetre[d]||{}, e=day.energy||0, isT=d===t;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:0.62rem;color:${e>0?colors[e]:'var(--text-muted)'}">${e>0?e:'-'}</div><div style="width:100%;height:${Math.max(4,e*12)}px;background:${e>0?colors[e]:'var(--border)'};border-radius:4px 4px 0 0"></div><div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'}">${DAYS_FR[i]}</div></div>`;
-  }).join('')}</div><div style="font-size:0.65rem;color:var(--text-muted)">Humeur : ${weekDates.map(d=>(state.bienetre[d]||{}).mood||'○').join('  ')}</div>`;
-}
-
-// ======= SPORT =======
 const SPORT_DAYS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const SPORT_COLORS=['#48cae4','#c8f04a','#f4a261','#7b5ea7','#4adb8a','#f05a5a','#9b8cff'];
 const SPORT_SUGGESTIONS={
@@ -1634,111 +1727,283 @@ function renderCulture(){
 }
 
 // ======= INVESTISSEMENTS =======
-let currentInvSection='livrets';
-function switchInvSection(s){
-  currentInvSection=s;
-  document.querySelectorAll('.inv-section').forEach(el=>el.style.display='none');
-  document.getElementById('inv-'+s).style.display='block';
-  document.querySelectorAll('.inv-section-tab').forEach(b=>{b.classList.remove('active');});
-  event.target.classList.add('active');
-  renderPortfolio();
+const ENV_CONFIG = {
+  pea:  {label:'PEA',     color:'#c8f04a', desc:'Plan Épargne Actions'},
+  cto:  {label:'CTO',     color:'#48cae4', desc:'Compte-Titres Ordinaire'},
+  av:   {label:'AV',      color:'#9b8cff', desc:'Assurance-Vie'},
+};
+
+function switchInvEnv(env) {
+  document.querySelectorAll('.inv-env-section').forEach(el => el.style.display = 'none');
+  document.getElementById('inv-' + env).style.display = 'block';
+  document.querySelectorAll('[id^="invtab-"]').forEach(btn => {
+    btn.className = 'btn';
+    btn.style.cssText = 'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';
+  });
+  const activeBtn = document.getElementById('invtab-' + env);
+  if (activeBtn) {
+    activeBtn.className = 'btn btn-primary';
+    activeBtn.style.cssText = 'font-size:0.7rem;padding:7px 14px';
+  }
+  if (['pea','cto','av'].includes(env)) renderEnvTable(env);
+  else if (env === 'livrets') renderPortfolio();
+  else if (env === 'crypto') renderPortfolio();
+  else if (env === 'noncote') renderPortfolio();
+  else if (env === 'oblig') renderPortfolio();
+  renderPatrimoine();
 }
 
-// Livrets
+// --- Price fetching with fallback ---
+async function fetchPrice(ticker) {
+  if (!ticker) return null;
+
+  // Finnhub API — gratuit, pas de CORS
+  const FINNHUB_KEY = 'd0oodl1r01qi0rk0ptggd0oodl1r01qi0rk0pth0';
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`,
+      { signal: AbortSignal.timeout(6000) }
+    );
+    const data = await res.json();
+    if (data.c && data.c > 0) return Math.round(data.c * 100) / 100;
+  } catch(e) {}
+
+  // Fallback Yahoo Finance
+  try {
+    const res = await fetch(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    const data = await res.json();
+    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (price) return Math.round(price * 100) / 100;
+  } catch(e) {}
+
+  return null;
+}
+
+function getYahooLink(ticker) {
+  if (!ticker) return null;
+  return `https://finance.yahoo.com/quote/${ticker}`;
+}
+function getBoursoLink(ticker) {
+  if (!ticker) return null;
+  // Convert common tickers to Boursorama format
+  const t = ticker.replace('.PA','').replace('.MC','').replace('.MI','');
+  return `https://www.boursorama.com/recherche/ajax?query=${t}`;
+}
+
+// --- PEA / CTO / AV positions ---
+function addEnvPosition(env) {
+  const ticker = document.getElementById(env+'-ticker').value.trim().toUpperCase();
+  const name   = document.getElementById(env+'-name').value.trim();
+  const type   = document.getElementById(env+'-type').value;
+  const qty    = parseFloat(document.getElementById(env+'-qty').value) || 0;
+  const pru    = parseFloat(document.getElementById(env+'-pru').value) || 0;
+  if (!name) { showToast('Renseigne un nom !'); return; }
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  if (!state.envPositions[env]) state.envPositions[env] = [];
+  state.envPositions[env].push({ id: Date.now(), ticker, name, type, qty, pru, current: pru, lastUpdate: null });
+  [env+'-ticker', env+'-name', env+'-qty', env+'-pru'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
+  save(); renderEnvTable(env); renderPatrimoine();
+  showToast('Position ajoutée ✓');
+}
+
+function deleteEnvPosition(env, id) {
+  if (!state.envPositions?.[env]) return;
+  state.envPositions[env] = state.envPositions[env].filter(p => p.id !== id);
+  save(); renderEnvTable(env); renderPatrimoine();
+}
+
+function updateEnvField(env, id, field, val) {
+  const pos = state.envPositions?.[env]?.find(p => p.id === id);
+  if (pos) {
+    pos[field] = field === 'ticker' ? val.toUpperCase() : (parseFloat(val) || 0);
+    save(); renderEnvTable(env); renderPatrimoine();
+  }
+}
+
+async function refreshEnvPrices(env) {
+  if (!state.envPositions?.[env]?.length) { showToast('Aucune position à actualiser'); return; }
+  const statusEl = document.getElementById(env + '-refresh-status');
+  if (statusEl) statusEl.textContent = '⏳ Actualisation en cours...';
+  let updated = 0, failed = [];
+  for (const pos of state.envPositions[env]) {
+    if (pos.ticker) {
+      const price = await fetchPrice(pos.ticker);
+      if (price !== null) { pos.current = price; pos.lastUpdate = new Date().toLocaleTimeString('fr-FR'); updated++; }
+      else failed.push(pos.ticker);
+    }
+  }
+  save(); renderEnvTable(env); renderPatrimoine();
+  const time = new Date().toLocaleTimeString('fr-FR');
+  if (statusEl) {
+    if (failed.length === 0) statusEl.textContent = `✅ ${updated} cours mis à jour — ${time}`;
+    else statusEl.innerHTML = `⚠️ ${updated} mis à jour · ${failed.length} échoué(s) : ${failed.map(t => `<a href="https://finance.yahoo.com/quote/${t}" target="_blank" style="color:var(--accent)">${t}</a>`).join(', ')} · ${time}`;
+  }
+  showToast(`${updated} cours mis à jour ✓`);
+}
+
+function renderEnvTable(env) {
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  const positions = state.envPositions[env] || [];
+  const color = ENV_CONFIG[env]?.color || 'var(--accent)';
+  const tableEl = document.getElementById(env + '-table');
+  const statsEl = document.getElementById(env + '-stats');
+  if (!tableEl) return;
+
+  if (positions.length === 0) {
+    tableEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune position — ajoute tes titres</div>';
+    if (statsEl) statsEl.innerHTML = '';
+    return;
+  }
+
+  const totalInvest = positions.reduce((s,p) => s + p.pru * p.qty, 0);
+  const totalValeur = positions.reduce((s,p) => s + p.current * p.qty, 0);
+  const totalPnl = totalValeur - totalInvest;
+  const totalPerf = totalInvest > 0 ? totalPnl / totalInvest * 100 : 0;
+  const pnlColor = totalPnl >= 0 ? '#4adb8a' : '#f05a5a';
+
+  tableEl.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:0.72rem">
+      <thead>
+        <tr style="color:var(--text-muted);font-size:0.6rem;letter-spacing:1px;text-transform:uppercase">
+          <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">Valeur</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Qté</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">PRU</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Cours</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Valeur</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">+/- val.</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Perf%</th>
+          <th style="padding:6px 4px;border-bottom:1px solid var(--border)"></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${positions.map(p => {
+          const invest = p.pru * p.qty;
+          const valeur = p.current * p.qty;
+          const pnl = valeur - invest;
+          const perf = invest > 0 ? pnl / invest * 100 : 0;
+          const c = perf >= 0 ? '#4adb8a' : '#f05a5a';
+          const yahooLink = p.ticker ? `<a href="https://finance.yahoo.com/quote/${p.ticker}" target="_blank" title="Voir sur Yahoo Finance" style="color:var(--text-muted);font-size:0.6rem;text-decoration:none">📊</a>` : '';
+          const lastUpd = p.lastUpdate ? `<div style="font-size:0.55rem;color:var(--text-muted)">↻ ${p.lastUpdate}</div>` : '';
+          return `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 4px">
+              <div style="font-weight:600;color:var(--text)">${p.name} ${yahooLink}</div>
+              <div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type}</div>
+            </td>
+            <td style="text-align:right;padding:4px">
+              <input type="number" value="${p.qty}" step="any" onchange="updateEnvField('${env}',${p.id},'qty',this.value)"
+                style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/>
+            </td>
+            <td style="text-align:right;padding:4px">
+              <input type="number" value="${p.pru}" step="any" onchange="updateEnvField('${env}',${p.id},'pru',this.value)"
+                style="width:70px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/> €
+            </td>
+            <td style="text-align:right;padding:4px">
+              <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
+                <input type="number" value="${p.current}" step="0.01" onchange="updateEnvField('${env}',${p.id},'current',this.value)"
+                  style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/> €
+              </div>
+              ${lastUpd}
+            </td>
+            <td style="text-align:right;padding:4px;font-weight:600;color:var(--text)">${valeur.toFixed(0)} €</td>
+            <td style="text-align:right;padding:4px;font-weight:600;color:${c}">${pnl>=0?'+':''}${pnl.toFixed(0)} €</td>
+            <td style="text-align:right;padding:4px;font-weight:700;color:${c}">${perf>=0?'+':''}${perf.toFixed(1)}%</td>
+            <td style="padding:4px"><button class="btn btn-danger" onclick="deleteEnvPosition('${env}',${p.id})">✕</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+
+  if (statsEl) {
+    statsEl.innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${color}">${totalValeur.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valorisation ${ENV_CONFIG[env]?.label}</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Plus/moins-value</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPerf>=0?'+':''}${totalPerf.toFixed(1)}%</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Performance</div>
+      </div>`;
+  }
+}
+
+function renderPatrimoine() {
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  const peaVal  = (state.envPositions.pea||[]).reduce((s,p) => s + p.current*p.qty, 0);
+  const ctoVal  = (state.envPositions.cto||[]).reduce((s,p) => s + p.current*p.qty, 0);
+  const avVal   = (state.envPositions.av||[]).reduce((s,p)  => s + p.current*p.qty, 0);
+  const livVal  = (state.livrets||[]).reduce((s,l) => s + l.solde, 0);
+  const cryptoVal = (state.cryptos||[]).reduce((s,c) => s + c.current*c.qty, 0);
+  const ncVal   = (state.nonCote||[]).reduce((s,n) => s + n.montant, 0);
+  const obligVal= (state.obligs||[]).reduce((s,o) => s + o.montant, 0);
+  const total = peaVal + ctoVal + avVal + livVal + cryptoVal + ncVal + obligVal;
+
+  const el = document.getElementById('patrimoineGlobal'); if (!el) return;
+  const items = [
+    ['🇫🇷 PEA', peaVal, '#c8f04a'],
+    ['🌍 CTO', ctoVal, '#48cae4'],
+    ['🏦 AV', avVal, '#9b8cff'],
+    ['💰 Livrets', livVal, '#4adb8a'],
+    ['🪙 Crypto', cryptoVal, '#f4a261'],
+    ['🏢 Non coté', ncVal, '#f05a5a'],
+    ['📄 Obligations', obligVal, '#7b5ea7'],
+  ].filter(x => x[1] > 0);
+
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${total.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">Patrimoine total estimé</div>
+    </div>
+    ${items.length === 0 ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center">Ajoute tes positions pour voir la répartition</div>' :
+    items.map(([label, val, color]) => {
+      const pct = total > 0 ? Math.round(val/total*100) : 0;
+      return `<div class="summary-row">
+        <div class="summary-label"><div class="dot" style="background:${color}"></div>${label}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="prog-bar-bg" style="width:100px;margin:0"><div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="summary-val">${val.toLocaleString('fr-FR',{maximumFractionDigits:0})} € (${pct}%)</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+// Keep old functions for backward compat (livrets, crypto, noncote, oblig)
 function addLivret(){const name=document.getElementById('livretName').value.trim(),solde=parseFloat(document.getElementById('livretSolde').value)||0,taux=parseFloat(document.getElementById('livretTaux').value)||0,plafond=parseFloat(document.getElementById('livretPlafond').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.livrets)state.livrets=[];state.livrets.push({id:Date.now(),name,solde,taux,plafond});['livretName','livretSolde','livretTaux','livretPlafond'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Livret ajouté ✓');}
 function deleteLivret(id){state.livrets=state.livrets.filter(l=>l.id!==id);save();renderPortfolio();}
 function updateLivretSolde(id,val){const l=state.livrets.find(l=>l.id===id);if(l){l.solde=parseFloat(val)||0;save();renderPortfolio();}}
-
-// Bourse + API prix
-async function fetchPrice(ticker){
-  try {
-    const res=await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,{headers:{'User-Agent':'Mozilla/5.0'}});
-    const data=await res.json();
-    const price=data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    return price||null;
-  } catch(e){ return null; }
-}
-async function refreshAllPrices(){
-  if(!state.positions||state.positions.length===0){showToast('Aucune position à actualiser');return;}
-  document.getElementById('lastRefresh').textContent='⏳ Actualisation...';
-  let updated=0;
-  for(const pos of state.positions){
-    if(pos.ticker){
-      const price=await fetchPrice(pos.ticker);
-      if(price!==null){pos.current=Math.round(price*100)/100;updated++;}
-    }
-  }
-  save(); renderPortfolio();
-  document.getElementById('lastRefresh').textContent=`✓ ${updated} cours mis à jour — ${new Date().toLocaleTimeString('fr-FR')}`;
-  showToast(`${updated} cours mis à jour ✓`);
-}
-function addPosition(){const ticker=document.getElementById('invTicker').value.trim().toUpperCase(),name=document.getElementById('invName').value.trim(),type=document.getElementById('invType').value,envelope=document.getElementById('invEnvelope').value,qty=parseFloat(document.getElementById('invQty').value)||0,pru=parseFloat(document.getElementById('invPRU').value)||0;if(!name){showToast('Renseigne un nom !');return;}if(!state.positions)state.positions=[];state.positions.push({id:Date.now(),ticker,name,type,envelope,qty,pru,current:pru});['invTicker','invName','invQty','invPRU'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Position ajoutée ✓');}
-function updatePositionField(id,field,val){const pos=state.positions.find(p=>p.id===id);if(pos){pos[field]=field==='ticker'?val.toUpperCase():(parseFloat(val)||0);save();renderPortfolio();}}
-function deletePosition(id){state.positions=state.positions.filter(p=>p.id!==id);save();renderPortfolio();}
-
-// Non coté
-function addNonCote(){const name=document.getElementById('ncName').value.trim(),type=document.getElementById('ncType').value,montant=parseFloat(document.getElementById('ncMontant').value)||0,rendement=parseFloat(document.getElementById('ncRendement').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.nonCote)state.nonCote=[];state.nonCote.push({id:Date.now(),name,type,montant,rendement});['ncName','ncMontant','ncRendement'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Investissement ajouté ✓');}
+function addNonCote(){const name=document.getElementById('ncName').value.trim(),type=document.getElementById('ncType').value,montant=parseFloat(document.getElementById('ncMontant').value)||0,rendement=parseFloat(document.getElementById('ncRendement').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.nonCote)state.nonCote=[];state.nonCote.push({id:Date.now(),name,type,montant,rendement});['ncName','ncMontant','ncRendement'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Ajouté ✓');}
 function deleteNonCote(id){state.nonCote=state.nonCote.filter(n=>n.id!==id);save();renderPortfolio();}
-
-// Crypto
 function addCrypto(){const symbol=document.getElementById('cryptoSymbol').value.trim().toUpperCase(),name=document.getElementById('cryptoName').value.trim(),qty=parseFloat(document.getElementById('cryptoQty').value)||0,pru=parseFloat(document.getElementById('cryptoPRU').value)||0,current=parseFloat(document.getElementById('cryptoCurrent').value)||pru;if(!name){showToast('Renseigne un nom !');return;}if(!state.cryptos)state.cryptos=[];state.cryptos.push({id:Date.now(),symbol,name,qty,pru,current});['cryptoSymbol','cryptoName','cryptoQty','cryptoPRU','cryptoCurrent'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Crypto ajoutée ✓');}
 function updateCryptoCurrent(id,val){const c=state.cryptos.find(c=>c.id===id);if(c){c.current=parseFloat(val)||0;save();renderPortfolio();}}
 function deleteCrypto(id){state.cryptos=state.cryptos.filter(c=>c.id!==id);save();renderPortfolio();}
-
-// Obligations
 function addOblig(){const name=document.getElementById('obligName').value.trim(),montant=parseFloat(document.getElementById('obligMontant').value)||0,taux=parseFloat(document.getElementById('obligTaux').value)||0,echeance=document.getElementById('obligEcheance').value;if(!name){showToast('Donne un nom !');return;}if(!state.obligs)state.obligs=[];state.obligs.push({id:Date.now(),name,montant,taux,echeance});['obligName','obligMontant','obligTaux','obligEcheance'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Obligation ajoutée ✓');}
 function deleteOblig(id){state.obligs=state.obligs.filter(o=>o.id!==id);save();renderPortfolio();}
 
 function renderPortfolio(){
+  if(!state.livrets)state.livrets=[];
+  if(!state.cryptos)state.cryptos=[];
+  if(!state.nonCote)state.nonCote=[];
+  if(!state.obligs)state.obligs=[];
   // Livrets
-  const livrets=state.livrets||[], totalLivrets=livrets.reduce((s,l)=>s+l.solde,0);
-  document.getElementById('livretsList').innerHTML=livrets.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun livret — ajoute ton Livret A, LEP…</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">${livrets.map(l=>{const remaPercent=l.plafond>0?Math.round((l.solde/l.plafond)*100):null;return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${l.name}</div>${l.taux>0?`<div style="font-size:0.65rem;color:#4adb8a">Taux : ${l.taux}%/an · Intérêts estimés : ${Math.round(l.solde*l.taux/100)} €/an</div>`:''}</div><button class="btn btn-danger" onclick="deleteLivret(${l.id})">✕</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="number" value="${l.solde}" onchange="updateLivretSolde(${l.id},this.value)" style="width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:0.8rem;font-family:'DM Mono',monospace"/><span style="font-size:0.75rem;color:var(--text-muted)">€</span></div>${remaPercent!==null?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${remaPercent}%;background:#4adb8a"></div></div><div style="font-size:0.62rem;color:var(--text-muted);margin-top:4px">${remaPercent}% du plafond (${l.plafond.toLocaleString('fr-FR')} €)</div>`:''}</div>`;}).join('')}</div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)">Total livrets : <span style="color:var(--accent);font-weight:700">${totalLivrets.toLocaleString('fr-FR')} €</span></div>`;
-
-  // Bourse
-  const positions=state.positions||[];
-  const totalInvest=positions.reduce((s,p)=>s+p.pru*p.qty,0), totalValeur=positions.reduce((s,p)=>s+p.current*p.qty,0), totalPnl=totalValeur-totalInvest, totalPerf=totalInvest>0?totalPnl/totalInvest*100:0;
-  const pnlColor=totalPnl>=0?'#4adb8a':'#f05a5a';
-  document.getElementById('portfolioTable').innerHTML=positions.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune position — ajoute ton portefeuille</div>':`<table style="width:100%;border-collapse:collapse;font-size:0.72rem"><thead><tr style="color:var(--text-muted);font-size:0.6rem;letter-spacing:1px;text-transform:uppercase">${['Valeur','Env.','Qté','PRU','Cours','Valorisation','+/- val.','Perf %',''].map(h=>`<th style="text-align:${h===''?'center':'left'};padding:6px 4px;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead><tbody>${positions.map(p=>{const invest=p.pru*p.qty,valeur=p.current*p.qty,pnl=valeur-invest,perf=invest>0?pnl/invest*100:0,c=perf>=0?'#4adb8a':'#f05a5a';return `<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 4px"><div style="font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type} · ${p.envelope}</div></td><td style="padding:4px;text-align:center"><span style="font-size:0.6rem;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text-muted)">${p.envelope}</span></td><td style="padding:4px;text-align:right"><input type="number" value="${p.qty}" step="any" onchange="updatePositionField(${p.id},'qty',this.value)" style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></td><td style="padding:4px;text-align:right"><input type="number" value="${p.pru}" step="any" onchange="updatePositionField(${p.id},'pru',this.value)" style="width:70px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></td><td style="padding:4px;text-align:right"><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end"><input type="number" value="${p.current}" step="0.01" onchange="updatePositionField(${p.id},'current',this.value)" style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></div></td><td style="padding:4px;text-align:right;font-weight:600;color:var(--text)">${valeur.toFixed(0)} €</td><td style="padding:4px;text-align:right;font-weight:600;color:${c}">${pnl>=0?'+':''}${pnl.toFixed(0)} €</td><td style="padding:4px;text-align:right;font-weight:700;color:${c}">${perf>=0?'+':''}${perf.toFixed(1)}%</td><td style="padding:4px;text-align:center"><button class="btn btn-danger" onclick="deletePosition(${p.id})">✕</button></td></tr>`;}).join('')}</tbody></table>`;
-  document.getElementById('portfolioStats').innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">${totalValeur.toFixed(0)} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valorisation</div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPnl>=0?'+':''}${totalPnl.toFixed(0)} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Plus-value</div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPerf>=0?'+':''}${totalPerf.toFixed(1)}%</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Performance</div></div>`;
-
-  // Non coté
-  const nc=state.nonCote||[];
-  document.getElementById('nonCoteList').innerHTML=nc.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun investissement non coté</div>':`<div style="display:flex;flex-direction:column;gap:10px">${nc.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${n.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${n.type} · ${n.montant.toLocaleString('fr-FR')} € investis${n.rendement>0?' · '+n.rendement+'%/an · ~'+Math.round(n.montant*n.rendement/100)+' €/an':''}</div></div><button class="btn btn-danger" onclick="deleteNonCote(${n.id})">✕</button></div>`).join('')}</div>`;
-
+  const totalLivrets=state.livrets.reduce((s,l)=>s+l.solde,0);
+  const livEl=document.getElementById('livretsList');
+  if(livEl)livEl.innerHTML=state.livrets.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun livret</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">${state.livrets.map(l=>{const rp=l.plafond>0?Math.round(l.solde/l.plafond*100):null;return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${l.name}</div>${l.taux>0?`<div style="font-size:0.65rem;color:#4adb8a">${l.taux}%/an · ~${Math.round(l.solde*l.taux/100)} €/an</div>`:''}</div><button class="btn btn-danger" onclick="deleteLivret(${l.id})">✕</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="number" value="${l.solde}" onchange="updateLivretSolde(${l.id},this.value)" style="width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:0.8rem;font-family:'DM Mono',monospace"/><span style="font-size:0.75rem;color:var(--text-muted)">€</span></div>${rp!==null?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${rp}%;background:#4adb8a"></div></div><div style="font-size:0.62rem;color:var(--text-muted);margin-top:4px">${rp}% du plafond (${l.plafond.toLocaleString('fr-FR')} €)</div>`:''}</div>`;}).join('')}</div><div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)">Total livrets : <span style="color:var(--accent);font-weight:700">${totalLivrets.toLocaleString('fr-FR')} €</span></div>`;
   // Crypto
-  const cryptos=state.cryptos||[];
-  document.getElementById('cryptoList').innerHTML=cryptos.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune crypto</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">${cryptos.map(c=>{const val=c.current*c.qty,pnl=val-(c.pru*c.qty),perf=c.pru*c.qty>0?pnl/(c.pru*c.qty)*100:0,col=perf>=0?'#4adb8a':'#f05a5a';return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-weight:600;color:var(--text)">${c.name} (${c.symbol})</div><div style="font-size:0.62rem;color:var(--text-muted)">${c.qty} unités · PRU ${c.pru} €</div></div><button class="btn btn-danger" onclick="deleteCrypto(${c.id})">✕</button></div><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><input type="number" value="${c.current}" step="any" onchange="updateCryptoCurrent(${c.id},this.value)" style="width:100px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text);font-size:0.75rem;font-family:'DM Mono',monospace"/><span style="font-size:0.65rem;color:var(--text-muted)">€ cours</span></div><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${val.toFixed(0)} € <span style="color:${col};">(${perf>=0?'+':''}${perf.toFixed(1)}%)</span></div></div>`;}).join('')}</div>`;
-
-  // Obligations
-  const obligs=state.obligs||[];
-  document.getElementById('obligList').innerHTML=obligs.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune obligation</div>':`<div style="display:flex;flex-direction:column;gap:8px">${obligs.map(o=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${o.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${o.montant.toLocaleString('fr-FR')} € · ${o.taux}%/an${o.echeance?' · Échéance : '+o.echeance:''}</div></div><button class="btn btn-danger" onclick="deleteOblig(${o.id})">✕</button></div>`).join('')}</div>`;
-
-  // Vue globale
-  const totalBourse=positions.reduce((s,p)=>s+p.current*p.qty,0);
-  const totalNC=nc.reduce((s,n)=>s+n.montant,0);
-  const totalCrypto=cryptos.reduce((s,c)=>s+c.current*c.qty,0);
-  const totalOblig=obligs.reduce((s,o)=>s+o.montant,0);
-  const totalPatrimoine=totalLivrets+totalBourse+totalNC+totalCrypto+totalOblig;
-  const items=[['🏦 Livrets',totalLivrets,'#4adb8a'],['📈 Bourse',totalBourse,'#c8f04a'],['🏢 Non coté',totalNC,'#f4a261'],['🪙 Crypto',totalCrypto,'#9b8cff'],['📄 Obligations',totalOblig,'#48cae4']].filter(x=>x[1]>0);
-  document.getElementById('patrimoineGlobal').innerHTML=`<div style="text-align:center;margin-bottom:16px"><div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${totalPatrimoine.toLocaleString('fr-FR')} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">Patrimoine total estimé</div></div>${items.map(([label,val,color])=>{const pct=totalPatrimoine>0?Math.round(val/totalPatrimoine*100):0;return `<div class="summary-row"><div class="summary-label"><div class="dot" style="background:${color}"></div>${label}</div><div style="display:flex;align-items:center;gap:10px"><div class="prog-bar-bg" style="width:80px;margin:0"><div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div></div><div class="summary-val">${val.toLocaleString('fr-FR')} €</div></div></div>`;}).join('')}`;
-}
-
-// ======= IA INVEST =======
-async function askInvestAdvice(){
-  const q=document.getElementById('investQuestion').value.trim(); if(!q)return;
-  const chat=document.getElementById('investAdviceChat');
-  chat.innerHTML+=`<div class="ai-msg user">${q}</div>`;
-  document.getElementById('investQuestion').value='';
-  const typingEl=document.createElement('div'); typingEl.className='ai-typing'; typingEl.innerHTML='<span></span><span></span><span></span>'; chat.appendChild(typingEl); chat.scrollTop=chat.scrollHeight;
-  try {
-    const positions=state.positions||[], livrets=state.livrets||[];
-    const context=`L'utilisateur a un profil investisseur en France (PEA/CTO), orienté compta/IT/formation. Portefeuille bourse: ${positions.map(p=>`${p.name} (${p.ticker})`).join(', ')||'vide'}. Livrets: ${livrets.map(l=>l.name).join(', ')||'aucun'}. Il cherche des conseils non contractuels à titre informatif.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:q}]})});
-    const data=await res.json(); typingEl.remove();
-    const text=data.content?.[0]?.text||'Erreur de réponse';
-    chat.innerHTML+=`<div class="ai-msg assistant">${text.replace(/\n/g,'<br>')}</div>`;
-  } catch(e){typingEl.remove();chat.innerHTML+=`<div class="ai-msg assistant">⚠️ Erreur de connexion à l'IA.</div>`;}
-  chat.scrollTop=chat.scrollHeight;
+  const cryptoEl=document.getElementById('cryptoList');
+  if(cryptoEl)cryptoEl.innerHTML=state.cryptos.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune crypto</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">${state.cryptos.map(c=>{const val=c.current*c.qty,pnl=val-(c.pru*c.qty),perf=c.pru*c.qty>0?pnl/(c.pru*c.qty)*100:0,col=perf>=0?'#4adb8a':'#f05a5a';return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-weight:600;color:var(--text)">${c.name} (${c.symbol})</div><div style="font-size:0.62rem;color:var(--text-muted)">${c.qty} · PRU ${c.pru} €</div></div><button class="btn btn-danger" onclick="deleteCrypto(${c.id})">✕</button></div><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><input type="number" value="${c.current}" step="any" onchange="updateCryptoCurrent(${c.id},this.value)" style="width:100px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text);font-size:0.75rem;font-family:'DM Mono',monospace"/><span style="font-size:0.65rem;color:var(--text-muted)">€</span></div><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${val.toFixed(0)} € <span style="color:${col}">(${perf>=0?'+':''}${perf.toFixed(1)}%)</span></div></div>`;}).join('')}`;
+  // Non coté
+  const ncEl=document.getElementById('nonCoteList');
+  if(ncEl)ncEl.innerHTML=state.nonCote.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun investissement non coté</div>':`<div style="display:flex;flex-direction:column;gap:10px">${state.nonCote.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${n.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${n.type} · ${n.montant.toLocaleString('fr-FR')} €${n.rendement>0?' · '+n.rendement+'%/an · ~'+Math.round(n.montant*n.rendement/100)+' €/an':''}</div></div><button class="btn btn-danger" onclick="deleteNonCote(${n.id})">✕</button></div>`).join('')}`;
+  // Obligs
+  const obligEl=document.getElementById('obligList');
+  if(obligEl)obligEl.innerHTML=state.obligs.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune obligation</div>':`<div style="display:flex;flex-direction:column;gap:8px">${state.obligs.map(o=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${o.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${o.montant.toLocaleString('fr-FR')} € · ${o.taux}%/an${o.echeance?' · Échéance : '+o.echeance:''}</div></div><button class="btn btn-danger" onclick="deleteOblig(${o.id})">✕</button></div>`).join('')}`;
+  renderPatrimoine();
 }
 
 // ======= BUDGET =======
@@ -2356,6 +2621,232 @@ function renderFilms(){
 const PODCAST_RECO=[{cat:'🌐 Géopolitique',items:[{name:'Géopolitique profonde',desc:'Analyses hebdomadaires sur les tensions mondiales'},{name:'Le dessous des cartes (Arte)',desc:'Cartographie des enjeux géopolitiques'},{name:'Affaires Étrangères (France Culture)',desc:'Politique internationale approfondie'}]},{cat:'📈 Économie & Finance',items:[{name:'Génération Do It Yourself',desc:'Entrepreneuriat, finance, liberté financière'},{name:'Hacking Finance',desc:'Investissement, bourse, patrimoine'},{name:'Planet Money (NPR)',desc:'Économie mondiale — anglais B2+'}]},{cat:'💻 Tech',items:[{name:'Lex Fridman Podcast',desc:'IA, science, tech — anglais C1'},{name:'No Limit Secu',desc:'Cybersécurité en français'},{name:'Darknet Diaries',desc:'Histoires vraies de hacks — anglais C1'}]},{cat:'🧠 Développement perso',items:[{name:'Huberman Lab',desc:'Neurosciences, sommeil, performance — anglais B2+'},{name:'The Tim Ferriss Show',desc:'Interviews de performers — anglais C1'},{name:'Choses à Savoir',desc:'Culture générale en 5 min'}]}];
 function renderPodcastReco(){const el=document.getElementById('podcastReco');if(!el)return;el.innerHTML=PODCAST_RECO.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:flex;flex-direction:column;gap:6px">${cat.items.map(p=>`<div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px"><div style="font-size:0.75rem;font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.62rem;color:var(--text-muted)">${p.desc}</div></div>`).join('')}</div></div>`).join('');}
 
+// ======= MÉDITATION =======
+let meditTimer = null, meditSeconds = 10*60, meditRunning = false, meditDuration = 10;
+let meditType = 'respiration', breathPhase = 0, breathTimer = null;
+
+const MEDIT_INSTRUCTIONS = {
+  'respiration': {
+    label: '🌬️ Respiration 4-7-8',
+    text: 'Inspire par le nez pendant 4 secondes → retiens 7 secondes → expire lentement par la bouche pendant 8 secondes. Cette technique active le système nerveux parasympathique et réduit le stress en quelques minutes.',
+    breath: ['Inspire... (4s)', 'Retiens... (7s)', 'Expire... (8s)'],
+    durations: [4000, 7000, 8000],
+  },
+  'pleine-conscience': {
+    label: '🧠 Pleine conscience',
+    text: 'Observe tes pensées sans les juger. Ramène doucement ton attention sur ta respiration chaque fois que ton esprit s\'égare. Ne cherche pas à vider ton esprit — observe simplement ce qui se passe.',
+    breath: ['Observe...', 'Respire...', 'Relâche...'],
+    durations: [5000, 5000, 5000],
+  },
+  'body-scan': {
+    label: '🫁 Body scan',
+    text: 'Parcours mentalement ton corps de la tête aux pieds. Remarque les sensations sans chercher à les modifier. Détends chaque zone au fil de ton attention : crâne, nuque, épaules, poitrine, ventre, bras, jambes.',
+    breath: ['Scanne...', 'Détends...', 'Relâche...'],
+    durations: [6000, 6000, 6000],
+  },
+  'visualisation': {
+    label: '✨ Visualisation positive',
+    text: 'Ferme les yeux. Visualise un endroit où tu te sens en sécurité et serein — une plage, une forêt, un coin calme. Engage tous tes sens : qu\'est-ce que tu vois, entends, ressens ? Reste dans cet espace mental.',
+    breath: ['Visualise...', 'Ressens...', 'Ancre...'],
+    durations: [5000, 5000, 5000],
+  },
+};
+
+function setMeditType(type) {
+  meditType = type;
+  document.querySelectorAll('[id^="mtype-"]').forEach(btn => {
+    btn.className = 'btn'; btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)';
+  });
+  const btn = document.getElementById('mtype-' + type);
+  if (btn) { btn.className = 'btn btn-primary'; btn.style.cssText = 'background:#9b8cff;color:#fff;border:none'; }
+  const instr = MEDIT_INSTRUCTIONS[type];
+  const instrEl = document.getElementById('meditInstruction');
+  if (instrEl) instrEl.textContent = instr?.text || '';
+}
+
+function setMeditDur(min) {
+  meditDuration = min; meditSeconds = min * 60;
+  updateMeditDisplay();
+  document.querySelectorAll('[id^="mdur-"]').forEach(btn => {
+    btn.className = 'btn'; btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)';
+  });
+  const btn = document.getElementById('mdur-' + min);
+  if (btn) { btn.className = 'btn btn-primary'; btn.style.cssText = 'background:#9b8cff;color:#fff;border:none'; }
+}
+
+function updateMeditDisplay() {
+  const m = Math.floor(meditSeconds/60), s = meditSeconds%60;
+  const el = document.getElementById('meditDisplay');
+  if (el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startBreathCycle() {
+  const instr = MEDIT_INSTRUCTIONS[meditType];
+  if (!instr) return;
+  const circle = document.getElementById('breathCircle');
+  const status = document.getElementById('meditStatus');
+  const phases = instr.breath, durations = instr.durations;
+  let phase = 0;
+  function nextPhase() {
+    if (!meditRunning) return;
+    if (circle) {
+      circle.style.transform = phase === 0 ? 'scale(1.6)' : phase === 1 ? 'scale(1.6)' : 'scale(1)';
+      circle.style.background = phase === 0 ? 'rgba(123,94,167,0.3)' : phase === 1 ? 'rgba(123,94,167,0.4)' : 'rgba(123,94,167,0.1)';
+      circle.textContent = phases[phase];
+    }
+    if (status) status.textContent = phases[phase];
+    breathTimer = setTimeout(() => { phase = (phase+1) % phases.length; nextPhase(); }, durations[phase]);
+  }
+  nextPhase();
+}
+
+function startMedit() {
+  if (meditRunning) return;
+  meditRunning = true;
+  document.getElementById('meditStartBtn').style.opacity = '0.5';
+  startBreathCycle();
+  meditTimer = setInterval(() => {
+    meditSeconds--;
+    updateMeditDisplay();
+    if (meditSeconds <= 0) {
+      stopMedit(true);
+    }
+  }, 1000);
+}
+
+function stopMedit(completed = false) {
+  clearInterval(meditTimer); clearTimeout(breathTimer);
+  meditRunning = false;
+  const startBtn = document.getElementById('meditStartBtn');
+  if (startBtn) startBtn.style.opacity = '1';
+  const circle = document.getElementById('breathCircle');
+  if (circle) { circle.textContent = ''; circle.style.transform = 'scale(1)'; circle.style.background = 'rgba(123,94,167,0.15)'; }
+  if (completed) {
+    document.getElementById('meditStatus').textContent = '✅ Session terminée !';
+    if (!state.meditSessions) state.meditSessions = {};
+    const t = today();
+    if (!state.meditSessions[t]) state.meditSessions[t] = [];
+    state.meditSessions[t].push({ type: meditType, duration: meditDuration, time: new Date().toLocaleTimeString('fr-FR') });
+    save(); renderMeditStats(); showToast('Session de méditation terminée 🧘 ✓');
+    meditSeconds = meditDuration * 60; updateMeditDisplay();
+  }
+}
+
+function pauseMedit() {
+  if (!meditRunning) return;
+  clearInterval(meditTimer); clearTimeout(breathTimer);
+  meditRunning = false;
+  document.getElementById('meditStatus').textContent = 'En pause...';
+  const startBtn = document.getElementById('meditStartBtn');
+  if (startBtn) startBtn.style.opacity = '1';
+}
+
+function resetMedit() {
+  stopMedit(false);
+  meditSeconds = meditDuration * 60;
+  updateMeditDisplay();
+  document.getElementById('meditStatus').textContent = 'Prêt';
+}
+
+function renderMeditStats() {
+  if (!state.meditSessions) state.meditSessions = {};
+  const weekDates = getWeekDates();
+  const totalSessions = weekDates.reduce((s,d) => s + (state.meditSessions[d]?.length||0), 0);
+  const totalMin = weekDates.reduce((s,d) => s + (state.meditSessions[d]||[]).reduce((a,m)=>a+m.duration,0), 0);
+  const todaySessions = state.meditSessions[today()] || [];
+  const statsEl = document.getElementById('meditStats');
+  if (!statsEl) return;
+  statsEl.innerHTML = `
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${totalSessions}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Sessions / semaine</div>
+    </div>
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${totalMin}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Minutes / semaine</div>
+    </div>
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${todaySessions.length}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Sessions aujourd'hui</div>
+    </div>`;
+}
+
+function renderBienetre() {
+  if (!state.bienetre) state.bienetre = {};
+  const d = getBienetrDay(), t = today();
+  const sleepBed = document.getElementById('sleepBed'); if(sleepBed) sleepBed.value = d.bed||'';
+  const sleepWake = document.getElementById('sleepWake'); if(sleepWake) sleepWake.value = d.wake||'';
+  if (d.bed && d.wake) saveSleep();
+  if (d.sleepQ) saveSleepQuality(d.sleepQ);
+  if (d.energy) saveEnergy(d.energy);
+  if (d.mood) saveMood(d.mood);
+  const grat = document.getElementById('gratitudeText'); if(grat && d.gratitude) grat.value = d.gratitude;
+  const note = document.getElementById('bienetrNote'); if(note && d.note) note.value = d.note;
+  if (state.currentRetro) {
+    if (state.currentRetro.good) { const el=document.getElementById('retroGood'); if(el)el.value=state.currentRetro.good; }
+    if (state.currentRetro.block) { const el=document.getElementById('retroBlock'); if(el)el.value=state.currentRetro.block; }
+    if (state.currentRetro.next) { const el=document.getElementById('retroNext'); if(el)el.value=state.currentRetro.next; }
+  }
+  const weekDates = getWeekDates();
+  const histEl = document.getElementById('energyHistory');
+  const colors = ['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+  if (histEl) histEl.innerHTML = `<div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:8px">${weekDates.map((d,i)=>{
+    const day=state.bienetre[d]||{}, e=day.energy||0, isT=d===t;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:0.62rem;color:${e>0?colors[e]:'var(--text-muted)'}">${e>0?e:'-'}</div><div style="width:100%;height:${Math.max(4,e*12)}px;background:${e>0?colors[e]:'var(--border)'};border-radius:4px 4px 0 0"></div><div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'}">${DAYS_FR[i]}</div></div>`;
+  }).join('')}</div><div style="font-size:0.65rem;color:var(--text-muted)">Humeur : ${weekDates.map(d=>(state.bienetre[d]||{}).mood||'○').join('  ')}</div>`;
+  // Init méditation
+  setMeditType('respiration');
+  setMeditDur(10);
+  renderMeditStats();
+}
+
+// ======= DCA TRACKER =======
+function addDCA() {
+  const name = document.getElementById('dcaName').value.trim();
+  const env = document.getElementById('dcaEnv').value;
+  const amount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+  const day = parseInt(document.getElementById('dcaDay').value) || 1;
+  if (!name || !amount) { showToast('Remplis nom et montant !'); return; }
+  if (!state.dcaList) state.dcaList = [];
+  state.dcaList.push({ id: Date.now(), name, env, amount, day, active: true });
+  ['dcaName','dcaAmount','dcaDay'].forEach(id => document.getElementById(id).value = '');
+  save(); renderDCA(); showToast('DCA ajouté ✓');
+}
+
+function toggleDCA(id) {
+  const item = state.dcaList?.find(d => d.id === id);
+  if (item) { item.active = !item.active; save(); renderDCA(); }
+}
+
+function deleteDCA(id) {
+  state.dcaList = state.dcaList.filter(d => d.id !== id);
+  save(); renderDCA();
+}
+
+function renderDCA() {
+  if (!state.dcaList) state.dcaList = [];
+  const el = document.getElementById('dcaList');
+  const totalEl = document.getElementById('dcaTotal');
+  if (!el) return;
+  const ENV_COLORS = { PEA: '#c8f04a', CTO: '#48cae4', AV: '#9b8cff' };
+  const totalActive = state.dcaList.filter(d => d.active).reduce((s,d) => s + d.amount, 0);
+  el.innerHTML = state.dcaList.length === 0
+    ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun DCA programmé</div>'
+    : `<div style="display:flex;flex-direction:column;gap:8px">` +
+      state.dcaList.map(d => `
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid ${d.active?ENV_COLORS[d.env]||'var(--border)':'var(--border)'};opacity:${d.active?1:0.5};flex-wrap:wrap">
+          <div style="width:10px;height:10px;border-radius:50%;background:${d.active?ENV_COLORS[d.env]||'var(--accent)':'var(--text-muted)'};flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text)">${d.name}</div>
+            <div style="font-size:0.62rem;color:var(--text-muted)">${d.env} · Prélèvement le ${d.day} du mois</div>
+          </div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:${ENV_COLORS[d.env]||'var(--accent)'}">${d.amount} €/mois</div>
+          <div onclick="toggleDCA(${d.id})" style="cursor:pointer;padding:4px 10px;border-radius:999px;font-size:0.62rem;background:${d.active?'rgba(74,219,138,0.12)':'var(--surface)'};border:1px solid ${d.active?'rgba(74,219,138,0.3)':'var(--border)'};color:${d.active?'#4adb8a':'var(--text-muted)'}">${d.active?'Actif':'Pausé'}</div>
+          <button class="btn btn-danger" onclick="deleteDCA(${d.id})">✕</button>
+        </div>`).join('') + '</div>';
+  if (totalEl) totalEl.innerHTML = `Total DCA actifs : <span style="color:var(--accent);font-weight:700">${totalActive} €/mois</span> · <span style="color:var(--text-muted)">soit ${(totalActive*12).toLocaleString('fr-FR')} €/an</span>`;
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -2399,6 +2890,11 @@ renderFinance2();
 renderDigital();
 renderFilms();
 renderPodcastReco();
+renderPortfolio();
+renderPatrimoine();
+renderDCA();
+// Init invest env tabs
+switchInvEnv('pea');
 // Init sub-tabs
 const alimNut=document.getElementById('alim-nutrition');if(alimNut)alimNut.style.display='none';
 ['sim','objs','backup'].forEach(t=>{const el=document.getElementById('fin-'+t);if(el)el.style.display='none';});
