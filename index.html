@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard · Chris v2.01</title>
+<title>Dashboard · Chris v2.04</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -108,6 +108,65 @@
   .ai-typing span { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: bounce 1s infinite; }
   .ai-typing span:nth-child(2) { animation-delay: 0.15s; } .ai-typing span:nth-child(3) { animation-delay: 0.3s; }
   @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+  /* DARK/LIGHT MODE */
+  body.light-mode {
+    --bg: #f4f4f8; --surface: #ffffff; --surface2: #eeeef4; --border: #d0d0e0;
+    --text: #1a1a2e; --text-muted: #7070a0; --accent: #5a8a00;
+  }
+  body.light-mode .tab.active { color: #fff; }
+
+  /* THEME TOGGLE */
+  .theme-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 50; width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer; background: var(--surface2); border: 1px solid var(--border); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .theme-toggle:hover { transform: scale(1.1); }
+  /* POMODORO */
+  @keyframes pomoPulse { 0%,100%{box-shadow:0 0 0 0 rgba(200,240,74,0.4)} 50%{box-shadow:0 0 0 12px rgba(200,240,74,0)} }
+  .pomo-running { animation: pomoPulse 2s infinite; }
+  /* FOCUS MODE */
+  body.focus-mode .tabs { opacity: 0.3; pointer-events: none; }
+  body.focus-mode .header { opacity: 0.5; }
+  body.focus-mode #focusBanner { display: flex !important; }
+  #focusBanner { display: none; position: fixed; top: 0; left: 0; right: 0; background: var(--accent); color: #0e0e11; padding: 10px 20px; z-index: 200; align-items: center; justify-content: space-between; font-size: 0.78rem; font-weight: 600; }
+  /* DIGITAL */
+  .digital-rule { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .free-alt-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  /* FINANCE SIM */
+  .sim-result-card { text-align: center; padding: 16px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
+  .sim-result-val { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--accent); }
+  .sim-result-lab { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+  /* REPAS IA */
+  .recipe-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: border-color 0.2s; }
+  .recipe-card:hover { border-color: var(--accent3); }
+
+  /* ALERTS */
+  .alert-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 10px; margin-bottom: 10px; font-size: 0.75rem; animation: fadeIn 0.3s ease; }
+  .alert-warn { background: rgba(244,162,97,0.12); border: 1px solid rgba(244,162,97,0.3); color: #f4a261; }
+  .alert-danger { background: rgba(240,90,90,0.12); border: 1px solid rgba(240,90,90,0.3); color: #f05a5a; }
+  .alert-info { background: rgba(200,240,74,0.08); border: 1px solid rgba(200,240,74,0.2); color: var(--accent); }
+
+  /* BADGES */
+  .badge { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; text-align: center; transition: all 0.2s; }
+  .badge.unlocked { border-color: #f4a261; background: rgba(244,162,97,0.08); }
+  .badge.locked { opacity: 0.35; filter: grayscale(0.8); }
+  .badge-icon { font-size: 1.8rem; }
+  .badge-name { font-size: 0.62rem; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
+  .badge-desc { font-size: 0.58rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* CALENDAR */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-header { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 4px; letter-spacing: 1px; text-transform: uppercase; }
+  .cal-day { min-height: 70px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 4px; cursor: pointer; transition: border-color 0.15s; position: relative; }
+  .cal-day:hover { border-color: var(--accent); }
+  .cal-day.today { border-color: var(--accent); background: rgba(200,240,74,0.06); }
+  .cal-day.other-month { opacity: 0.3; }
+  .cal-day-num { font-size: 0.65rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .cal-event { font-size: 0.52rem; padding: 1px 4px; border-radius: 3px; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* SYNTHESE KPI */
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+  .kpi-value { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; margin-bottom: 4px; }
+  .kpi-label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+  .kpi-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -119,42 +178,57 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.01 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.04 — Dashboard Personnel</div>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('temps')">⏱ Temps</button>
+  <button class="tab active" onclick="switchTab('synthese')">📊 Synthèse</button>
   <button class="tab" onclick="switchTab('objectifs')">🎯 Objectifs</button>
+  <button class="tab" onclick="switchTab('planning')">⏱️ Planning</button>
   <button class="tab" onclick="switchTab('bienetre')">🧘 Bien-être</button>
   <button class="tab" onclick="switchTab('sport')">💪 Sport</button>
-  <button class="tab" onclick="switchTab('nutrition')">🥗 Nutrition</button>
-  <button class="tab" onclick="switchTab('repas')">🍽️ Repas</button>
+  <button class="tab" onclick="switchTab('alimentation')">🍽️ Alimentation</button>
+  <button class="tab" onclick="switchTab('mediatheque')">🎬 Médiathèque</button>
   <button class="tab" onclick="switchTab('langues')">🌍 Langues</button>
-  <button class="tab" onclick="switchTab('culture')">📚 Culture</button>
   <button class="tab" onclick="switchTab('invest')">📈 Invest.</button>
-  <button class="tab" onclick="switchTab('budget')">💶 Budget</button>
+  <button class="tab" onclick="switchTab('finances')">💶 Finances</button>
   <button class="tab" onclick="switchTab('formation')">🎓 Formation</button>
-  <button class="tab" onclick="switchTab('tempslibres')">🎮 Temps libres</button>
+  <button class="tab" onclick="switchTab('digital')">📱 Digital</button>
 </div>
 
-<!-- ===== TEMPS ===== -->
-<div class="panel active" id="panel-temps">
-  <div class="focus-block">
-    <div class="focus-label">🎯 Focus du jour</div>
-    <div class="focus-today" id="focusTodayText">—</div>
-    <div class="focus-time" id="focusTodayTime">—</div>
+
+<!-- ===== SYNTHÈSE ===== -->
+<!-- ===== SYNTHÈSE ===== -->
+<div class="panel active" id="panel-synthese">
+  <!-- Alertes -->
+  <div id="alertsContainer" style="margin-bottom:20px"></div>
+
+  <!-- Météo -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🌤️ Météo & Sport extérieur</div>
+    <div id="weatherWidget"><div style="font-size:0.72rem;color:var(--text-muted)">Chargement...</div></div>
   </div>
-  <div class="grid-2" id="projectsGrid"></div>
-  <div class="grid-2 section-gap">
-    <div class="card"><div class="card-title">Récap semaine</div><div id="weekSummary"></div></div>
-    <div>
-      <div class="card" style="margin-bottom:16px"><div class="card-title">Total cette semaine</div><div class="big-stat" id="totalWeek">0</div><div class="big-stat-label">minutes investies</div></div>
-      <div class="quote-card"><div class="quote-text" id="quoteText">—</div><div class="quote-author" id="quoteAuthor">—</div></div>
-    </div>
+
+  <!-- KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px" id="kpiGrid"></div>
+
+  <!-- Badges -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🏆 Badges & Récompenses</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px" id="badgesGrid"></div>
+  </div>
+
+  <!-- Export PDF -->
+  <div class="card" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
+    <div class="card-title" style="color:var(--accent)">📤 Export rapport mensuel</div>
+    <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px">Génère un résumé PDF de ta progression du mois — objectifs, sport, langues, budget.</div>
+    <button class="btn btn-primary" onclick="exportPDF()">📄 Générer le PDF</button>
   </div>
 </div>
 
+
+<!-- ===== OBJECTIFS ===== -->
 <!-- ===== OBJECTIFS ===== -->
 <div class="panel" id="panel-objectifs">
   <div style="background:linear-gradient(135deg,rgba(200,240,74,0.1),rgba(123,94,167,0.12));border:1px solid rgba(200,240,74,0.2);border-radius:var(--radius);padding:20px;margin-bottom:24px;text-align:center">
@@ -184,6 +258,8 @@
   <div class="card section-gap"><div class="card-title">Vue d'ensemble</div><div id="objStats"></div></div>
 </div>
 
+
+<!-- ===== BIEN-ÊTRE ===== -->
 <!-- ===== BIEN-ÊTRE ===== -->
 <div class="panel" id="panel-bienetre">
   <div class="grid-2" style="margin-bottom:20px">
@@ -241,8 +317,58 @@
     <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="saveRetroEntry()">Sauvegarder →</button></div>
   </div>
   <div class="card"><div class="card-title">📊 Historique énergie (7 jours)</div><div id="energyHistory"></div></div>
+
+  <!-- Méditation -->
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(123,94,167,0.08),rgba(72,202,228,0.06));border-color:rgba(123,94,167,0.2)">
+    <div class="card-title" style="color:#9b8cff">🧘 Méditation guidée</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Choisis une durée et un type de session. Le timer démarre avec un son de cloche.</div>
+
+    <!-- Sélection type + durée -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Type</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="meditTypeBtns">
+          <button class="btn btn-primary" id="mtype-respiration" onclick="setMeditType('respiration')">🌬️ Respiration</button>
+          <button class="btn" id="mtype-pleine-conscience" onclick="setMeditType('pleine-conscience')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🧠 Pleine conscience</button>
+          <button class="btn" id="mtype-body-scan" onclick="setMeditType('body-scan')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🫁 Body scan</button>
+          <button class="btn" id="mtype-visualisation" onclick="setMeditType('visualisation')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">✨ Visualisation</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Durée</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" id="mdur-5" onclick="setMeditDur(5)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">5 min</button>
+          <button class="btn btn-primary" id="mdur-10" onclick="setMeditDur(10)">10 min</button>
+          <button class="btn" id="mdur-15" onclick="setMeditDur(15)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">15 min</button>
+          <button class="btn" id="mdur-20" onclick="setMeditDur(20)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">20 min</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timer méditation -->
+    <div style="text-align:center;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:16px">
+      <div style="font-family:'DM Serif Display',serif;font-size:4rem;color:#9b8cff;line-height:1;margin-bottom:8px" id="meditDisplay">10:00</div>
+      <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px" id="meditStatus">Prêt</div>
+      <!-- Cercle de respiration animé -->
+      <div id="breathCircle" style="width:80px;height:80px;border-radius:50%;background:rgba(123,94,167,0.15);border:2px solid rgba(123,94,167,0.3);margin:0 auto 16px;transition:all 4s ease;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#9b8cff;letter-spacing:1px"></div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="startMedit()" id="meditStartBtn" style="background:#9b8cff">▶ Commencer</button>
+        <button class="btn" onclick="pauseMedit()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">⏸ Pause</button>
+        <button class="btn" onclick="resetMedit()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- Instruction de la session -->
+    <div id="meditInstruction" style="font-size:0.72rem;color:var(--text-muted);line-height:1.7;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:14px"></div>
+
+    <!-- Stats méditation -->
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px" id="meditStats"></div>
+  </div>
+
 </div>
 
+
+<!-- ===== SPORT ===== -->
 <!-- ===== SPORT ===== -->
 <div class="panel" id="panel-sport">
   <div class="grid-2" style="margin-bottom:20px">
@@ -271,29 +397,8 @@
   <div class="card"><div class="card-title">📊 Stats de la semaine</div><div id="sportStats"></div></div>
 </div>
 
-<!-- ===== NUTRITION ===== -->
-<div class="panel" id="panel-nutrition">
-  <div style="background:linear-gradient(135deg,rgba(74,219,138,0.07),rgba(72,202,228,0.07));border:1px solid rgba(74,219,138,0.2);border-radius:var(--radius);padding:18px;margin-bottom:20px">
-    <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#4adb8a;margin-bottom:6px">Suivi micronutriments</div>
-    <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.6">Coche les aliments consommés. Score de couverture auto — focus <strong style="color:var(--text)">B9, B12, Fer, Magnésium, Vitamine D</strong> (carences fréquentes chez les sportifs).</div>
-  </div>
-  <div class="card" style="margin-bottom:20px"><div class="card-title">🥦 Aliments du jour <span id="nutritionDate" style="color:var(--text-muted);font-size:0.65rem"></span></div><div id="nutritionChecklist"></div></div>
-  <div class="card" style="margin-bottom:20px"><div class="card-title">🔬 Couverture nutritionnelle</div><div id="carencesscore"></div></div>
-  <div class="card"><div class="card-title">📋 Guide anti-carences</div><div id="carence_guide"></div></div>
-</div>
 
-<!-- ===== REPAS ===== -->
-<div class="panel" id="panel-repas">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-    <button class="btn" onclick="repasNav(-1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">◀</button>
-    <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--accent)" id="repasDateLabel">—</div>
-    <button class="btn" onclick="repasNav(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">▶</button>
-    <button class="btn btn-primary" onclick="repasGoToday()">Aujourd'hui</button>
-  </div>
-  <div class="grid-3" id="repasCards"></div>
-  <div class="card section-gap"><div class="card-title">💪 Macros estimés du jour</div><div id="macrosBar"></div></div>
-</div>
-
+<!-- ===== LANGUES ===== -->
 <!-- ===== LANGUES ===== -->
 <div class="panel" id="panel-langues">
   <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
@@ -303,45 +408,105 @@
     <button class="btn" id="ltab-ru" onclick="switchLang('ru')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🇷🇺 Russe</button>
   </div>
   <div id="langPanel"></div>
+
+  <!-- Quiz vocabulaire -->
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(72,202,228,0.06));border-color:rgba(200,240,74,0.15)">
+    <div class="card-title" style="color:var(--accent)">🎯 Quiz vocabulaire — Répétition espacée</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Teste tes mots et améliore ta maîtrise automatiquement. Le niveau de chaque mot se met à jour selon tes réponses.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn btn-primary" onclick="startVocabQuiz('en')">🇬🇧 Quiz Anglais</button>
+      <button class="btn" onclick="startVocabQuiz('es')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🇪🇸 Quiz Espagnol</button>
+      <button class="btn" onclick="startVocabQuiz('it')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🇮🇹 Quiz Italien</button>
+      <button class="btn" onclick="startVocabQuiz('ru')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🇷🇺 Quiz Russe</button>
+    </div>
+    <div id="vocabQuizArea"></div>
+  </div>
 </div>
 
-<!-- ===== CULTURE ===== -->
-<div class="panel" id="panel-culture">
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">Ajouter un contenu</div>
-    <div class="add-row">
-      <input class="inp" type="text" id="cultTitle" placeholder="Titre / sujet" style="flex:2;min-width:140px"/>
-      <select class="inp" id="cultType"><option value="Livre">📖 Livre</option><option value="Roman policier">🔍 Roman policier</option><option value="Roman">📚 Roman</option><option value="Podcast">🎧 Podcast</option><option value="Vidéo">🎬 Vidéo</option><option value="Documentaire">🎥 Documentaire</option></select>
-      <select class="inp" id="cultTheme"><option value="Géopolitique">🌐 Géopolitique</option><option value="Économie">📈 Économie</option><option value="Tech">💻 Tech</option><option value="Histoire">🏛️ Histoire</option><option value="Science">🔬 Science</option><option value="Fiction">🕵️ Fiction</option><option value="Autre">📦 Autre</option></select>
-      <button class="btn btn-primary" onclick="addCultItem()">+ Ajouter</button>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="cultFilters">
-    <button class="btn btn-primary" onclick="setCultFilter('all')">Tous</button>
-    <button class="btn" onclick="setCultFilter('todo')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">À faire</button>
-    <button class="btn" onclick="setCultFilter('done')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">Terminés</button>
-  </div>
-  <div id="cultList"></div>
-  <div class="card section-gap">
-    <div class="card-title">💡 Suggestions livres</div>
-    <div id="bookSuggestions"></div>
-  </div>
-  <div class="card section-gap"><div class="card-title">Stats culture</div><div id="cultStats"></div></div>
-</div>
+
 
 <!-- ===== INVESTISSEMENTS ===== -->
 <div class="panel" id="panel-invest">
-  <!-- Sous-onglets sections -->
-  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="invSectionTabs">
-    <button class="inv-section-tab active" onclick="switchInvSection('livrets')">🏦 Livrets</button>
-    <button class="inv-section-tab" onclick="switchInvSection('bourse')">📈 Bourse</button>
-    <button class="inv-section-tab" onclick="switchInvSection('noncote')">🏢 Non coté</button>
-    <button class="inv-section-tab" onclick="switchInvSection('crypto')">🪙 Crypto</button>
-    <button class="inv-section-tab" onclick="switchInvSection('oblig')">📄 Obligations</button>
+
+  <!-- Sous-onglets enveloppes -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap" id="invEnvTabs">
+    <button class="btn btn-primary" id="invtab-pea" onclick="switchInvEnv('pea')">🇫🇷 PEA</button>
+    <button class="btn" id="invtab-cto" onclick="switchInvEnv('cto')" style="background:transparent;border:none;color:var(--text-muted)">🌍 CTO</button>
+    <button class="btn" id="invtab-av" onclick="switchInvEnv('av')" style="background:transparent;border:none;color:var(--text-muted)">🏦 AV</button>
+    <button class="btn" id="invtab-livrets" onclick="switchInvEnv('livrets')" style="background:transparent;border:none;color:var(--text-muted)">💰 Livrets</button>
+    <button class="btn" id="invtab-crypto" onclick="switchInvEnv('crypto')" style="background:transparent;border:none;color:var(--text-muted)">🪙 Crypto</button>
+    <button class="btn" id="invtab-noncote" onclick="switchInvEnv('noncote')" style="background:transparent;border:none;color:var(--text-muted)">🏢 Non coté</button>
+    <button class="btn" id="invtab-oblig" onclick="switchInvEnv('oblig')" style="background:transparent;border:none;color:var(--text-muted)">📄 Obligations</button>
+  </div>
+
+  <!-- PEA -->
+  <div id="inv-pea" class="inv-env-section">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#c8f04a">🇫🇷 PEA — Plan d'Épargne en Actions</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Enveloppe fiscalement avantageuse après 5 ans — actions européennes uniquement.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="pea-ticker" placeholder="Ticker (ex: AIR.PA)" style="width:120px"/>
+        <input class="inp" type="text" id="pea-name" placeholder="Nom (ex: Airbus)" style="flex:1;min-width:120px"/>
+        <select class="inp" id="pea-type"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option></select>
+        <input class="inp" type="number" id="pea-qty" placeholder="Qté" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="pea-pru" placeholder="PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('pea')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('pea')">🔄 Actualiser les cours</button>
+      <div id="pea-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="pea-table"></div></div>
+    <div class="grid-3" id="pea-stats"></div>
+  </div>
+
+  <!-- CTO -->
+  <div id="inv-cto" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#48cae4">🌍 CTO — Compte-Titres Ordinaire</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Sans plafond, toutes zones géographiques — plus flexible mais fiscalité moins avantageuse.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="cto-ticker" placeholder="Ticker (ex: MSFT)" style="width:120px"/>
+        <input class="inp" type="text" id="cto-name" placeholder="Nom (ex: Microsoft)" style="flex:1;min-width:120px"/>
+        <select class="inp" id="cto-type"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option><option value="Crypto">🪙 Crypto</option></select>
+        <input class="inp" type="number" id="cto-qty" placeholder="Qté" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="cto-pru" placeholder="PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('cto')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('cto')">🔄 Actualiser les cours</button>
+      <div id="cto-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="cto-table"></div></div>
+    <div class="grid-3" id="cto-stats"></div>
+  </div>
+
+  <!-- AV -->
+  <div id="inv-av" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#9b8cff">🏦 Assurance-Vie</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Enveloppe fiscale avantageuse après 8 ans — fonds euros + unités de compte.</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="av-ticker" placeholder="Ticker ou code ISIN" style="width:130px"/>
+        <input class="inp" type="text" id="av-name" placeholder="Nom du fonds/UC" style="flex:1;min-width:120px"/>
+        <select class="inp" id="av-type"><option value="Fonds euros">💎 Fonds euros</option><option value="ETF">🌍 ETF</option><option value="Action">📈 Action</option><option value="SCPI">🏠 SCPI</option></select>
+        <input class="inp" type="number" id="av-qty" placeholder="Parts" style="width:70px" step="any"/>
+        <input class="inp" type="number" id="av-pru" placeholder="VL/PRU (€)" style="width:90px" step="any"/>
+        <button class="btn btn-primary" onclick="addEnvPosition('av')">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="refreshEnvPrices('av')">🔄 Actualiser les cours</button>
+      <div id="av-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    </div>
+    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="av-table"></div></div>
+    <div class="grid-3" id="av-stats"></div>
   </div>
 
   <!-- Livrets -->
-  <div id="inv-livrets" class="inv-section">
+  <div id="inv-livrets" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter un livret</div>
       <div class="add-row">
@@ -355,45 +520,8 @@
     <div id="livretsList"></div>
   </div>
 
-  <!-- Bourse -->
-  <div id="inv-bourse" class="inv-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter une position</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="invTicker" placeholder="Ticker (ex: AIR.PA)" style="width:120px"/>
-        <input class="inp" type="text" id="invName" placeholder="Nom" style="flex:1;min-width:120px"/>
-        <select class="inp" id="invType"><option value="Action">📈 Action</option><option value="ETF">🌍 ETF</option></select>
-        <select class="inp" id="invEnvelope"><option value="PEA">🇫🇷 PEA</option><option value="CTO">🌍 CTO</option><option value="AV">🏦 AV</option></select>
-        <input class="inp" type="number" id="invQty" placeholder="Qté" style="width:70px" step="any"/>
-        <input class="inp" type="number" id="invPRU" placeholder="PRU (€)" style="width:90px" step="any"/>
-        <button class="btn btn-primary" onclick="addPosition()">+</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="refreshAllPrices()">🔄 Actualiser les cours</button>
-      <div id="lastRefresh" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
-    </div>
-    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div class="card-title">Portefeuille boursier</div><div id="portfolioTable"></div></div>
-    <div class="grid-3" id="portfolioStats"></div>
-  </div>
-
-  <!-- Non coté -->
-  <div id="inv-noncote" class="inv-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter un investissement non coté</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="ncName" placeholder="Nom (ex: SCPI, SCI, startup…)" style="flex:2"/>
-        <select class="inp" id="ncType"><option value="SCPI">🏠 SCPI</option><option value="Startup">🚀 Startup</option><option value="Immobilier">🏗️ Immobilier</option><option value="Crowdfunding">👥 Crowdfunding</option><option value="Autre">📦 Autre</option></select>
-        <input class="inp" type="number" id="ncMontant" placeholder="Montant investi (€)" style="width:150px"/>
-        <input class="inp" type="number" id="ncRendement" placeholder="Rendement %" style="width:110px" step="0.1"/>
-        <button class="btn btn-primary" onclick="addNonCote()">+</button>
-      </div>
-    </div>
-    <div id="nonCoteList"></div>
-  </div>
-
   <!-- Crypto -->
-  <div id="inv-crypto" class="inv-section" style="display:none">
+  <div id="inv-crypto" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter une crypto</div>
       <div class="add-row">
@@ -408,8 +536,23 @@
     <div id="cryptoList"></div>
   </div>
 
+  <!-- Non coté -->
+  <div id="inv-noncote" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">Ajouter un investissement non coté</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="ncName" placeholder="Nom (ex: SCPI, startup…)" style="flex:2"/>
+        <select class="inp" id="ncType"><option value="SCPI">🏠 SCPI</option><option value="Startup">🚀 Startup</option><option value="Immobilier">🏗️ Immobilier</option><option value="Crowdfunding">👥 Crowdfunding</option><option value="Autre">📦 Autre</option></select>
+        <input class="inp" type="number" id="ncMontant" placeholder="Montant investi (€)" style="width:150px"/>
+        <input class="inp" type="number" id="ncRendement" placeholder="Rendement %" style="width:110px" step="0.1"/>
+        <button class="btn btn-primary" onclick="addNonCote()">+</button>
+      </div>
+    </div>
+    <div id="nonCoteList"></div>
+  </div>
+
   <!-- Obligations -->
-  <div id="inv-oblig" class="inv-section" style="display:none">
+  <div id="inv-oblig" class="inv-env-section" style="display:none">
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">Ajouter une obligation</div>
       <div class="add-row">
@@ -423,91 +566,43 @@
     <div id="obligList"></div>
   </div>
 
+  <!-- DCA Tracker -->
+  <div class="card section-gap">
+    <div class="card-title">📅 DCA — Versements programmés</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Suivi de tes investissements automatiques mensuels.</div>
+    <div class="add-row" style="margin-top:0;margin-bottom:16px">
+      <input class="inp" type="text" id="dcaName" placeholder="Ex: SXR8, Microsoft..." style="flex:1"/>
+      <select class="inp" id="dcaEnv"><option value="CTO">CTO</option><option value="PEA">PEA</option><option value="AV">AV</option></select>
+      <input class="inp" type="number" id="dcaAmount" placeholder="Montant €/mois" style="width:130px"/>
+      <input class="inp" type="number" id="dcaDay" placeholder="Jour du mois" style="width:110px" min="1" max="31"/>
+      <button class="btn btn-primary" onclick="addDCA()">+ Ajouter</button>
+    </div>
+    <div id="dcaList"></div>
+    <div id="dcaTotal" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)"></div>
+  </div>
+
   <!-- Vue globale patrimoine -->
-  <div class="card section-gap"><div class="card-title">🏦 Vue globale patrimoine</div><div id="patrimoineGlobal"></div></div>
+  <div class="card section-gap">
+    <div class="card-title">🏦 Vue globale patrimoine</div>
+    <div id="patrimoineGlobal"></div>
+  </div>
 
   <!-- Conseil IA -->
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
-    <div class="card-title" style="color:var(--accent)">🤖 Conseil investissement IA</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Basé sur ton profil et la situation des marchés — conseil non contractuel, à croiser avec d'autres sources.</div>
+    <div class="card-title" style="color:var(--accent)">🤖 Conseil investissement — IA</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Conseil non contractuel, à croiser avec d'autres sources.</div>
     <div id="investAdviceChat" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div>
     <div style="display:flex;gap:8px">
-      <input class="inp" type="text" id="investQuestion" placeholder="Ex: Quelles actions acheter en ce moment ? Diversifier mon PEA ?" style="flex:1"/>
+      <input class="inp" type="text" id="investQuestion" placeholder="Ex: Diversifier mon PEA ? Quelles actions en ce moment ?" style="flex:1"/>
       <button class="btn btn-primary" onclick="askInvestAdvice()">Demander →</button>
     </div>
   </div>
+
 </div>
 
-<!-- ===== BUDGET ===== -->
-<div class="panel" id="panel-budget">
-  <div class="budget-header">
-    <div><div class="budget-title">Mois en cours</div><div class="budget-month" id="budgetMonth">—</div></div>
-    <div class="balance-pill balance-pos" id="balancePill">Solde : +0 €</div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
-    <div class="ie-card"><div class="ie-label">Revenus</div><div class="ie-value income" id="totalIncome">0 €</div></div>
-    <div class="ie-card"><div class="ie-label">Dépenses</div><div class="ie-value expense" id="totalExpense">0 €</div></div>
-    <div class="ie-card"><div class="ie-label">Prélèvements auto</div><div class="ie-value" id="totalPrelevements" style="color:var(--accent4)">0 €</div></div>
-  </div>
 
-  <!-- Prélèvements récurrents -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🔄 Prélèvements mensuels récurrents</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Ajoutés automatiquement chaque mois au calcul.</div>
-    <div class="add-row">
-      <input class="inp" type="text" id="prelevLabel" placeholder="Ex: Abonnement téléphone" style="flex:2"/>
-      <input class="inp" type="number" id="prelevAmount" placeholder="Montant (€)" style="width:120px"/>
-      <select class="inp" id="prelevCat"><option value="Abonnements">📱 Abonnements</option><option value="Logement">🏠 Logement</option><option value="Transport">🚗 Transport</option><option value="Santé">❤️ Santé</option><option value="Loisirs">🎮 Loisirs</option><option value="Autre">📦 Autre</option></select>
-      <button class="btn btn-primary" onclick="addPrelevement()">+ Ajouter</button>
-    </div>
-    <div id="prelevList" style="margin-top:12px"></div>
-  </div>
 
-  <!-- Ajouter transaction -->
-  <div class="card section-gap">
-    <div class="card-title">Ajouter une transaction</div>
-    <div class="add-row">
-      <input class="inp inp-amount" type="number" id="txAmount" placeholder="Montant (€)"/>
-      <input class="inp inp-label" type="text" id="txLabel" placeholder="Description"/>
-      <select class="inp" id="txCat"><option value="Salaire">💰 Salaire</option><option value="Logement">🏠 Logement</option><option value="Alimentation">🛒 Alimentation</option><option value="Transport">🚗 Transport</option><option value="Loisirs">🎮 Loisirs</option><option value="Épargne">💎 Épargne</option><option value="Santé">❤️ Santé</option><option value="Abonnements">📱 Abonnements</option><option value="Autre">📦 Autre</option></select>
-      <select class="inp" id="txType"><option value="income">↑ Revenu</option><option value="expense">↓ Dépense</option></select>
-      <button class="btn btn-primary" onclick="addTransaction()">+ Ajouter</button>
-    </div>
-  </div>
-
-  <div class="grid-2 section-gap">
-    <div class="card">
-      <div class="card-title">Par catégorie</div>
-      <div id="catBreakdown"></div>
-      <div style="margin-top:20px"><canvas id="budgetChart" height="220"></canvas></div>
-    </div>
-    <div class="card"><div class="card-title">Transactions récentes</div><div id="txList"></div></div>
-  </div>
-
-  <!-- Épargne -->
-  <div class="card section-gap">
-    <div class="card-title">Objectif épargne mensuel</div>
-    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-      <div class="savings-ring-wrap">
-        <svg class="ring" width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="46" fill="none" stroke="#2a2a35" stroke-width="9"/>
-          <circle cx="55" cy="55" r="46" fill="none" stroke="#c8f04a" stroke-width="9" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" transform="rotate(-90 55 55)" id="savingsArc"/>
-          <text x="55" y="52" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="#e8e8f0" id="savingsPct">0%</text>
-          <text x="55" y="68" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#6b6b80">épargné</text>
-        </svg>
-      </div>
-      <div style="flex:1">
-        <div style="font-size:0.7rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Objectif mensuel</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <input class="inp" type="number" id="savingsGoal" placeholder="Ex : 200" style="width:120px" oninput="updateSavings()"/>
-          <span style="font-size:0.75rem;color:var(--text-muted)">€ / mois</span>
-        </div>
-        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;">Épargne ce mois : <span id="savingsReal" style="color:var(--accent)">0 €</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
+<!-- ===== FORMATION ===== -->
 <!-- ===== FORMATION ===== -->
 <div class="panel" id="panel-formation">
   <!-- IA Conseils -->
@@ -571,10 +666,115 @@
   </div>
 </div>
 
-<!-- ===== TEMPS LIBRES ===== -->
-<div class="panel" id="panel-tempslibres">
+
+<!-- ===== FOCUS ===== -->
+<!-- ===== FOCUS & PRODUCTIVITÉ ===== -->
+<div class="panel" id="panel-focus">
+
+  <!-- 3 Priorités du jour -->
+  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
+    <div class="card-title" style="color:var(--accent)">🎯 Mes 3 priorités du jour</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Avant de commencer ta journée — quelles sont les 3 choses les plus importantes à accomplir ?</div>
+    <div style="display:flex;flex-direction:column;gap:10px" id="prioritiesList">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent);width:24px">1</span><input class="inp" type="text" id="prio1" placeholder="Priorité n°1 (la plus importante)" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent3);width:24px">2</span><input class="inp" type="text" id="prio2" placeholder="Priorité n°2" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-muted);width:24px">3</span><input class="inp" type="text" id="prio3" placeholder="Priorité n°3" style="flex:1" oninput="savePriorities()"/></div>
+    </div>
+  </div>
+
+  <!-- Pomodoro -->
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">⏱️ Pomodoro Timer</div>
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-family:'DM Serif Display',serif;font-size:4rem;color:var(--accent);line-height:1;margin-bottom:8px" id="pomodoroDisplay">25:00</div>
+        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px" id="pomodoroStatus">Prêt à démarrer</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="startPomodoro()" id="pomodoroStartBtn">▶ Démarrer</button>
+          <button class="btn" onclick="pausePomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">⏸ Pause</button>
+          <button class="btn" onclick="resetPomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">↺ Reset</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+          <button onclick="setPomoDuration(25)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">25 min</button>
+          <button onclick="setPomoDuration(45)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">45 min</button>
+          <button onclick="setPomoDuration(5)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">5 min 🧘</button>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted)">
+        <span>Sessions aujourd'hui</span>
+        <span id="pomodoroCount" style="color:var(--accent);font-weight:600">0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📵 Mode Focus</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">Active le mode focus pour masquer les distractions et te concentrer sur une seule chose.</div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Sur quoi je travaille</div>
+        <input class="inp" type="text" id="focusTask" placeholder="Ex: Préparer ma présentation Sage..." style="width:100%"/>
+      </div>
+      <button onclick="toggleFocusMode()" id="focusModeBtn" class="btn btn-primary" style="width:100%">🎯 Activer le mode focus</button>
+      <div style="margin-top:12px;font-size:0.65rem;color:var(--text-muted)">Le mode focus simplifie l'affichage et met en avant uniquement l'essentiel.</div>
+    </div>
+  </div>
+
+  <!-- Suivi des sessions Pomodoro -->
+  <div class="card">
+    <div class="card-title">📊 Historique sessions cette semaine</div>
+    <div id="pomodoroHistory"></div>
+  </div>
+
+</div>
+
+
+
+<!-- ===== PLANNING ===== -->
+<div class="panel" id="panel-planning">
+  <!-- Focus du jour -->
+  <div class="focus-block" style="margin-bottom:20px">
+    <div class="focus-label">🎯 Focus du jour</div>
+    <div class="focus-today" id="focusTodayText">—</div>
+    <div class="focus-time" id="focusTodayTime">—</div>
+  </div>
+  <!-- 3 Priorités -->
+  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
+    <div class="card-title" style="color:var(--accent)">🎯 3 priorités du jour</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Avant de commencer — quelles sont les 3 choses les plus importantes aujourd'hui ?</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent);width:24px">1</span><input class="inp" type="text" id="prio1" placeholder="Priorité n°1 (la plus importante)" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent3);width:24px">2</span><input class="inp" type="text" id="prio2" placeholder="Priorité n°2" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-muted);width:24px">3</span><input class="inp" type="text" id="prio3" placeholder="Priorité n°3" style="flex:1" oninput="savePriorities()"/></div>
+    </div>
+  </div>
+  <!-- Projets semaine + Pomodoro -->
+  <div class="grid-2" style="margin-bottom:20px">
+    <div>
+      <div class="grid-2" id="projectsGrid"></div>
+      <div class="card" style="margin-top:16px"><div class="card-title">Récap semaine</div><div id="weekSummary"></div><div style="margin-top:12px"><div class="big-stat" id="totalWeek">0</div><div class="big-stat-label">minutes investies</div></div></div>
+    </div>
+    <!-- Pomodoro -->
+    <div class="card">
+      <div class="card-title">⏱️ Pomodoro</div>
+      <div style="text-align:center;padding:16px 0">
+        <div style="font-family:'DM Serif Display',serif;font-size:4rem;color:var(--accent);line-height:1;margin-bottom:8px" id="pomodoroDisplay">25:00</div>
+        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px" id="pomodoroStatus">Prêt à démarrer</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="startPomodoro()">▶ Start</button>
+          <button class="btn" onclick="pausePomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">⏸</button>
+          <button class="btn" onclick="resetPomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">↺</button>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:12px">
+          <button onclick="setPomoDuration(25)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:5px 10px">25 min</button>
+          <button onclick="setPomoDuration(45)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:5px 10px">45 min</button>
+          <button onclick="setPomoDuration(5)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:5px 10px">5 min 🧘</button>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted)"><span>Sessions aujourd'hui</span><span id="pomodoroCount" style="color:var(--accent);font-weight:600">0</span></div>
+      <div id="pomodoroHistory" style="margin-top:12px"></div>
+    </div>
+  </div>
+  <!-- To-do + To-buy -->
   <div class="grid-2">
-    <!-- Todo list -->
     <div class="card">
       <div class="card-title">✅ To-do list</div>
       <div class="add-row" style="margin-top:0;margin-bottom:14px">
@@ -584,23 +784,309 @@
       </div>
       <div id="todoList"></div>
     </div>
-    <!-- Liste achats -->
     <div class="card">
       <div class="card-title">🛒 Achats potentiels</div>
       <div class="add-row" style="margin-top:0;margin-bottom:14px">
-        <input class="inp" type="text" id="achatInput" placeholder="Ex: Chaussures running, Babbel lifetime…" style="flex:1" onkeydown="if(event.key==='Enter')addAchat()"/>
-        <input class="inp" type="number" id="achatPrice" placeholder="Prix est. (€)" style="width:110px"/>
-        <select class="inp" id="achatCat" style="width:110px"><option value="Sport">💪 Sport</option><option value="Tech">💻 Tech</option><option value="Formation">🎓 Formation</option><option value="Maison">🏠 Maison</option><option value="Loisirs">🎮 Loisirs</option><option value="Autre">📦 Autre</option></select>
+        <input class="inp" type="text" id="achatInput" placeholder="Ex: Chaussures running..." style="flex:1" onkeydown="if(event.key==='Enter')addAchat()"/>
+        <input class="inp" type="number" id="achatPrice" placeholder="Prix €" style="width:90px"/>
+        <select class="inp" id="achatCat" style="width:100px"><option value="Sport">💪 Sport</option><option value="Tech">💻 Tech</option><option value="Formation">🎓 Formation</option><option value="Maison">🏠 Maison</option><option value="Loisirs">🎮 Loisirs</option><option value="Autre">📦 Autre</option></select>
         <button class="btn btn-primary" onclick="addAchat()">+</button>
       </div>
       <div id="achatList"></div>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text-muted)">
-        Budget estimé : <span id="achatTotal" style="color:var(--accent);font-weight:600">0 €</span>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text-muted)">Budget estimé : <span id="achatTotal" style="color:var(--accent);font-weight:600">0 €</span></div>
+    </div>
+  </div>
+  <!-- Calendrier -->
+  <div class="card section-gap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn" onclick="calNav(-1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">◀</button>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--accent)" id="calMonthLabel">—</div>
+        <button class="btn" onclick="calNav(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">▶</button>
+        <button class="btn btn-primary" onclick="calGoToday()">Aujourd'hui</button>
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="calLegend"></div>
+    </div>
+    <div class="cal-grid" id="calDaysHeader"></div>
+    <div class="cal-grid" style="margin-top:4px" id="calGrid"></div>
+    <div id="calDayDetail" style="display:none;margin-top:16px;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--accent);margin-bottom:10px" id="calDayDetailTitle">—</div>
+      <div id="calDayDetailContent"></div>
+    </div>
+  </div>
+  <div class="quote-card"><div class="quote-text" id="quoteText">—</div><div class="quote-author" id="quoteAuthor">—</div></div>
+</div>
+
+<!-- ===== ALIMENTATION ===== -->
+<div class="panel" id="panel-alimentation">
+  <!-- Sous-onglets -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content">
+    <button class="btn btn-primary" id="alim-tab-repas" onclick="switchAlimTab('repas')" style="font-size:0.7rem;padding:7px 14px">🍽️ Repas</button>
+    <button class="btn" id="alim-tab-nutrition" onclick="switchAlimTab('nutrition')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🥗 Nutrition</button>
+  </div>
+
+  <!-- Repas sub-panel -->
+  <div id="alim-repas">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn" onclick="repasNav(-1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">◀</button>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--accent)" id="repasDateLabel">—</div>
+      <button class="btn" onclick="repasNav(1)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">▶</button>
+      <button class="btn btn-primary" onclick="repasGoToday()">Aujourd'hui</button>
+    </div>
+    <div class="grid-3" id="repasCards"></div>
+    <div class="card section-gap"><div class="card-title">💪 Macros estimés du jour</div><div id="macrosBar"></div></div>
+    <div class="card section-gap" style="background:linear-gradient(135deg,rgba(244,162,97,0.06),rgba(123,94,167,0.06));border-color:rgba(244,162,97,0.2)">
+      <div class="card-title" style="color:var(--accent3)">🤖 Suggestion de repas — IA</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère une recette équilibrée et riche en protéines. Clique pour l'appliquer.</div>
+      <div class="grid-3">
+        <div><div style="font-size:0.62rem;color:var(--accent3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌅 Petit-déjeuner</div><button class="btn" onclick="suggestMeal('matin')" style="background:var(--surface2);border:1px solid rgba(244,162,97,0.3);color:var(--accent3);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-matin"></div></div>
+        <div><div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">☀️ Déjeuner</div><button class="btn" onclick="suggestMeal('midi')" style="background:var(--surface2);border:1px solid rgba(200,240,74,0.3);color:var(--accent);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-midi"></div></div>
+        <div><div style="font-size:0.62rem;color:var(--accent2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌙 Dîner</div><button class="btn" onclick="suggestMeal('soir')" style="background:var(--surface2);border:1px solid rgba(123,94,167,0.3);color:var(--accent2);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-soir"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nutrition sub-panel -->
+  <div id="alim-nutrition" style="display:none">
+    <div style="background:linear-gradient(135deg,rgba(74,219,138,0.07),rgba(72,202,228,0.07));border:1px solid rgba(74,219,138,0.2);border-radius:var(--radius);padding:18px;margin-bottom:20px">
+      <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#4adb8a;margin-bottom:6px">Suivi micronutriments</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.6">Coche les aliments consommés. Focus <strong style="color:var(--text)">B9, B12, Fer, Magnésium, Vitamine D</strong> — carences fréquentes chez les sportifs.</div>
+    </div>
+    <div class="card" style="margin-bottom:20px"><div class="card-title">🥦 Aliments du jour <span id="nutritionDate" style="color:var(--text-muted);font-size:0.65rem"></span></div><div id="nutritionChecklist"></div></div>
+    <div class="card" style="margin-bottom:20px"><div class="card-title">🔬 Couverture nutritionnelle</div><div id="carencesscore"></div></div>
+    <div class="card"><div class="card-title">📋 Guide anti-carences</div><div id="carence_guide"></div></div>
+  </div>
+</div>
+
+<!-- ===== MÉDIATHÈQUE ===== -->
+<div class="panel" id="panel-mediatheque">
+  <!-- Sous-onglets -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap">
+    <button class="btn btn-primary" id="media-tab-films" onclick="switchMediaTab('films')" style="font-size:0.7rem;padding:7px 14px">🎬 Films</button>
+    <button class="btn" id="media-tab-livres" onclick="switchMediaTab('livres')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">📖 Livres</button>
+    <button class="btn" id="media-tab-podcasts" onclick="switchMediaTab('podcasts')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🎧 Podcasts & Docs</button>
+  </div>
+
+  <!-- Films sub-panel -->
+  <div id="media-films">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Ajouter un film</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="filmTitle" placeholder="Titre du film" style="flex:2;min-width:140px"/>
+        <select class="inp" id="filmGenre">
+          <option value="Plot twist">🌀 Plot twist</option>
+          <option value="Thriller">🔪 Thriller</option>
+          <option value="Drame">🎭 Drame</option>
+          <option value="Documentaire">🎥 Documentaire</option>
+          <option value="Science-Fiction">🚀 Science-Fiction</option>
+          <option value="Classique">🏛️ Classique</option>
+          <option value="Comédie">😄 Comédie</option>
+          <option value="Action">💥 Action</option>
+          <option value="Autre">📦 Autre</option>
+        </select>
+        <input class="inp" type="text" id="filmYear" placeholder="Année" style="width:80px"/>
+        <button class="btn btn-primary" onclick="addFilm()">+ Ajouter</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="filmFilters">
+      <button class="btn btn-primary" onclick="setFilmFilter('all')">Tous</button>
+      <button class="btn" onclick="setFilmFilter('avoir')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🎬 À voir</button>
+      <button class="btn" onclick="setFilmFilter('vu')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">✅ Vus</button>
+      <button class="btn" onclick="setFilmFilter('Plot twist')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🌀 Plot twist</button>
+      <button class="btn" onclick="setFilmFilter('Documentaire')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🎥 Docs</button>
+    </div>
+    <div id="filmList"></div>
+    <div class="card section-gap">
+      <div class="card-title">💡 Suggestions — Films incontournables</div>
+      <div id="filmSuggestions"></div>
+    </div>
+  </div>
+
+  <!-- Livres sub-panel -->
+  <div id="media-livres" style="display:none">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Ajouter un contenu</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="cultTitle" placeholder="Titre / sujet" style="flex:2;min-width:140px"/>
+        <select class="inp" id="cultType"><option value="Livre">📖 Livre</option><option value="Roman policier">🔍 Roman policier</option><option value="Roman">📚 Roman</option><option value="Podcast">🎧 Podcast</option><option value="Vidéo">🎬 Vidéo</option><option value="Documentaire">🎥 Documentaire</option></select>
+        <select class="inp" id="cultTheme"><option value="Géopolitique">🌐 Géopolitique</option><option value="Économie">📈 Économie</option><option value="Tech">💻 Tech</option><option value="Histoire">🏛️ Histoire</option><option value="Science">🔬 Science</option><option value="Fiction">🕵️ Fiction</option><option value="Autre">📦 Autre</option></select>
+        <button class="btn btn-primary" onclick="addCultItem()">+ Ajouter</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="cultFilters">
+      <button class="btn btn-primary" onclick="setCultFilter('all')">Tous</button>
+      <button class="btn" onclick="setCultFilter('todo')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">À faire</button>
+      <button class="btn" onclick="setCultFilter('done')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">Terminés</button>
+    </div>
+    <div id="cultList"></div>
+    <div class="card section-gap"><div class="card-title">💡 Suggestions livres</div><div id="bookSuggestions"></div></div>
+    <div class="card section-gap">
+      <div class="card-title">📖 Résumé de livre — IA</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <input class="inp" type="text" id="bookSummaryInput" placeholder="Titre du livre..." style="flex:1"/>
+        <button class="btn btn-primary" onclick="summarizeBook(document.getElementById('bookSummaryInput').value)">Résumer →</button>
+      </div>
+      <div id="bookSummaryResult" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Podcasts & Docs sub-panel -->
+  <div id="media-podcasts" style="display:none">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">📰 Actualités du moment — IA</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Géopolitique · Économie · Tech</div>
+      <button class="btn btn-primary" onclick="fetchNews()" style="margin-bottom:14px">🔄 Charger les actualités</button>
+      <div id="newsContainer"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎧 Podcasts & Documentaires recommandés</div>
+      <div id="podcastReco"></div>
     </div>
   </div>
 </div>
 
+<!-- ===== FINANCES ===== -->
+<div class="panel" id="panel-finances">
+  <!-- Sous-onglets -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap">
+    <button class="btn btn-primary" id="fin-tab-budget" onclick="switchFinTab('budget')" style="font-size:0.7rem;padding:7px 14px">💶 Budget</button>
+    <button class="btn" id="fin-tab-sim" onclick="switchFinTab('sim')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">📊 Simulateur</button>
+    <button class="btn" id="fin-tab-objs" onclick="switchFinTab('objs')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🎯 Objectifs</button>
+    <button class="btn" id="fin-tab-backup" onclick="switchFinTab('backup')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">💾 Backup</button>
+  </div>
+
+  <!-- Budget sub-panel -->
+  <div id="fin-budget">
+    <div class="budget-header">
+      <div><div class="budget-title">Mois en cours</div><div class="budget-month" id="budgetMonth">—</div></div>
+      <div class="balance-pill balance-pos" id="balancePill">Solde : +0 €</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+      <div class="ie-card"><div class="ie-label">Revenus</div><div class="ie-value income" id="totalIncome">0 €</div></div>
+      <div class="ie-card"><div class="ie-label">Dépenses</div><div class="ie-value expense" id="totalExpense">0 €</div></div>
+      <div class="ie-card"><div class="ie-label">Prélèvements auto</div><div class="ie-value" id="totalPrelevements" style="color:var(--accent4)">0 €</div></div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">🔄 Prélèvements mensuels</div>
+      <div class="add-row">
+        <input class="inp" type="text" id="prelevLabel" placeholder="Ex: Abonnement téléphone" style="flex:2"/>
+        <input class="inp" type="number" id="prelevAmount" placeholder="Montant (€)" style="width:120px"/>
+        <select class="inp" id="prelevCat"><option value="Abonnements">📱 Abonnements</option><option value="Logement">🏠 Logement</option><option value="Transport">🚗 Transport</option><option value="Santé">❤️ Santé</option><option value="Loisirs">🎮 Loisirs</option><option value="Autre">📦 Autre</option></select>
+        <button class="btn btn-primary" onclick="addPrelevement()">+</button>
+      </div>
+      <div id="prelevList" style="margin-top:12px"></div>
+    </div>
+    <div class="card section-gap">
+      <div class="card-title">Ajouter une transaction</div>
+      <div class="add-row">
+        <input class="inp" type="number" id="txAmount" placeholder="Montant (€)"/>
+        <input class="inp" type="text" id="txLabel" placeholder="Description"/>
+        <select class="inp" id="txCat"><option value="Salaire">💰 Salaire</option><option value="Logement">🏠 Logement</option><option value="Alimentation">🛒 Alimentation</option><option value="Transport">🚗 Transport</option><option value="Loisirs">🎮 Loisirs</option><option value="Épargne">💎 Épargne</option><option value="Santé">❤️ Santé</option><option value="Abonnements">📱 Abonnements</option><option value="Autre">📦 Autre</option></select>
+        <select class="inp" id="txType"><option value="income">↑ Revenu</option><option value="expense">↓ Dépense</option></select>
+        <button class="btn btn-primary" onclick="addTransaction()">+</button>
+      </div>
+    </div>
+    <div class="grid-2 section-gap">
+      <div class="card"><div class="card-title">Par catégorie</div><div id="catBreakdown"></div><div style="margin-top:20px"><canvas id="budgetChart" height="220"></canvas></div></div>
+      <div class="card"><div class="card-title">Transactions récentes</div><div id="txList"></div></div>
+    </div>
+    <div class="card section-gap">
+      <div class="card-title">Objectif épargne mensuel</div>
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+        <div class="savings-ring-wrap">
+          <svg class="ring" width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="46" fill="none" stroke="#2a2a35" stroke-width="9"/>
+            <circle cx="55" cy="55" r="46" fill="none" stroke="#c8f04a" stroke-width="9" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" transform="rotate(-90 55 55)" id="savingsArc"/>
+            <text x="55" y="52" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="#e8e8f0" id="savingsPct">0%</text>
+            <text x="55" y="68" text-anchor="middle" font-family="DM Mono,monospace" font-size="8" fill="#6b6b80">épargné</text>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <input class="inp" type="number" id="savingsGoal" placeholder="Ex : 200" style="width:120px" oninput="updateSavings()"/>
+          <span style="font-size:0.75rem;color:var(--text-muted);margin-left:6px">€ / mois</span>
+          <div style="font-size:0.72rem;color:var(--text-muted);margin-top:10px">Épargne ce mois : <span id="savingsReal" style="color:var(--accent)">0 €</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulateur -->
+  <div id="fin-sim" style="display:none">
+    <div class="card">
+      <div class="card-title">📊 Simulateur épargne & intérêts composés</div>
+      <div class="add-row" style="margin-top:0;margin-bottom:16px">
+        <div><div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px">Capital initial (€)</div><input class="inp" type="number" id="simCapital" placeholder="Ex: 1000" style="width:130px" oninput="runSimulator()"/></div>
+        <div><div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px">Épargne mensuelle (€)</div><input class="inp" type="number" id="simMensuel" placeholder="Ex: 200" style="width:130px" oninput="runSimulator()"/></div>
+        <div><div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px">Taux annuel (%)</div><input class="inp" type="number" id="simTaux" placeholder="Ex: 7" style="width:110px" step="0.1" oninput="runSimulator()"/></div>
+        <div><div style="font-size:0.62rem;color:var(--text-muted);margin-bottom:4px">Durée (années)</div><input class="inp" type="number" id="simDuree" placeholder="Ex: 20" style="width:110px" oninput="runSimulator()"/></div>
+      </div>
+      <div id="simResults"></div>
+      <canvas id="simChart" height="180" style="margin-top:16px"></canvas>
+    </div>
+  </div>
+
+  <!-- Objectifs financiers -->
+  <div id="fin-objs" style="display:none">
+    <div class="card">
+      <div class="card-title">🎯 Objectifs financiers</div>
+      <div class="add-row" style="margin-top:0;margin-bottom:16px">
+        <input class="inp" type="text" id="finObjName" placeholder="Ex: Apport immobilier, Voyage..." style="flex:2"/>
+        <input class="inp" type="number" id="finObjTarget" placeholder="Objectif (€)" style="width:130px"/>
+        <input class="inp" type="number" id="finObjCurrent" placeholder="Épargné (€)" style="width:130px"/>
+        <button class="btn btn-primary" onclick="addFinObj()">+ Ajouter</button>
+      </div>
+      <div id="finObjList"></div>
+    </div>
+  </div>
+
+  <!-- Backup -->
+  <div id="fin-backup" style="display:none">
+    <div class="card" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
+      <div class="card-title" style="color:var(--accent)">💾 Sauvegarde & Restauration</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">Sauvegarde toutes tes données en 1 clic. Fonctionne sur tous les navigateurs et ordinateurs.</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="backupData()">📥 Sauvegarder mes données</button>
+        <label class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer">
+          📤 Restaurer une sauvegarde
+          <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)"/>
+        </label>
+      </div>
+      <div id="backupStatus" style="font-size:0.68rem;color:var(--text-muted);margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DIGITAL ===== -->
+<div class="panel" id="panel-digital">
+  <div style="background:linear-gradient(135deg,rgba(240,90,90,0.08),rgba(123,94,167,0.1));border:1px solid rgba(240,90,90,0.2);border-radius:var(--radius);padding:20px;margin-bottom:20px">
+    <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#f05a5a;margin-bottom:8px">⚠️ Rappel bien-être digital</div>
+    <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:1.1rem;color:var(--text);margin-bottom:6px">"Ton téléphone est un outil, pas une destination."</div>
+    <div style="font-size:0.7rem;color:var(--text-muted)">Une utilisation consciente améliore la concentration, le sommeil et le bien-être général.</div>
+  </div>
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">📋 Mes règles d'utilisation</div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="digitalRulesList"></div>
+      <div class="add-row" style="margin-top:14px">
+        <input class="inp" type="text" id="digitalRuleInput" placeholder="Ajouter une règle..." style="flex:1" onkeydown="if(event.key==='Enter')addDigitalRule()"/>
+        <button class="btn btn-primary" onclick="addDigitalRule()">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⏱️ Suivi temps écran aujourd'hui</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="screenTimeList"></div>
+      <div class="add-row" style="margin-top:14px">
+        <input class="inp" type="text" id="screenAppInput" placeholder="App (ex: Instagram)" style="flex:1"/>
+        <input class="inp" type="number" id="screenTimeInput" placeholder="Min" style="width:70px"/>
+        <button class="btn btn-primary" onclick="addScreenTime()">+</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px"><div class="card-title">🎬 Alternatives légales & gratuites</div><div id="freeAlternativesList"></div></div>
+  <div class="card"><div class="card-title">💡 Conseils détox digital</div><div id="digitalTipsList"></div></div>
+</div>
+
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Changer le thème">🌙</button>
 <div class="toast" id="toast"></div>
 <script>
 // ======= TODAY INIT =======
@@ -678,7 +1164,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, meditSessions:{}, dcaList:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -689,7 +1175,30 @@ function getDefaultState() {
       {id:1,name:'TOEIC',cat:'Langues',duree:'1–2 mois',desc:'Certification anglais professionnel',difficulty:'⭐⭐'},
       {id:2,name:'Certificat Voltaire',cat:'Langues',duree:'1–2 mois',desc:'Orthographe & grammaire française',difficulty:'⭐⭐'},
     ],
-    todos:[], achats:[],
+    todos:[], achats:[], unlockedBadges:[],
+    films:[
+      {id:1,title:'Shutter Island',genre:'Plot twist',year:'2010',status:'avoir',note:0,avis:''},
+      {id:2,title:'Fight Club',genre:'Plot twist',year:'1999',status:'avoir',note:0,avis:''},
+      {id:3,title:'Memento',genre:'Plot twist',year:'2000',status:'avoir',note:0,avis:''},
+      {id:4,title:'Inception',genre:'Plot twist',year:'2010',status:'avoir',note:0,avis:''},
+      {id:5,title:'Gone Girl',genre:'Thriller',year:'2014',status:'avoir',note:0,avis:''},
+      {id:6,title:'The Prestige',genre:'Plot twist',year:'2006',status:'avoir',note:0,avis:''},
+      {id:7,title:'The Sixth Sense',genre:'Plot twist',year:'1999',status:'avoir',note:0,avis:''},
+      {id:8,title:'La Ligne Verte',genre:'Drame',year:'1999',status:'avoir',note:0,avis:''},
+      {id:9,title:'Whiplash',genre:'Drame',year:'2014',status:'avoir',note:0,avis:''},
+      {id:10,title:'The Social Dilemma',genre:'Documentaire',year:'2020',status:'avoir',note:0,avis:''},
+      {id:11,title:'Parasite',genre:'Thriller',year:'2019',status:'avoir',note:0,avis:''},
+      {id:12,title:'Prisoners',genre:'Thriller',year:'2013',status:'avoir',note:0,avis:''},
+    ],
+    priorities:{}, pomodoroSessions:{}, finObjs:[],
+    digitalRules:[
+      {id:1,text:'Pas plus d\'1h de jeu vidéo par jour',done:false},
+      {id:2,text:'Téléphone en silencieux pendant les sessions de travail',done:false},
+      {id:3,text:'Pas d\'écran 30 min avant de dormir',done:false},
+      {id:4,text:'Pas de téléphone pendant les repas',done:false},
+      {id:5,text:'Vérifier les notifications max 3x par jour',done:false},
+    ],
+    screenTime:{},
   };
 }
 
@@ -758,8 +1267,38 @@ const CAT_COLORS={'Salaire':'#4adb8a','Logement':'#7b5ea7','Alimentation':'#f4a2
 function switchTab(name) {
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
+  const panel = document.getElementById('panel-'+name);
+  if(panel) panel.classList.add('active');
   event.target.classList.add('active');
+  if(name==='planning'){renderProjects();renderWeekSummary();renderTempsLibres();renderFocus();}
+  if(name==='alimentation'){renderRepas();renderNutrition();}
+  if(name==='mediatheque'){renderFilms();renderCulture();}
+  if(name==='finances'){renderBudget();renderFinance2();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();fetchWeather();}
+}
+function switchAlimTab(tab){
+  ['repas','nutrition'].forEach(t=>{
+    const el=document.getElementById('alim-'+t); if(el)el.style.display=t===tab?'block':'none';
+    const btn=document.getElementById('alim-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='repas')renderRepas(); else renderNutrition();
+}
+function switchMediaTab(tab){
+  ['films','livres','podcasts'].forEach(t=>{
+    const el=document.getElementById('media-'+t); if(el)el.style.display=t===tab?'block':'none';
+    const btn=document.getElementById('media-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='films')renderFilms(); else if(tab==='livres')renderCulture(); else renderPodcastReco();
+}
+function switchFinTab(tab){
+  ['budget','sim','objs','backup'].forEach(t=>{
+    const el=document.getElementById('fin-'+t); if(el)el.style.display=t===tab?'block':'none';
+    const btn=document.getElementById('fin-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='budget')renderBudget(); else if(tab==='objs')renderFinance2();
 }
 
 // ======= HEADER =======
@@ -880,28 +1419,6 @@ function saveRetroEntry() {
   ['retroGood','retroBlock','retroNext'].forEach(id=>document.getElementById(id).value='');
   save(); renderBienetre(); showToast('Rétrospective sauvegardée ✓');
 }
-function renderBienetre() {
-  if(!state.bienetre)state.bienetre={};
-  const d=getBienetrDay(), t=today();
-  document.getElementById('sleepBed').value=d.bed||''; document.getElementById('sleepWake').value=d.wake||'';
-  if(d.bed&&d.wake)saveSleep(); if(d.sleepQ)saveSleepQuality(d.sleepQ); if(d.energy)saveEnergy(d.energy); if(d.mood)saveMood(d.mood);
-  if(d.gratitude)document.getElementById('gratitudeText').value=d.gratitude;
-  if(d.note)document.getElementById('bienetrNote').value=d.note;
-  if(state.currentRetro){
-    if(state.currentRetro.good)document.getElementById('retroGood').value=state.currentRetro.good;
-    if(state.currentRetro.block)document.getElementById('retroBlock').value=state.currentRetro.block;
-    if(state.currentRetro.next)document.getElementById('retroNext').value=state.currentRetro.next;
-  }
-  const weekDates=getWeekDates();
-  const histEl=document.getElementById('energyHistory');
-  const colors=['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
-  histEl.innerHTML=`<div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:8px">${weekDates.map((d,i)=>{
-    const day=state.bienetre[d]||{}, e=day.energy||0, isT=d===t;
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:0.62rem;color:${e>0?colors[e]:'var(--text-muted)'}">${e>0?e:'-'}</div><div style="width:100%;height:${Math.max(4,e*12)}px;background:${e>0?colors[e]:'var(--border)'};border-radius:4px 4px 0 0"></div><div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'}">${DAYS_FR[i]}</div></div>`;
-  }).join('')}</div><div style="font-size:0.65rem;color:var(--text-muted)">Humeur : ${weekDates.map(d=>(state.bienetre[d]||{}).mood||'○').join('  ')}</div>`;
-}
-
-// ======= SPORT =======
 const SPORT_DAYS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const SPORT_COLORS=['#48cae4','#c8f04a','#f4a261','#7b5ea7','#4adb8a','#f05a5a','#9b8cff'];
 const SPORT_SUGGESTIONS={
@@ -1166,6 +1683,12 @@ function renderLangues(){
   <div class="card">
     <div class="card-title" style="color:${color}">💬 Expressions à connaître</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px">${res.expressions.map(e=>`<div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:0.75rem;color:var(--text)">${e}</div>`).join('')}</div>
+  </div>
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
+    <div class="card-title" style="color:var(--accent)">🤖 Suggestions de mots IA</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère 8 nouveaux mots/expressions adaptés à ton niveau actuel.</div>
+    <button class="btn btn-primary" onclick="suggestWords('${lang}')">✨ Suggérer des mots</button>
+    <div id="wordSuggestResult-${lang}" style="margin-top:12px"></div>
   </div>`;
 }
 
@@ -1204,111 +1727,283 @@ function renderCulture(){
 }
 
 // ======= INVESTISSEMENTS =======
-let currentInvSection='livrets';
-function switchInvSection(s){
-  currentInvSection=s;
-  document.querySelectorAll('.inv-section').forEach(el=>el.style.display='none');
-  document.getElementById('inv-'+s).style.display='block';
-  document.querySelectorAll('.inv-section-tab').forEach(b=>{b.classList.remove('active');});
-  event.target.classList.add('active');
-  renderPortfolio();
+const ENV_CONFIG = {
+  pea:  {label:'PEA',     color:'#c8f04a', desc:'Plan Épargne Actions'},
+  cto:  {label:'CTO',     color:'#48cae4', desc:'Compte-Titres Ordinaire'},
+  av:   {label:'AV',      color:'#9b8cff', desc:'Assurance-Vie'},
+};
+
+function switchInvEnv(env) {
+  document.querySelectorAll('.inv-env-section').forEach(el => el.style.display = 'none');
+  document.getElementById('inv-' + env).style.display = 'block';
+  document.querySelectorAll('[id^="invtab-"]').forEach(btn => {
+    btn.className = 'btn';
+    btn.style.cssText = 'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';
+  });
+  const activeBtn = document.getElementById('invtab-' + env);
+  if (activeBtn) {
+    activeBtn.className = 'btn btn-primary';
+    activeBtn.style.cssText = 'font-size:0.7rem;padding:7px 14px';
+  }
+  if (['pea','cto','av'].includes(env)) renderEnvTable(env);
+  else if (env === 'livrets') renderPortfolio();
+  else if (env === 'crypto') renderPortfolio();
+  else if (env === 'noncote') renderPortfolio();
+  else if (env === 'oblig') renderPortfolio();
+  renderPatrimoine();
 }
 
-// Livrets
+// --- Price fetching with fallback ---
+async function fetchPrice(ticker) {
+  if (!ticker) return null;
+
+  // Finnhub API — gratuit, pas de CORS
+  const FINNHUB_KEY = 'd0oodl1r01qi0rk0ptggd0oodl1r01qi0rk0pth0';
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`,
+      { signal: AbortSignal.timeout(6000) }
+    );
+    const data = await res.json();
+    if (data.c && data.c > 0) return Math.round(data.c * 100) / 100;
+  } catch(e) {}
+
+  // Fallback Yahoo Finance
+  try {
+    const res = await fetch(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    const data = await res.json();
+    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (price) return Math.round(price * 100) / 100;
+  } catch(e) {}
+
+  return null;
+}
+
+function getYahooLink(ticker) {
+  if (!ticker) return null;
+  return `https://finance.yahoo.com/quote/${ticker}`;
+}
+function getBoursoLink(ticker) {
+  if (!ticker) return null;
+  // Convert common tickers to Boursorama format
+  const t = ticker.replace('.PA','').replace('.MC','').replace('.MI','');
+  return `https://www.boursorama.com/recherche/ajax?query=${t}`;
+}
+
+// --- PEA / CTO / AV positions ---
+function addEnvPosition(env) {
+  const ticker = document.getElementById(env+'-ticker').value.trim().toUpperCase();
+  const name   = document.getElementById(env+'-name').value.trim();
+  const type   = document.getElementById(env+'-type').value;
+  const qty    = parseFloat(document.getElementById(env+'-qty').value) || 0;
+  const pru    = parseFloat(document.getElementById(env+'-pru').value) || 0;
+  if (!name) { showToast('Renseigne un nom !'); return; }
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  if (!state.envPositions[env]) state.envPositions[env] = [];
+  state.envPositions[env].push({ id: Date.now(), ticker, name, type, qty, pru, current: pru, lastUpdate: null });
+  [env+'-ticker', env+'-name', env+'-qty', env+'-pru'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; });
+  save(); renderEnvTable(env); renderPatrimoine();
+  showToast('Position ajoutée ✓');
+}
+
+function deleteEnvPosition(env, id) {
+  if (!state.envPositions?.[env]) return;
+  state.envPositions[env] = state.envPositions[env].filter(p => p.id !== id);
+  save(); renderEnvTable(env); renderPatrimoine();
+}
+
+function updateEnvField(env, id, field, val) {
+  const pos = state.envPositions?.[env]?.find(p => p.id === id);
+  if (pos) {
+    pos[field] = field === 'ticker' ? val.toUpperCase() : (parseFloat(val) || 0);
+    save(); renderEnvTable(env); renderPatrimoine();
+  }
+}
+
+async function refreshEnvPrices(env) {
+  if (!state.envPositions?.[env]?.length) { showToast('Aucune position à actualiser'); return; }
+  const statusEl = document.getElementById(env + '-refresh-status');
+  if (statusEl) statusEl.textContent = '⏳ Actualisation en cours...';
+  let updated = 0, failed = [];
+  for (const pos of state.envPositions[env]) {
+    if (pos.ticker) {
+      const price = await fetchPrice(pos.ticker);
+      if (price !== null) { pos.current = price; pos.lastUpdate = new Date().toLocaleTimeString('fr-FR'); updated++; }
+      else failed.push(pos.ticker);
+    }
+  }
+  save(); renderEnvTable(env); renderPatrimoine();
+  const time = new Date().toLocaleTimeString('fr-FR');
+  if (statusEl) {
+    if (failed.length === 0) statusEl.textContent = `✅ ${updated} cours mis à jour — ${time}`;
+    else statusEl.innerHTML = `⚠️ ${updated} mis à jour · ${failed.length} échoué(s) : ${failed.map(t => `<a href="https://finance.yahoo.com/quote/${t}" target="_blank" style="color:var(--accent)">${t}</a>`).join(', ')} · ${time}`;
+  }
+  showToast(`${updated} cours mis à jour ✓`);
+}
+
+function renderEnvTable(env) {
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  const positions = state.envPositions[env] || [];
+  const color = ENV_CONFIG[env]?.color || 'var(--accent)';
+  const tableEl = document.getElementById(env + '-table');
+  const statsEl = document.getElementById(env + '-stats');
+  if (!tableEl) return;
+
+  if (positions.length === 0) {
+    tableEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune position — ajoute tes titres</div>';
+    if (statsEl) statsEl.innerHTML = '';
+    return;
+  }
+
+  const totalInvest = positions.reduce((s,p) => s + p.pru * p.qty, 0);
+  const totalValeur = positions.reduce((s,p) => s + p.current * p.qty, 0);
+  const totalPnl = totalValeur - totalInvest;
+  const totalPerf = totalInvest > 0 ? totalPnl / totalInvest * 100 : 0;
+  const pnlColor = totalPnl >= 0 ? '#4adb8a' : '#f05a5a';
+
+  tableEl.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:0.72rem">
+      <thead>
+        <tr style="color:var(--text-muted);font-size:0.6rem;letter-spacing:1px;text-transform:uppercase">
+          <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">Valeur</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Qté</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">PRU</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Cours</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Valeur</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">+/- val.</th>
+          <th style="text-align:right;padding:6px 4px;border-bottom:1px solid var(--border)">Perf%</th>
+          <th style="padding:6px 4px;border-bottom:1px solid var(--border)"></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${positions.map(p => {
+          const invest = p.pru * p.qty;
+          const valeur = p.current * p.qty;
+          const pnl = valeur - invest;
+          const perf = invest > 0 ? pnl / invest * 100 : 0;
+          const c = perf >= 0 ? '#4adb8a' : '#f05a5a';
+          const yahooLink = p.ticker ? `<a href="https://finance.yahoo.com/quote/${p.ticker}" target="_blank" title="Voir sur Yahoo Finance" style="color:var(--text-muted);font-size:0.6rem;text-decoration:none">📊</a>` : '';
+          const lastUpd = p.lastUpdate ? `<div style="font-size:0.55rem;color:var(--text-muted)">↻ ${p.lastUpdate}</div>` : '';
+          return `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px 4px">
+              <div style="font-weight:600;color:var(--text)">${p.name} ${yahooLink}</div>
+              <div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type}</div>
+            </td>
+            <td style="text-align:right;padding:4px">
+              <input type="number" value="${p.qty}" step="any" onchange="updateEnvField('${env}',${p.id},'qty',this.value)"
+                style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/>
+            </td>
+            <td style="text-align:right;padding:4px">
+              <input type="number" value="${p.pru}" step="any" onchange="updateEnvField('${env}',${p.id},'pru',this.value)"
+                style="width:70px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/> €
+            </td>
+            <td style="text-align:right;padding:4px">
+              <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
+                <input type="number" value="${p.current}" step="0.01" onchange="updateEnvField('${env}',${p.id},'current',this.value)"
+                  style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/> €
+              </div>
+              ${lastUpd}
+            </td>
+            <td style="text-align:right;padding:4px;font-weight:600;color:var(--text)">${valeur.toFixed(0)} €</td>
+            <td style="text-align:right;padding:4px;font-weight:600;color:${c}">${pnl>=0?'+':''}${pnl.toFixed(0)} €</td>
+            <td style="text-align:right;padding:4px;font-weight:700;color:${c}">${perf>=0?'+':''}${perf.toFixed(1)}%</td>
+            <td style="padding:4px"><button class="btn btn-danger" onclick="deleteEnvPosition('${env}',${p.id})">✕</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+
+  if (statsEl) {
+    statsEl.innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${color}">${totalValeur.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valorisation ${ENV_CONFIG[env]?.label}</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPnl>=0?'+':''}${totalPnl.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Plus/moins-value</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPerf>=0?'+':''}${totalPerf.toFixed(1)}%</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Performance</div>
+      </div>`;
+  }
+}
+
+function renderPatrimoine() {
+  if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
+  const peaVal  = (state.envPositions.pea||[]).reduce((s,p) => s + p.current*p.qty, 0);
+  const ctoVal  = (state.envPositions.cto||[]).reduce((s,p) => s + p.current*p.qty, 0);
+  const avVal   = (state.envPositions.av||[]).reduce((s,p)  => s + p.current*p.qty, 0);
+  const livVal  = (state.livrets||[]).reduce((s,l) => s + l.solde, 0);
+  const cryptoVal = (state.cryptos||[]).reduce((s,c) => s + c.current*c.qty, 0);
+  const ncVal   = (state.nonCote||[]).reduce((s,n) => s + n.montant, 0);
+  const obligVal= (state.obligs||[]).reduce((s,o) => s + o.montant, 0);
+  const total = peaVal + ctoVal + avVal + livVal + cryptoVal + ncVal + obligVal;
+
+  const el = document.getElementById('patrimoineGlobal'); if (!el) return;
+  const items = [
+    ['🇫🇷 PEA', peaVal, '#c8f04a'],
+    ['🌍 CTO', ctoVal, '#48cae4'],
+    ['🏦 AV', avVal, '#9b8cff'],
+    ['💰 Livrets', livVal, '#4adb8a'],
+    ['🪙 Crypto', cryptoVal, '#f4a261'],
+    ['🏢 Non coté', ncVal, '#f05a5a'],
+    ['📄 Obligations', obligVal, '#7b5ea7'],
+  ].filter(x => x[1] > 0);
+
+  el.innerHTML = `
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${total.toLocaleString('fr-FR',{maximumFractionDigits:0})} €</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">Patrimoine total estimé</div>
+    </div>
+    ${items.length === 0 ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center">Ajoute tes positions pour voir la répartition</div>' :
+    items.map(([label, val, color]) => {
+      const pct = total > 0 ? Math.round(val/total*100) : 0;
+      return `<div class="summary-row">
+        <div class="summary-label"><div class="dot" style="background:${color}"></div>${label}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="prog-bar-bg" style="width:100px;margin:0"><div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+          <div class="summary-val">${val.toLocaleString('fr-FR',{maximumFractionDigits:0})} € (${pct}%)</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+// Keep old functions for backward compat (livrets, crypto, noncote, oblig)
 function addLivret(){const name=document.getElementById('livretName').value.trim(),solde=parseFloat(document.getElementById('livretSolde').value)||0,taux=parseFloat(document.getElementById('livretTaux').value)||0,plafond=parseFloat(document.getElementById('livretPlafond').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.livrets)state.livrets=[];state.livrets.push({id:Date.now(),name,solde,taux,plafond});['livretName','livretSolde','livretTaux','livretPlafond'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Livret ajouté ✓');}
 function deleteLivret(id){state.livrets=state.livrets.filter(l=>l.id!==id);save();renderPortfolio();}
 function updateLivretSolde(id,val){const l=state.livrets.find(l=>l.id===id);if(l){l.solde=parseFloat(val)||0;save();renderPortfolio();}}
-
-// Bourse + API prix
-async function fetchPrice(ticker){
-  try {
-    const res=await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,{headers:{'User-Agent':'Mozilla/5.0'}});
-    const data=await res.json();
-    const price=data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    return price||null;
-  } catch(e){ return null; }
-}
-async function refreshAllPrices(){
-  if(!state.positions||state.positions.length===0){showToast('Aucune position à actualiser');return;}
-  document.getElementById('lastRefresh').textContent='⏳ Actualisation...';
-  let updated=0;
-  for(const pos of state.positions){
-    if(pos.ticker){
-      const price=await fetchPrice(pos.ticker);
-      if(price!==null){pos.current=Math.round(price*100)/100;updated++;}
-    }
-  }
-  save(); renderPortfolio();
-  document.getElementById('lastRefresh').textContent=`✓ ${updated} cours mis à jour — ${new Date().toLocaleTimeString('fr-FR')}`;
-  showToast(`${updated} cours mis à jour ✓`);
-}
-function addPosition(){const ticker=document.getElementById('invTicker').value.trim().toUpperCase(),name=document.getElementById('invName').value.trim(),type=document.getElementById('invType').value,envelope=document.getElementById('invEnvelope').value,qty=parseFloat(document.getElementById('invQty').value)||0,pru=parseFloat(document.getElementById('invPRU').value)||0;if(!name){showToast('Renseigne un nom !');return;}if(!state.positions)state.positions=[];state.positions.push({id:Date.now(),ticker,name,type,envelope,qty,pru,current:pru});['invTicker','invName','invQty','invPRU'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Position ajoutée ✓');}
-function updatePositionField(id,field,val){const pos=state.positions.find(p=>p.id===id);if(pos){pos[field]=field==='ticker'?val.toUpperCase():(parseFloat(val)||0);save();renderPortfolio();}}
-function deletePosition(id){state.positions=state.positions.filter(p=>p.id!==id);save();renderPortfolio();}
-
-// Non coté
-function addNonCote(){const name=document.getElementById('ncName').value.trim(),type=document.getElementById('ncType').value,montant=parseFloat(document.getElementById('ncMontant').value)||0,rendement=parseFloat(document.getElementById('ncRendement').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.nonCote)state.nonCote=[];state.nonCote.push({id:Date.now(),name,type,montant,rendement});['ncName','ncMontant','ncRendement'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Investissement ajouté ✓');}
+function addNonCote(){const name=document.getElementById('ncName').value.trim(),type=document.getElementById('ncType').value,montant=parseFloat(document.getElementById('ncMontant').value)||0,rendement=parseFloat(document.getElementById('ncRendement').value)||0;if(!name){showToast('Donne un nom !');return;}if(!state.nonCote)state.nonCote=[];state.nonCote.push({id:Date.now(),name,type,montant,rendement});['ncName','ncMontant','ncRendement'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Ajouté ✓');}
 function deleteNonCote(id){state.nonCote=state.nonCote.filter(n=>n.id!==id);save();renderPortfolio();}
-
-// Crypto
 function addCrypto(){const symbol=document.getElementById('cryptoSymbol').value.trim().toUpperCase(),name=document.getElementById('cryptoName').value.trim(),qty=parseFloat(document.getElementById('cryptoQty').value)||0,pru=parseFloat(document.getElementById('cryptoPRU').value)||0,current=parseFloat(document.getElementById('cryptoCurrent').value)||pru;if(!name){showToast('Renseigne un nom !');return;}if(!state.cryptos)state.cryptos=[];state.cryptos.push({id:Date.now(),symbol,name,qty,pru,current});['cryptoSymbol','cryptoName','cryptoQty','cryptoPRU','cryptoCurrent'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Crypto ajoutée ✓');}
 function updateCryptoCurrent(id,val){const c=state.cryptos.find(c=>c.id===id);if(c){c.current=parseFloat(val)||0;save();renderPortfolio();}}
 function deleteCrypto(id){state.cryptos=state.cryptos.filter(c=>c.id!==id);save();renderPortfolio();}
-
-// Obligations
 function addOblig(){const name=document.getElementById('obligName').value.trim(),montant=parseFloat(document.getElementById('obligMontant').value)||0,taux=parseFloat(document.getElementById('obligTaux').value)||0,echeance=document.getElementById('obligEcheance').value;if(!name){showToast('Donne un nom !');return;}if(!state.obligs)state.obligs=[];state.obligs.push({id:Date.now(),name,montant,taux,echeance});['obligName','obligMontant','obligTaux','obligEcheance'].forEach(id=>document.getElementById(id).value='');save();renderPortfolio();showToast('Obligation ajoutée ✓');}
 function deleteOblig(id){state.obligs=state.obligs.filter(o=>o.id!==id);save();renderPortfolio();}
 
 function renderPortfolio(){
+  if(!state.livrets)state.livrets=[];
+  if(!state.cryptos)state.cryptos=[];
+  if(!state.nonCote)state.nonCote=[];
+  if(!state.obligs)state.obligs=[];
   // Livrets
-  const livrets=state.livrets||[], totalLivrets=livrets.reduce((s,l)=>s+l.solde,0);
-  document.getElementById('livretsList').innerHTML=livrets.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun livret — ajoute ton Livret A, LEP…</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">${livrets.map(l=>{const remaPercent=l.plafond>0?Math.round((l.solde/l.plafond)*100):null;return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${l.name}</div>${l.taux>0?`<div style="font-size:0.65rem;color:#4adb8a">Taux : ${l.taux}%/an · Intérêts estimés : ${Math.round(l.solde*l.taux/100)} €/an</div>`:''}</div><button class="btn btn-danger" onclick="deleteLivret(${l.id})">✕</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="number" value="${l.solde}" onchange="updateLivretSolde(${l.id},this.value)" style="width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:0.8rem;font-family:'DM Mono',monospace"/><span style="font-size:0.75rem;color:var(--text-muted)">€</span></div>${remaPercent!==null?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${remaPercent}%;background:#4adb8a"></div></div><div style="font-size:0.62rem;color:var(--text-muted);margin-top:4px">${remaPercent}% du plafond (${l.plafond.toLocaleString('fr-FR')} €)</div>`:''}</div>`;}).join('')}</div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)">Total livrets : <span style="color:var(--accent);font-weight:700">${totalLivrets.toLocaleString('fr-FR')} €</span></div>`;
-
-  // Bourse
-  const positions=state.positions||[];
-  const totalInvest=positions.reduce((s,p)=>s+p.pru*p.qty,0), totalValeur=positions.reduce((s,p)=>s+p.current*p.qty,0), totalPnl=totalValeur-totalInvest, totalPerf=totalInvest>0?totalPnl/totalInvest*100:0;
-  const pnlColor=totalPnl>=0?'#4adb8a':'#f05a5a';
-  document.getElementById('portfolioTable').innerHTML=positions.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune position — ajoute ton portefeuille</div>':`<table style="width:100%;border-collapse:collapse;font-size:0.72rem"><thead><tr style="color:var(--text-muted);font-size:0.6rem;letter-spacing:1px;text-transform:uppercase">${['Valeur','Env.','Qté','PRU','Cours','Valorisation','+/- val.','Perf %',''].map(h=>`<th style="text-align:${h===''?'center':'left'};padding:6px 4px;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead><tbody>${positions.map(p=>{const invest=p.pru*p.qty,valeur=p.current*p.qty,pnl=valeur-invest,perf=invest>0?pnl/invest*100:0,c=perf>=0?'#4adb8a':'#f05a5a';return `<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 4px"><div style="font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type} · ${p.envelope}</div></td><td style="padding:4px;text-align:center"><span style="font-size:0.6rem;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text-muted)">${p.envelope}</span></td><td style="padding:4px;text-align:right"><input type="number" value="${p.qty}" step="any" onchange="updatePositionField(${p.id},'qty',this.value)" style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></td><td style="padding:4px;text-align:right"><input type="number" value="${p.pru}" step="any" onchange="updatePositionField(${p.id},'pru',this.value)" style="width:70px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></td><td style="padding:4px;text-align:right"><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end"><input type="number" value="${p.current}" step="0.01" onchange="updatePositionField(${p.id},'current',this.value)" style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:3px 5px;color:var(--text);font-size:0.7rem;text-align:right;font-family:'DM Mono',monospace"/></div></td><td style="padding:4px;text-align:right;font-weight:600;color:var(--text)">${valeur.toFixed(0)} €</td><td style="padding:4px;text-align:right;font-weight:600;color:${c}">${pnl>=0?'+':''}${pnl.toFixed(0)} €</td><td style="padding:4px;text-align:right;font-weight:700;color:${c}">${perf>=0?'+':''}${perf.toFixed(1)}%</td><td style="padding:4px;text-align:center"><button class="btn btn-danger" onclick="deletePosition(${p.id})">✕</button></td></tr>`;}).join('')}</tbody></table>`;
-  document.getElementById('portfolioStats').innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">${totalValeur.toFixed(0)} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valorisation</div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPnl>=0?'+':''}${totalPnl.toFixed(0)} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Plus-value</div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${pnlColor}">${totalPerf>=0?'+':''}${totalPerf.toFixed(1)}%</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Performance</div></div>`;
-
-  // Non coté
-  const nc=state.nonCote||[];
-  document.getElementById('nonCoteList').innerHTML=nc.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun investissement non coté</div>':`<div style="display:flex;flex-direction:column;gap:10px">${nc.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${n.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${n.type} · ${n.montant.toLocaleString('fr-FR')} € investis${n.rendement>0?' · '+n.rendement+'%/an · ~'+Math.round(n.montant*n.rendement/100)+' €/an':''}</div></div><button class="btn btn-danger" onclick="deleteNonCote(${n.id})">✕</button></div>`).join('')}</div>`;
-
+  const totalLivrets=state.livrets.reduce((s,l)=>s+l.solde,0);
+  const livEl=document.getElementById('livretsList');
+  if(livEl)livEl.innerHTML=state.livrets.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun livret</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">${state.livrets.map(l=>{const rp=l.plafond>0?Math.round(l.solde/l.plafond*100):null;return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${l.name}</div>${l.taux>0?`<div style="font-size:0.65rem;color:#4adb8a">${l.taux}%/an · ~${Math.round(l.solde*l.taux/100)} €/an</div>`:''}</div><button class="btn btn-danger" onclick="deleteLivret(${l.id})">✕</button></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="number" value="${l.solde}" onchange="updateLivretSolde(${l.id},this.value)" style="width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:0.8rem;font-family:'DM Mono',monospace"/><span style="font-size:0.75rem;color:var(--text-muted)">€</span></div>${rp!==null?`<div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${rp}%;background:#4adb8a"></div></div><div style="font-size:0.62rem;color:var(--text-muted);margin-top:4px">${rp}% du plafond (${l.plafond.toLocaleString('fr-FR')} €)</div>`:''}</div>`;}).join('')}</div><div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:0.75rem;color:var(--text-muted)">Total livrets : <span style="color:var(--accent);font-weight:700">${totalLivrets.toLocaleString('fr-FR')} €</span></div>`;
   // Crypto
-  const cryptos=state.cryptos||[];
-  document.getElementById('cryptoList').innerHTML=cryptos.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune crypto</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">${cryptos.map(c=>{const val=c.current*c.qty,pnl=val-(c.pru*c.qty),perf=c.pru*c.qty>0?pnl/(c.pru*c.qty)*100:0,col=perf>=0?'#4adb8a':'#f05a5a';return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-weight:600;color:var(--text)">${c.name} (${c.symbol})</div><div style="font-size:0.62rem;color:var(--text-muted)">${c.qty} unités · PRU ${c.pru} €</div></div><button class="btn btn-danger" onclick="deleteCrypto(${c.id})">✕</button></div><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><input type="number" value="${c.current}" step="any" onchange="updateCryptoCurrent(${c.id},this.value)" style="width:100px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text);font-size:0.75rem;font-family:'DM Mono',monospace"/><span style="font-size:0.65rem;color:var(--text-muted)">€ cours</span></div><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${val.toFixed(0)} € <span style="color:${col};">(${perf>=0?'+':''}${perf.toFixed(1)}%)</span></div></div>`;}).join('')}</div>`;
-
-  // Obligations
-  const obligs=state.obligs||[];
-  document.getElementById('obligList').innerHTML=obligs.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune obligation</div>':`<div style="display:flex;flex-direction:column;gap:8px">${obligs.map(o=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${o.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${o.montant.toLocaleString('fr-FR')} € · ${o.taux}%/an${o.echeance?' · Échéance : '+o.echeance:''}</div></div><button class="btn btn-danger" onclick="deleteOblig(${o.id})">✕</button></div>`).join('')}</div>`;
-
-  // Vue globale
-  const totalBourse=positions.reduce((s,p)=>s+p.current*p.qty,0);
-  const totalNC=nc.reduce((s,n)=>s+n.montant,0);
-  const totalCrypto=cryptos.reduce((s,c)=>s+c.current*c.qty,0);
-  const totalOblig=obligs.reduce((s,o)=>s+o.montant,0);
-  const totalPatrimoine=totalLivrets+totalBourse+totalNC+totalCrypto+totalOblig;
-  const items=[['🏦 Livrets',totalLivrets,'#4adb8a'],['📈 Bourse',totalBourse,'#c8f04a'],['🏢 Non coté',totalNC,'#f4a261'],['🪙 Crypto',totalCrypto,'#9b8cff'],['📄 Obligations',totalOblig,'#48cae4']].filter(x=>x[1]>0);
-  document.getElementById('patrimoineGlobal').innerHTML=`<div style="text-align:center;margin-bottom:16px"><div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${totalPatrimoine.toLocaleString('fr-FR')} €</div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">Patrimoine total estimé</div></div>${items.map(([label,val,color])=>{const pct=totalPatrimoine>0?Math.round(val/totalPatrimoine*100):0;return `<div class="summary-row"><div class="summary-label"><div class="dot" style="background:${color}"></div>${label}</div><div style="display:flex;align-items:center;gap:10px"><div class="prog-bar-bg" style="width:80px;margin:0"><div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div></div><div class="summary-val">${val.toLocaleString('fr-FR')} €</div></div></div>`;}).join('')}`;
-}
-
-// ======= IA INVEST =======
-async function askInvestAdvice(){
-  const q=document.getElementById('investQuestion').value.trim(); if(!q)return;
-  const chat=document.getElementById('investAdviceChat');
-  chat.innerHTML+=`<div class="ai-msg user">${q}</div>`;
-  document.getElementById('investQuestion').value='';
-  const typingEl=document.createElement('div'); typingEl.className='ai-typing'; typingEl.innerHTML='<span></span><span></span><span></span>'; chat.appendChild(typingEl); chat.scrollTop=chat.scrollHeight;
-  try {
-    const positions=state.positions||[], livrets=state.livrets||[];
-    const context=`L'utilisateur a un profil investisseur en France (PEA/CTO), orienté compta/IT/formation. Portefeuille bourse: ${positions.map(p=>`${p.name} (${p.ticker})`).join(', ')||'vide'}. Livrets: ${livrets.map(l=>l.name).join(', ')||'aucun'}. Il cherche des conseils non contractuels à titre informatif.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:q}]})});
-    const data=await res.json(); typingEl.remove();
-    const text=data.content?.[0]?.text||'Erreur de réponse';
-    chat.innerHTML+=`<div class="ai-msg assistant">${text.replace(/\n/g,'<br>')}</div>`;
-  } catch(e){typingEl.remove();chat.innerHTML+=`<div class="ai-msg assistant">⚠️ Erreur de connexion à l'IA.</div>`;}
-  chat.scrollTop=chat.scrollHeight;
+  const cryptoEl=document.getElementById('cryptoList');
+  if(cryptoEl)cryptoEl.innerHTML=state.cryptos.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune crypto</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">${state.cryptos.map(c=>{const val=c.current*c.qty,pnl=val-(c.pru*c.qty),perf=c.pru*c.qty>0?pnl/(c.pru*c.qty)*100:0,col=perf>=0?'#4adb8a':'#f05a5a';return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="font-weight:600;color:var(--text)">${c.name} (${c.symbol})</div><div style="font-size:0.62rem;color:var(--text-muted)">${c.qty} · PRU ${c.pru} €</div></div><button class="btn btn-danger" onclick="deleteCrypto(${c.id})">✕</button></div><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><input type="number" value="${c.current}" step="any" onchange="updateCryptoCurrent(${c.id},this.value)" style="width:100px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;color:var(--text);font-size:0.75rem;font-family:'DM Mono',monospace"/><span style="font-size:0.65rem;color:var(--text-muted)">€</span></div><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${val.toFixed(0)} € <span style="color:${col}">(${perf>=0?'+':''}${perf.toFixed(1)}%)</span></div></div>`;}).join('')}`;
+  // Non coté
+  const ncEl=document.getElementById('nonCoteList');
+  if(ncEl)ncEl.innerHTML=state.nonCote.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun investissement non coté</div>':`<div style="display:flex;flex-direction:column;gap:10px">${state.nonCote.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${n.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${n.type} · ${n.montant.toLocaleString('fr-FR')} €${n.rendement>0?' · '+n.rendement+'%/an · ~'+Math.round(n.montant*n.rendement/100)+' €/an':''}</div></div><button class="btn btn-danger" onclick="deleteNonCote(${n.id})">✕</button></div>`).join('')}`;
+  // Obligs
+  const obligEl=document.getElementById('obligList');
+  if(obligEl)obligEl.innerHTML=state.obligs.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune obligation</div>':`<div style="display:flex;flex-direction:column;gap:8px">${state.obligs.map(o=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-size:0.82rem;font-weight:600;color:var(--text)">${o.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">${o.montant.toLocaleString('fr-FR')} € · ${o.taux}%/an${o.echeance?' · Échéance : '+o.echeance:''}</div></div><button class="btn btn-danger" onclick="deleteOblig(${o.id})">✕</button></div>`).join('')}`;
+  renderPatrimoine();
 }
 
 // ======= BUDGET =======
@@ -1486,6 +2181,672 @@ function renderTempsLibres(){
   document.getElementById('achatList').innerHTML=state.achats.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun achat</div>':state.achats.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleAchat(${a.id})" style="width:20px;height:20px;border-radius:5px;flex-shrink:0;cursor:pointer;background:${a.done?'#4adb8a':'var(--surface2)'};border:2px solid ${a.done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${a.done?'✓':''}</div><div style="flex:1"><div style="font-size:0.75rem;color:${a.done?'var(--text-muted)':'var(--text)'};text-decoration:${a.done?'line-through':'none'}">${a.text}</div>${a.price>0?`<div style="font-size:0.62rem;color:var(--text-muted)">${a.price.toLocaleString('fr-FR')} €</div>`:''}</div><span style="font-size:0.55rem;padding:2px 6px;border-radius:999px;background:${ACH_CAT_COLORS[a.cat]||'#6b6b80'}22;color:${ACH_CAT_COLORS[a.cat]||'#6b6b80'};border:1px solid ${ACH_CAT_COLORS[a.cat]||'#6b6b80'}44">${a.cat}</span><button class="btn btn-danger" onclick="deleteAchat(${a.id})">✕</button></div>`).join('');
 }
 
+// ======= THEME DARK/LIGHT =======
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('chris_theme', isLight ? 'light' : 'dark');
+}
+function initTheme() {
+  const saved = localStorage.getItem('chris_theme');
+  if (saved === 'light') { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
+}
+
+// ======= ALERTES =======
+function renderAlerts() {
+  const alerts = [];
+  const weekDates = getWeekDates(), todayStr = today();
+
+  // Sport — pas de séance depuis 2 jours
+  const sportDays = weekDates.filter(d => {
+    const di = (new Date(d).getDay()+6)%7;
+    return (state.sportExos||[]).some(e => e.days.includes(SPORT_DAYS[di]) && e.done[d]);
+  });
+  const lastSport = sportDays.sort().reverse()[0];
+  if (lastSport) {
+    const daysSince = Math.floor((new Date(todayStr) - new Date(lastSport)) / 86400000);
+    if (daysSince >= 2) alerts.push({type:'warn', msg:`💪 Pas de séance sport depuis ${daysSince} jours — retour prévu aujourd'hui ?`});
+  } else {
+    alerts.push({type:'warn', msg:'💪 Aucune séance sport cochée cette semaine encore !'});
+  }
+
+  // Budget — dépenses > 80% du revenu
+  const monthStr = new Date().toISOString().slice(0,7);
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t => t.type==='income').reduce((s,t) => s+t.amount, 0);
+  const expense = txs.filter(t => t.type==='expense').reduce((s,t) => s+t.amount, 0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p) => s+p.amount, 0);
+  if (income > 0 && (expense + prelevTotal) / income > 0.8)
+    alerts.push({type:'danger', msg:`💶 Dépenses à ${Math.round((expense+prelevTotal)/income*100)}% de tes revenus ce mois — surveille le budget !`});
+
+  // Objectifs en retard
+  const overdue = (state.objectifs||[]).filter(o => !o.done && o.deadline && Math.ceil((new Date(o.deadline)-new Date())/86400000) < 0);
+  if (overdue.length > 0)
+    alerts.push({type:'danger', msg:`🎯 ${overdue.length} objectif${overdue.length>1?'s':''} en retard : ${overdue.map(o=>o.title).join(', ')}`});
+
+  // Langues — pas de session depuis 3 jours
+  const enSessions = Object.entries((state.langues?.en?.sessions||{})).filter(([d,v])=>v).map(([d])=>d).sort().reverse();
+  if (enSessions.length === 0 || Math.floor((new Date(todayStr)-new Date(enSessions[0]))/86400000) >= 3)
+    alerts.push({type:'info', msg:'🌍 Pas de session anglais depuis 3+ jours — 15 min suffisent !'});
+
+  // Bonne nouvelle si tout va bien
+  if (alerts.length === 0)
+    alerts.push({type:'info', msg:'✅ Tout est sur les rails cette semaine — continue comme ça !'});
+
+  const el = document.getElementById('alertsContainer');
+  if (!el) return;
+  el.innerHTML = alerts.map(a => `<div class="alert-banner alert-${a.type}"><span style="font-size:1rem">⚡</span>${a.msg}</div>`).join('');
+}
+
+// ======= BADGES =======
+const BADGES_DEF = [
+  { id:'sport7', icon:'🏃', name:'7 jours sport', desc:'Séance chaque jour sur une semaine', check: () => { const wd=getWeekDates(); return wd.every(d=>(state.sportExos||[]).some(e=>e.done[d])); }},
+  { id:'sport30', icon:'💪', name:'Sportif du mois', desc:'20+ séances sport ce mois', check: () => { const m=new Date().toISOString().slice(0,7); let c=0; Object.entries(state.days||{}).forEach(([d,v])=>{ if(d.startsWith(m)&&v.sport)c++; }); return c>=20; }},
+  { id:'lang7', icon:'🌍', name:'Linguiste', desc:'7 sessions de langues cette semaine', check: () => { const wd=getWeekDates(); return wd.every(d=>Object.values(state.langues||{}).some(l=>l.sessions?.[d])); }},
+  { id:'lang50', icon:'📚', name:'50 mots', desc:'50 mots de vocabulaire ajoutés', check: () => Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0) >= 50 },
+  { id:'budget', icon:'💶', name:'Gestionnaire', desc:'10 transactions enregistrées', check: () => (state.transactions||[]).length >= 10 },
+  { id:'epargne', icon:'💎', name:'Épargnant', desc:'Objectif épargne atteint ce mois', check: () => { const m=new Date().toISOString().slice(0,7),goal=parseFloat(state.savingsGoal)||0; if(!goal)return false; const saved=(state.transactions||[]).filter(t=>t.date.startsWith(m)&&t.cat==='Épargne').reduce((s,t)=>s+t.amount,0); return saved>=goal; }},
+  { id:'obj1', icon:'🎯', name:'Premier objectif', desc:'1 objectif atteint', check: () => (state.objectifs||[]).some(o=>o.done) },
+  { id:'obj5', icon:'🏆', name:'Achiever', desc:'5 objectifs atteints', check: () => (state.objectifs||[]).filter(o=>o.done).length >= 5 },
+  { id:'formation', icon:'🎓', name:'En formation', desc:'3 modules de formation en cours', check: () => (state.modules||[]).length >= 3 },
+  { id:'certif', icon:'🏅', name:'Certifié', desc:'1 module de formation terminé', check: () => (state.modules||[]).some(m=>m.done>=m.total&&m.total>0) },
+  { id:'culture10', icon:'🧠', name:'Cultivé', desc:'10 contenus culturels ajoutés', check: () => (state.culture||[]).length >= 10 },
+  { id:'streak', icon:'🔥', name:'Streak 5j', desc:'5 jours consécutifs d\'activité', check: () => { let streak=0; const today_=today(); for(let i=0;i<7;i++){const d=new Date(today_);d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);const dayData=state.days?.[ds]||{};if(Object.values(dayData).some(v=>v))streak++;else break;} return streak>=5; }},
+];
+
+function renderBadges() {
+  const el = document.getElementById('badgesGrid'); if (!el) return;
+  if (!state.unlockedBadges) state.unlockedBadges = [];
+  const newlyUnlocked = [];
+  BADGES_DEF.forEach(b => {
+    try { if (b.check() && !state.unlockedBadges.includes(b.id)) { state.unlockedBadges.push(b.id); newlyUnlocked.push(b.name); } } catch(e) {}
+  });
+  if (newlyUnlocked.length > 0) { save(); newlyUnlocked.forEach(n => showToast(`🏆 Badge débloqué : ${n} !`)); }
+  el.innerHTML = BADGES_DEF.map(b => {
+    const unlocked = state.unlockedBadges.includes(b.id);
+    return `<div class="badge ${unlocked?'unlocked':'locked'}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div>${unlocked?'<div style="font-size:0.6rem;color:#f4a261;font-weight:700;margin-top:4px">✓ DÉBLOQUÉ</div>':''}</div>`;
+  }).join('');
+}
+
+// ======= KPIs SYNTHÈSE =======
+function renderKPIs() {
+  const el = document.getElementById('kpiGrid'); if (!el) return;
+  const weekDates = getWeekDates(), todayStr = today();
+  const monthStr = new Date().toISOString().slice(0,7);
+
+  // Sport sessions cette semaine
+  const sportSessions = new Set(weekDates.filter(d => (state.sportExos||[]).some(e => e.done[d]))).size;
+
+  // Langues sessions cette semaine
+  const langSessions = weekDates.filter(d => Object.values(state.langues||{}).some(l => l.sessions?.[d])).length;
+
+  // Énergie moyenne cette semaine
+  const energies = weekDates.map(d => (state.bienetre?.[d]?.energy)||0).filter(e => e > 0);
+  const avgEnergy = energies.length > 0 ? (energies.reduce((s,e)=>s+e,0)/energies.length).toFixed(1) : '—';
+
+  // Budget solde
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p)=>s+p.amount,0);
+  const balance = income - expense - prelevTotal;
+
+  // Objectifs en cours
+  const objEnCours = (state.objectifs||[]).filter(o=>!o.done).length;
+  const objDone = (state.objectifs||[]).filter(o=>o.done).length;
+
+  // Mots vocab total
+  const totalVocab = Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0);
+
+  // Badges débloqués
+  const badges = (state.unlockedBadges||[]).length;
+
+  const kpis = [
+    {label:'Séances sport', value:sportSessions, sub:'cette semaine', color:'#48cae4'},
+    {label:'Sessions langues', value:langSessions, sub:'cette semaine', color:'#c8f04a'},
+    {label:'Énergie moy.', value:avgEnergy, sub:'/5 cette semaine', color:'#f4a261'},
+    {label:'Solde budget', value:(balance>=0?'+':'')+balance.toFixed(0)+'€', sub:'ce mois', color:balance>=0?'#4adb8a':'#f05a5a'},
+    {label:'Objectifs actifs', value:objEnCours, sub:`${objDone} atteints`, color:'#7b5ea7'},
+    {label:'Mots appris', value:totalVocab, sub:'total vocabulaire', color:'#9b8cff'},
+    {label:'Badges', value:badges, sub:`/${BADGES_DEF.length} débloqués`, color:'#f4a261'},
+    {label:'Modules formation', value:(state.modules||[]).length, sub:`${(state.modules||[]).filter(m=>m.done>=m.total&&m.total>0).length} terminés`, color:'#c8f04a'},
+  ];
+
+  el.innerHTML = kpis.map(k => `<div class="kpi-card"><div class="kpi-value" style="color:${k.color}">${k.value}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+}
+
+// ======= CALENDRIER =======
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+const CAL_EVENT_COLORS = {
+  sport: '#48cae4', langues: '#c8f04a', culture: '#f4a261',
+  objectif: '#f05a5a', budget: '#4adb8a', bienetre: '#7b5ea7'
+};
+
+function calNav(dir) { calMonth += dir; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calGoToday() { calYear=new Date().getFullYear(); calMonth=new Date().getMonth(); renderCalendar(); }
+
+function getCalEvents(dateStr) {
+  const events = [];
+  const dayOfWeek = SPORT_DAYS[(new Date(dateStr).getDay()+6)%7];
+
+  // Sport — séances faites
+  const sportDone = (state.sportExos||[]).filter(e => e.done[dateStr]);
+  if (sportDone.length > 0) events.push({type:'sport', label:`💪 ${sportDone.length} exo${sportDone.length>1?'s':''}`});
+
+  // Sport — programmé
+  const sportPlanned = (state.sportExos||[]).filter(e => e.days.includes(dayOfWeek) && !e.done[dateStr]);
+  if (sportPlanned.length > 0 && new Date(dateStr) >= new Date(today())) events.push({type:'sport', label:`📋 ${sportPlanned.length} prévu${sportPlanned.length>1?'s':''}`});
+
+  // Langues — sessions
+  const langDone = Object.entries(state.langues||{}).filter(([l,d])=>d.sessions?.[dateStr]);
+  if (langDone.length > 0) events.push({type:'langues', label:`🌍 ${langDone.map(([l])=>l.toUpperCase()).join('/')}`});
+
+  // Activités journalières cochées
+  const dayActivities = state.days?.[dateStr] || {};
+  if (dayActivities.langues) events.push({type:'langues', label:'🌍 Langues ✓'});
+  if (dayActivities.devPerso) events.push({type:'bienetre', label:'🧠 Dev perso ✓'});
+  if (dayActivities.culture) events.push({type:'culture', label:'📚 Culture ✓'});
+
+  // Objectifs avec deadline ce jour
+  (state.objectifs||[]).filter(o => o.deadline === dateStr).forEach(o => {
+    events.push({type:'objectif', label:`🎯 ${o.title.substring(0,20)}${o.title.length>20?'…':''}`});
+  });
+
+  // Énergie
+  const energy = state.bienetre?.[dateStr]?.energy;
+  if (energy) events.push({type:'bienetre', label:`⚡ Énergie ${energy}/5`});
+
+  return events;
+}
+
+function renderCalendar() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('calMonthLabel').textContent = `${months[calMonth]} ${calYear}`;
+
+  // Header jours
+  document.getElementById('calDaysHeader').innerHTML = DAYS_FR.map(d => `<div class="cal-header">${d}</div>`).join('');
+
+  // Calcul des jours
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay = new Date(calYear, calMonth+1, 0);
+  const startDow = (firstDay.getDay()+6)%7; // Lun=0
+  const todayStr = today();
+
+  let cells = '';
+
+  // Jours du mois précédent
+  for (let i = 0; i < startDow; i++) {
+    const d = new Date(calYear, calMonth, -startDow+i+1);
+    const ds = d.toISOString().slice(0,10);
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day other-month" onclick="showCalDay('${ds}')"><div class="cal-day-num">${d.getDate()}</div>${events.slice(0,2).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}</div>`;
+  }
+
+  // Jours du mois courant
+  for (let day = 1; day <= lastDay.getDate(); day++) {
+    const d = new Date(calYear, calMonth, day);
+    const ds = d.toISOString().slice(0,10);
+    const isToday = ds === todayStr;
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day ${isToday?'today':''}" onclick="showCalDay('${ds}')"><div class="cal-day-num" style="color:${isToday?'var(--accent)':'var(--text)'}">${day}${isToday?' •':''}</div>${events.slice(0,3).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}${events.length>3?`<div style="font-size:0.5rem;color:var(--text-muted)">+${events.length-3} autres</div>`:''}</div>`;
+  }
+
+  // Jours du mois suivant
+  const remaining = 42 - startDow - lastDay.getDate();
+  for (let i = 1; i <= remaining; i++) {
+    const d = new Date(calYear, calMonth+1, i);
+    const ds = d.toISOString().slice(0,10);
+    const events = getCalEvents(ds);
+    cells += `<div class="cal-day other-month" onclick="showCalDay('${ds}')"><div class="cal-day-num">${i}</div>${events.slice(0,2).map(e=>`<div class="cal-event" style="background:${CAL_EVENT_COLORS[e.type]}22;color:${CAL_EVENT_COLORS[e.type]};border-left:2px solid ${CAL_EVENT_COLORS[e.type]}">${e.label}</div>`).join('')}</div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = cells;
+
+  // Légende
+  document.getElementById('calLegend').innerHTML = Object.entries(CAL_EVENT_COLORS).map(([k,c]) => `<div style="display:flex;align-items:center;gap:4px;font-size:0.6rem;color:var(--text-muted)"><div style="width:10px;height:10px;border-radius:2px;background:${c}"></div>${k}</div>`).join('');
+}
+
+function showCalDay(dateStr) {
+  const detailEl = document.getElementById('calDayDetail');
+  const titleEl = document.getElementById('calDayDetailTitle');
+  const contentEl = document.getElementById('calDayDetailContent');
+  const events = getCalEvents(dateStr);
+  const d = new Date(dateStr);
+  titleEl.textContent = d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  if (events.length === 0) {
+    contentEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);padding:8px 0">Aucune activité ce jour.</div>';
+  } else {
+    contentEl.innerHTML = events.map(e => `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:2px;background:${CAL_EVENT_COLORS[e.type]};flex-shrink:0"></div><div style="font-size:0.75rem;color:var(--text)">${e.label}</div></div>`).join('');
+  }
+  detailEl.style.display = 'block';
+  detailEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ======= SUGGESTIONS MOTS IA =======
+async function suggestWords(lang) {
+  const data = state.langues[lang];
+  const color = LANG_COLORS[lang];
+  const existing = data.vocab.map(v=>v.mot).join(', ');
+  const level = data.vocab.filter(v=>v.maitrise===3).length > 10 ? 'intermédiaire/avancé' : 'débutant/intermédiaire';
+  const el = document.getElementById('wordSuggestResult-'+lang);
+  if (!el) return;
+  el.innerHTML = '<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:800,
+        system:`Tu es un professeur de langue. Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks. Format exact: [{"mot":"word","trad":"traduction en français"}]`,
+        messages:[{role:'user', content:`Suggère 8 mots/expressions utiles en ${LANG_LABELS[lang]} pour un apprenant niveau ${level}. Mots déjà connus à éviter: ${existing||'aucun'}. Privilégie le vocabulaire professionnel, du quotidien et des expressions idiomatiques.`}]
+      })
+    });
+    const d2 = await res.json();
+    const text = d2.content?.[0]?.text || '[]';
+    const words = JSON.parse(text);
+    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px">${words.map(w=>`<div onclick="addSuggestedWord('${lang}','${w.mot.replace(/'/g,"\\'")}','${w.trad.replace(/'/g,"\\'")}'')" style="padding:10px 12px;background:var(--surface2);border:1px solid ${color}44;border-radius:8px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='${color}44'"><div style="font-size:0.8rem;font-weight:600;color:var(--text)">${w.mot}</div><div style="font-size:0.68rem;color:var(--text-muted)">${w.trad}</div><div style="font-size:0.58rem;color:${color};margin-top:4px;text-transform:uppercase;letter-spacing:1px">+ Ajouter</div></div>`).join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = '<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie dans quelques secondes.</div>';
+  }
+}
+
+function addSuggestedWord(lang, mot, trad) {
+  if (!state.langues[lang]) return;
+  if (state.langues[lang].vocab.find(v => v.mot === mot)) { showToast('Mot déjà dans ta liste !'); return; }
+  state.langues[lang].vocab.push({id: Date.now(), mot, trad, maitrise: 0});
+  save(); renderLangues(); showToast(`"${mot}" ajouté ✓`);
+}
+
+// ======= EXPORT PDF =======
+function exportPDF() {
+  const monthStr = new Date().toISOString().slice(0,7);
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const monthLabel = months[new Date().getMonth()] + ' ' + new Date().getFullYear();
+
+  const txs = state.transactions.filter(t => t.date.startsWith(monthStr));
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const prelevTotal = (state.prelevements||[]).reduce((s,p)=>s+p.amount,0);
+  const balance = income - expense - prelevTotal;
+
+  const weekDates = getWeekDates();
+  const sportSessions = new Set(weekDates.filter(d=>(state.sportExos||[]).some(e=>e.done[d]))).size;
+  const langSessions = weekDates.filter(d=>Object.values(state.langues||{}).some(l=>l.sessions?.[d])).length;
+  const objDone = (state.objectifs||[]).filter(o=>o.done).length;
+  const totalVocab = Object.values(state.langues||{}).reduce((s,l)=>s+(l.vocab?.length||0),0);
+  const badges = (state.unlockedBadges||[]).length;
+  const modules = (state.modules||[]);
+  const modDone = modules.filter(m=>m.done>=m.total&&m.total>0).length;
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rapport ${monthLabel}</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:0 40px;color:#1a1a2e;line-height:1.6}
+    h1{font-size:2rem;color:#0e0e11;border-bottom:3px solid #c8f04a;padding-bottom:12px}
+    h2{font-size:1.2rem;color:#333;margin-top:32px;margin-bottom:12px;padding:8px 12px;background:#f4f4f8;border-left:4px solid #c8f04a}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+    .kpi{text-align:center;padding:16px;border:1px solid #ddd;border-radius:8px}
+    .kpi-val{font-size:2rem;font-weight:700;color:#5a8a00}
+    .kpi-lab{font-size:0.7rem;text-transform:uppercase;color:#666;letter-spacing:1px}
+    .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:0.85rem}
+    .pos{color:#2a7a3a;font-weight:700} .neg{color:#c0392b;font-weight:700}
+    .badge-chip{display:inline-block;padding:3px 10px;border-radius:999px;background:#fff3cd;color:#856404;font-size:0.75rem;margin:2px;border:1px solid #ffc107}
+    .footer{margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:0.7rem;color:#999;text-align:center}
+  </style></head><body>
+  <h1>📊 Rapport mensuel — ${monthLabel}</h1>
+  <p style="color:#666;font-size:0.85rem">Généré le ${new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+
+  <h2>🏆 KPIs de la semaine</h2>
+  <div class="grid">
+    <div class="kpi"><div class="kpi-val">${sportSessions}</div><div class="kpi-lab">Séances sport</div></div>
+    <div class="kpi"><div class="kpi-val">${langSessions}</div><div class="kpi-lab">Sessions langues</div></div>
+    <div class="kpi"><div class="kpi-val">${totalVocab}</div><div class="kpi-lab">Mots appris</div></div>
+    <div class="kpi"><div class="kpi-val">${objDone}</div><div class="kpi-lab">Objectifs atteints</div></div>
+    <div class="kpi"><div class="kpi-val">${modDone}/${modules.length}</div><div class="kpi-lab">Modules formation</div></div>
+    <div class="kpi"><div class="kpi-val">${badges}/${BADGES_DEF.length}</div><div class="kpi-lab">Badges débloqués</div></div>
+  </div>
+
+  <h2>💶 Budget ${monthLabel}</h2>
+  <div class="row"><span>Revenus</span><span class="pos">+${income.toFixed(0)} €</span></div>
+  <div class="row"><span>Dépenses</span><span class="neg">−${expense.toFixed(0)} €</span></div>
+  <div class="row"><span>Prélèvements auto</span><span class="neg">−${prelevTotal.toFixed(0)} €</span></div>
+  <div class="row" style="font-weight:700;font-size:1rem"><span>Solde</span><span class="${balance>=0?'pos':'neg'}">${balance>=0?'+':''}${balance.toFixed(0)} €</span></div>
+
+  <h2>🎯 Objectifs en cours</h2>
+  ${(state.objectifs||[]).filter(o=>!o.done).map(o=>`<div class="row"><span>${o.title}</span><span style="color:#666">${o.horizon}${o.deadline?' · échéance '+o.deadline:''}</span></div>`).join('')||'<div style="color:#999">Aucun objectif en cours</div>'}
+
+  <h2>🎓 Formation</h2>
+  ${modules.map(m=>{const pct=m.total>0?Math.round(m.done/m.total*100):0;return `<div class="row"><span>${m.name}</span><span style="color:${pct>=100?'#2a7a3a':'#666'}">${pct}% ${pct>=100?'✓ Terminé':''}</span></div>`;}).join('')||'<div style="color:#999">Aucun module</div>'}
+
+  <h2>🏅 Badges débloqués</h2>
+  <div style="margin:8px 0">${(state.unlockedBadges||[]).map(id=>{const b=BADGES_DEF.find(b=>b.id===id);return b?`<span class="badge-chip">${b.icon} ${b.name}</span>`:''}).join('')||'<span style="color:#999">Aucun badge encore</span>'}</div>
+
+  <div class="footer">Dashboard Personnel Chris v2.02 — Généré automatiquement</div>
+  </body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `rapport-${monthStr}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Rapport généré ✓');
+}
+
+// ======= POMODORO =======
+let pomoTimer=null,pomoSeconds=25*60,pomoRunning=false,pomoDuration=25;
+function setPomoDuration(min){if(pomoRunning)return;pomoDuration=min;pomoSeconds=min*60;updatePomoDisplay();document.getElementById('pomodoroStatus').textContent=min===5?'Mode pause 🧘':'Prêt · '+min+' min';}
+function updatePomoDisplay(){const m=Math.floor(pomoSeconds/60),s=pomoSeconds%60;document.getElementById('pomodoroDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function startPomodoro(){if(pomoRunning)return;pomoRunning=true;document.getElementById('pomodoroDisplay').classList.add('pomo-running');document.getElementById('pomodoroStatus').textContent='En cours 🔥';pomoTimer=setInterval(()=>{pomoSeconds--;updatePomoDisplay();if(pomoSeconds<=0){clearInterval(pomoTimer);pomoRunning=false;document.getElementById('pomodoroDisplay').classList.remove('pomo-running');document.getElementById('pomodoroStatus').textContent='Session terminée ✅';if(!state.pomodoroSessions)state.pomodoroSessions={};const t=today();state.pomodoroSessions[t]=(state.pomodoroSessions[t]||0)+1;save();renderFocus();pomoSeconds=pomoDuration*60;updatePomoDisplay();}},1000);}
+function pausePomodoro(){if(!pomoRunning)return;clearInterval(pomoTimer);pomoRunning=false;document.getElementById('pomodoroDisplay').classList.remove('pomo-running');document.getElementById('pomodoroStatus').textContent='En pause...';}
+function resetPomodoro(){clearInterval(pomoTimer);pomoRunning=false;pomoSeconds=pomoDuration*60;updatePomoDisplay();document.getElementById('pomodoroDisplay').classList.remove('pomo-running');document.getElementById('pomodoroStatus').textContent='Prêt à démarrer';}
+// ======= FOCUS MODE =======
+let focusModeActive=false;
+function toggleFocusMode(){focusModeActive=!focusModeActive;document.body.classList.toggle('focus-mode',focusModeActive);const btn=document.getElementById('focusModeBtn');if(focusModeActive){btn.textContent='Désactiver le mode focus';btn.style.background='#f05a5a';}else{btn.textContent='Activer le mode focus';btn.style.background='';}}
+// ======= PRIORITÉS =======
+function savePriorities(){if(!state.priorities)state.priorities={};state.priorities[today()]={p1:document.getElementById('prio1').value,p2:document.getElementById('prio2').value,p3:document.getElementById('prio3').value};save();}
+function renderFocus(){if(!state.priorities)state.priorities={};if(!state.pomodoroSessions)state.pomodoroSessions={};const p=state.priorities[today()]||{};if(p.p1)document.getElementById('prio1').value=p.p1;if(p.p2)document.getElementById('prio2').value=p.p2;if(p.p3)document.getElementById('prio3').value=p.p3;updatePomoDisplay();document.getElementById('pomodoroCount').textContent=state.pomodoroSessions[today()]||0;const weekDates=getWeekDates();const histEl=document.getElementById('pomodoroHistory');histEl.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap">${weekDates.map((d,i)=>{const n=state.pomodoroSessions[d]||0,isT=d===today();return `<div style="flex:1;min-width:60px;text-align:center;padding:10px 6px;background:var(--surface2);border:1px solid ${isT?'var(--accent)':'var(--border)'};border-radius:8px"><div style="font-family:'DM Serif Display',serif;font-size:1.4rem;color:${n>0?'var(--accent)':'var(--text-muted)'}">${n}</div><div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'};margin-top:2px">${DAYS_FR[i]}</div></div>`;}).join('')}</div>`;}
+// ======= SIMULATEUR ÉPARGNE =======
+let simChartInstance=null;
+function runSimulator(){const capital=parseFloat(document.getElementById('simCapital').value)||0,mensuel=parseFloat(document.getElementById('simMensuel').value)||0,taux=parseFloat(document.getElementById('simTaux').value)||5,duree=parseInt(document.getElementById('simDuree').value)||10;if(!capital&&!mensuel)return;const tauxM=taux/100/12;let vals=[],labels=[],total=capital,investi=capital;for(let y=1;y<=duree;y++){for(let m=0;m<12;m++){total=total*(1+tauxM)+mensuel;investi+=mensuel;}vals.push(Math.round(total));labels.push(y+'an'+(y>1?'s':''));}const interets=Math.round(total-investi);document.getElementById('simResults').innerHTML=`<div class="grid-3"><div class="sim-result-card"><div class="sim-result-val">${Math.round(total).toLocaleString('fr-FR')} €</div><div class="sim-result-lab">Capital final</div></div><div class="sim-result-card"><div class="sim-result-val" style="color:#4adb8a">+${interets.toLocaleString('fr-FR')} €</div><div class="sim-result-lab">Intérêts composés</div></div><div class="sim-result-card"><div class="sim-result-val">${Math.round(investi).toLocaleString('fr-FR')} €</div><div class="sim-result-lab">Total investi</div></div></div>`;const ctx=document.getElementById('simChart');if(simChartInstance)simChartInstance.destroy();simChartInstance=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Capital total',data:vals,borderColor:'#c8f04a',backgroundColor:'rgba(200,240,74,0.1)',fill:true,tension:0.4},{label:'Total investi',data:Array.from({length:duree},(_,i)=>Math.round(capital+mensuel*12*(i+1))),borderColor:'#48cae4',backgroundColor:'rgba(72,202,228,0.05)',fill:true,tension:0.4,borderDash:[5,5]}]},options:{responsive:true,plugins:{legend:{labels:{color:'#6b6b80',font:{family:'DM Mono',size:10}}}},scales:{x:{ticks:{color:'#6b6b80',font:{size:10}}},y:{ticks:{color:'#6b6b80',font:{size:10},callback:v=>v.toLocaleString('fr-FR')+'€'}}}}});}
+// ======= OBJECTIFS FINANCIERS =======
+function addFinObj(){const name=document.getElementById('finObjName').value.trim(),target=parseFloat(document.getElementById('finObjTarget').value)||0,current=parseFloat(document.getElementById('finObjCurrent').value)||0;if(!name||!target){showToast('Nom et objectif requis !');return;}if(!state.finObjs)state.finObjs=[];state.finObjs.push({id:Date.now(),name,target,current});document.getElementById('finObjName').value='';document.getElementById('finObjTarget').value='';document.getElementById('finObjCurrent').value='';save();renderFinance2();showToast('Objectif ajouté ✓');}
+function updateFinObj(id,val){const o=state.finObjs.find(o=>o.id===id);if(o){o.current=parseFloat(val)||0;save();renderFinance2();}}
+function deleteFinObj(id){state.finObjs=state.finObjs.filter(o=>o.id!==id);save();renderFinance2();}
+function renderFinance2(){if(!state.finObjs)state.finObjs=[];const el=document.getElementById('finObjList');if(!el)return;if(state.finObjs.length===0){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Ajoute ton premier objectif financier</div>';return;}el.innerHTML=state.finObjs.map(o=>{const pct=Math.min(100,Math.round(o.current/o.target*100)),color=pct>=100?'#4adb8a':pct>=50?'#c8f04a':'#48cae4',rem=Math.max(0,o.target-o.current);return `<div style="margin-bottom:16px;padding:16px;background:var(--surface2);border-radius:10px;border:1px solid ${pct>=100?'rgba(74,219,138,0.3)':'var(--border)'}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px"><div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${o.name}</div><div style="font-size:0.65rem;color:var(--text-muted)">Objectif : ${o.target.toLocaleString('fr-FR')} € · Reste : ${rem.toLocaleString('fr-FR')} €</div></div><div style="display:flex;align-items:center;gap:8px"><input type="number" value="${o.current}" onchange="updateFinObj(${o.id},this.value)" style="width:110px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:0.75rem;font-family:'DM Mono',monospace"/> €<button class="btn btn-danger" onclick="deleteFinObj(${o.id})">✕</button></div></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%;background:${color}"></div></div><div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-muted);margin-top:6px"><span>${o.current.toLocaleString('fr-FR')} €</span><span style="color:${color};font-weight:700">${pct}%${pct>=100?' 🎉':''}</span></div></div>`;}).join('');}
+// ======= BACKUP / RESTORE =======
+function backupData(){const data=localStorage.getItem('chris_dashboard')||'{}';const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`dashboard-backup-${today()}.json`;a.click();URL.revokeObjectURL(url);document.getElementById('backupStatus').textContent='Sauvegarde téléchargée le '+new Date().toLocaleDateString('fr-FR');showToast('Données sauvegardées ✓');}
+function restoreData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(e)=>{try{const data=JSON.parse(e.target.result);localStorage.setItem('chris_dashboard',JSON.stringify(data));document.getElementById('backupStatus').textContent='Données restaurées — rechargement...';showToast('Restauration réussie ✓');setTimeout(()=>location.reload(),1500);}catch(err){document.getElementById('backupStatus').textContent='Fichier invalide.';}};reader.readAsText(file);}
+// ======= DIGITAL =======
+const FREE_ALTERNATIVES=[{cat:'🎬 Vidéo / Films',items:[{name:'Cinepulse',url:'https://cinepulse.fr',desc:'Films & séries en streaming légal gratuit',replaces:'Netflix/Prime'},{name:'Arte.tv',url:'https://arte.tv',desc:'Documentaires, films d\'auteur, culture',replaces:'Netflix'},{name:'France.tv',url:'https://france.tv',desc:'Replay France Télévisions complet',replaces:'Netflix'},{name:'Pluto TV',url:'https://pluto.tv',desc:'Chaînes gratuites + films en streaming',replaces:'Netflix'},{name:'Tubi',url:'https://tubitv.com',desc:'Milliers de films et séries gratuits',replaces:'Netflix/Prime'}]},{cat:'🎵 Musique',items:[{name:'Deezer (gratuit)',url:'https://deezer.com',desc:'Écoute gratuite avec publicités',replaces:'Spotify Premium'},{name:'YouTube Music',url:'https://music.youtube.com',desc:'Gratuit avec pub, immense catalogue',replaces:'Spotify'},{name:'Radio.fr',url:'https://radio.fr',desc:'Toutes les radios du monde gratuitement',replaces:'Spotify'}]},{cat:'📚 Livres',items:[{name:'Open Library',url:'https://openlibrary.org',desc:'Millions de livres à emprunter gratuitement',replaces:'Kindle Unlimited'},{name:'Gallica (BnF)',url:'https://gallica.bnf.fr',desc:'Bibliothèque numérique nationale française',replaces:'Kindle'},{name:'Project Gutenberg',url:'https://gutenberg.org',desc:'70 000+ livres libres de droits',replaces:'Kindle'}]},{cat:'🎮 Jeux',items:[{name:'Epic Games Store',url:'https://epicgames.com',desc:'Jeux gratuits chaque semaine',replaces:'Achats jeux'},{name:'itch.io',url:'https://itch.io',desc:'Jeux indépendants souvent gratuits',replaces:'Steam'}]},{cat:'🧠 Formation',items:[{name:'Khan Academy',url:'https://khanacademy.org',desc:'Maths, sciences, prog - 100% gratuit',replaces:'Cours payants'},{name:'MIT OpenCourseWare',url:'https://ocw.mit.edu',desc:'Cours du MIT en ligne gratuitement',replaces:'Coursera'}]}];
+const DIGITAL_TIPS=[{icon:'📵',title:'Pas de téléphone au réveil',desc:'Attends 30 min avant de regarder ton téléphone. Commence la journée avec tes propres pensées.'},{icon:'🌙',title:'Mode nuit dès 21h',desc:'La lumière bleue perturbe la mélatonine et retarde l\'endormissement de 1 à 2h.'},{icon:'🔕',title:'Notifications groupées',desc:'Désactive toutes les notifs sauf les appels. Consulte tes apps à horaires fixes (9h, 13h, 18h).'},{icon:'⏱️',title:'Règle des 1h de jeu max',desc:'Les jeux mobiles créent une dépendance. Fixe une limite et utilise le temps d\'écran iOS.'},{icon:'📱',title:'Zones sans téléphone',desc:'Chambre, salle à manger, bureau = zones sans téléphone. Achète un réveil classique.'},{icon:'🧠',title:'Remplace par du positif',desc:'Pour chaque app limitée, remplace par une activité : lecture, sport, apprentissage.'},{icon:'📊',title:'Temps d\'écran iOS',desc:'Réglages → Temps d\'écran → Active les limites par app. Vise max 1h30/jour hors travail.'}];
+function addDigitalRule(){const val=document.getElementById('digitalRuleInput').value.trim();if(!val)return;if(!state.digitalRules)state.digitalRules=[];state.digitalRules.push({id:Date.now(),text:val,done:false});document.getElementById('digitalRuleInput').value='';save();renderDigital();}
+function toggleDigitalRule(id){const r=state.digitalRules.find(r=>r.id===id);if(r){r.done=!r.done;save();renderDigital();}}
+function deleteDigitalRule(id){state.digitalRules=state.digitalRules.filter(r=>r.id!==id);save();renderDigital();}
+function addScreenTime(){const app=document.getElementById('screenAppInput').value.trim(),mins=parseInt(document.getElementById('screenTimeInput').value)||0;if(!app||!mins)return;if(!state.screenTime)state.screenTime={};const t=today();if(!state.screenTime[t])state.screenTime[t]=[];state.screenTime[t].push({id:Date.now(),app,mins});document.getElementById('screenAppInput').value='';document.getElementById('screenTimeInput').value='';save();renderDigital();}
+function deleteScreenTime(id){const t=today();if(state.screenTime[t])state.screenTime[t]=state.screenTime[t].filter(s=>s.id!==id);save();renderDigital();}
+function renderDigital(){if(!state.digitalRules)state.digitalRules=[];if(!state.screenTime)state.screenTime={};document.getElementById('digitalRulesList').innerHTML=state.digitalRules.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleDigitalRule(${r.id})" style="width:20px;height:20px;border-radius:5px;flex-shrink:0;cursor:pointer;background:${r.done?'#4adb8a':'var(--surface2)'};border:2px solid ${r.done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${r.done?'✓':''}</div><span style="flex:1;font-size:0.75rem;color:${r.done?'var(--text-muted)':'var(--text)'};text-decoration:${r.done?'line-through':'none'}">${r.text}</span><button class="btn btn-danger" onclick="deleteDigitalRule(${r.id})">✕</button></div>`).join('')||'<div style="font-size:0.72rem;color:var(--text-muted)">Ajoute tes règles</div>';const t=today(),st=state.screenTime[t]||[],total=st.reduce((s,x)=>s+x.mins,0),limit=90,over=total>limit;document.getElementById('screenTimeList').innerHTML=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.72rem;color:${over?'#f05a5a':'var(--text-muted)'};margin-bottom:6px"><span>Total aujourd'hui</span><span style="font-weight:700;color:${over?'#f05a5a':'#4adb8a'}">${total} min${over?' ⚠️':' ✓'}</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.min(100,total/limit*100)}%;background:${over?'#f05a5a':'#4adb8a'}"></div></div></div>${st.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.72rem"><span>${s.app}</span><div style="display:flex;align-items:center;gap:8px"><span style="color:${s.mins>30?'#f4a261':'var(--text-muted)'}">${s.mins} min</span><button class="btn btn-danger" onclick="deleteScreenTime(${s.id})">✕</button></div></div>`).join('')}`;document.getElementById('freeAlternativesList').innerHTML=FREE_ALTERNATIVES.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">${cat.items.map(item=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${item.name}</div><span style="font-size:0.55rem;padding:2px 6px;border-radius:999px;background:rgba(74,219,138,0.12);color:#4adb8a;border:1px solid rgba(74,219,138,0.3)">Gratuit</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:4px">${item.desc}</div><div style="font-size:0.6rem;color:var(--accent3)">Remplace : ${item.replaces}</div><a href="${item.url}" target="_blank" style="font-size:0.58rem;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:1px;display:block;margin-top:6px">Visiter →</a></div>`).join('')}</div></div>`).join('');document.getElementById('digitalTipsList').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${DIGITAL_TIPS.map(tip=>`<div style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:1.2rem">${tip.icon}</span><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text)">${tip.title}</div></div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${tip.desc}</div></div>`).join('')}`;}
+// ======= RECETTES IA =======
+async function suggestMeal(slot){const el=document.getElementById('mealSuggestResult-'+slot);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:'Tu es nutritionniste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: {"nom":"...","ingredients":["..."],"proteines":30,"calories":450,"preparation":"...","temps":"15 min"}',messages:[{role:'user',content:`Suggère une recette ${slot==='matin'?'de petit-déjeuner':slot==='midi'?'de déjeuner':'de dîner'} équilibrée, riche en protéines, simple à préparer pour un sportif actif.`}]})});const data=await res.json();const recipe=JSON.parse(data.content?.[0]?.text||'{}');el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--accent3)44;border-radius:10px;padding:14px;cursor:pointer" onclick="applyRecipe('${slot}','${(recipe.nom||'').replace(/'/g,"\\'")}',${recipe.proteines||0},${recipe.calories||0},'${((recipe.ingredients||[]).join(', ')).replace(/'/g,"\\'")}')"><div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px">${recipe.nom||'Recette'} <span style="font-size:0.6rem;color:var(--text-muted)">⏱️ ${recipe.temps||''}</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:8px">${(recipe.ingredients||[]).join(', ')}</div><div style="display:flex;gap:16px;font-size:0.7rem;margin-bottom:6px"><span style="color:#48cae4">💪 ${recipe.proteines||0}g protéines</span><span style="color:#f4a261">🔥 ${recipe.calories||0} kcal</span></div><div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5">${recipe.preparation||''}</div><div style="font-size:0.62rem;color:var(--accent);margin-top:8px;text-transform:uppercase;letter-spacing:1px">→ Cliquer pour appliquer</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie</div>';}}
+function applyRecipe(slot,nom,proteines,calories,ingredients){saveRepasItem(slot,'content',ingredients);saveRepasItem(slot,'proteins',proteines);saveRepasItem(slot,'calories',calories);renderRepas();showToast('Recette appliquée ✓');}
+// ======= RÉSUMÉ LIVRE IA =======
+async function summarizeBook(title){const el=document.getElementById('bookSummaryResult');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';el.style.display='block';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es un assistant culturel. Donne un résumé structuré et utile du livre.',messages:[{role:'user',content:`Résume le livre "${title}" : auteur/contexte, idées principales, points clés à retenir, pourquoi le lire. Sois concis.`}]})});const data=await res.json();const text=data.content?.[0]?.text||'Erreur';el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:10px">📖 ${title}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.7">${text.replace(/\n/g,'<br>')}</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur</div>';}}
+// ======= QUIZ VOCABULAIRE =======
+let quizState={lang:'en',words:[],current:0,score:0,answered:false};
+function startVocabQuiz(lang){const words=(state.langues[lang]?.vocab||[]).filter(v=>v.maitrise<3);if(words.length<3){showToast('Ajoute au moins 3 mots non maîtrisés !');return;}quizState={lang,words:words.sort(()=>Math.random()-0.5).slice(0,10),current:0,score:0,answered:false};renderQuiz();}
+function renderQuiz(){const el=document.getElementById('vocabQuizArea');if(!el)return;if(quizState.current>=quizState.words.length){el.innerHTML=`<div style="text-align:center;padding:20px"><div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${quizState.score}/${quizState.words.length}</div><div style="font-size:0.72rem;color:var(--text-muted);margin:8px 0">Score final</div><div style="font-size:1.5rem;margin:12px 0">${quizState.score>=8?'🏆 Excellent !':quizState.score>=5?'👍 Bien !':'💪 Continue !'}</div><button class="btn btn-primary" onclick="startVocabQuiz('${quizState.lang}')">Recommencer</button></div>`;return;}const word=quizState.words[quizState.current];const allWords=state.langues[quizState.lang]?.vocab||[];const wrong=allWords.filter(w=>w.id!==word.id).sort(()=>Math.random()-0.5).slice(0,3);const options=[{text:word.trad,correct:true},...wrong.map(w=>({text:w.trad,correct:false}))].sort(()=>Math.random()-0.5);el.innerHTML=`<div><div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-muted);margin-bottom:12px"><span>Question ${quizState.current+1}/${quizState.words.length}</span><span style="color:var(--accent)">Score: ${quizState.score}</span></div><div style="text-align:center;margin-bottom:20px"><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--text)">${word.mot}</div><div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px">Quelle est la traduction ?</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="quizOptions">${options.map((o,i)=>`<button onclick="answerQuiz(${o.correct},${i})" style="padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.75rem;cursor:pointer;text-align:left">${o.text}</button>`).join('')}</div></div>`;}
+function answerQuiz(correct,idx){if(quizState.answered)return;quizState.answered=true;if(correct)quizState.score++;const btns=document.querySelectorAll('#quizOptions button');btns.forEach((btn,i)=>{btn.style.background=i===idx?(correct?'rgba(74,219,138,0.2)':'rgba(240,90,90,0.2)'):'var(--surface2)';btn.style.borderColor=i===idx?(correct?'#4adb8a':'#f05a5a'):'var(--border)';btn.style.cursor='default';});const word=quizState.words[quizState.current];const vi=state.langues[quizState.lang]?.vocab?.find(v=>v.id===word.id);if(vi){if(correct&&vi.maitrise<3)vi.maitrise++;else if(!correct&&vi.maitrise>0)vi.maitrise--;save();}setTimeout(()=>{quizState.current++;quizState.answered=false;renderQuiz();},1200);}
+// ======= MÉTÉO =======
+async function fetchWeather(){const el=document.getElementById('weatherWidget');if(!el)return;try{const geoRes=await fetch('https://ipapi.co/json/');const geo=await geoRes.json();const lat=geo.latitude||45.75,lon=geo.longitude||4.85,city=geo.city||'Ma ville';const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);const data=await res.json();const w=data.current_weather;const temp=Math.round(w.temperature),wind=Math.round(w.windspeed),wcode=w.weathercode;const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',80:'🌦️',81:'🌧️',95:'⛈️'};const icon=icons[wcode]||'🌡️';const good=temp>=10&&temp<=28&&wcode<60;el.innerHTML=`<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><div style="text-align:center"><div style="font-size:2.5rem">${icon}</div><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent)">${temp}°C</div></div><div><div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px">${city}</div><div style="font-size:0.7rem;color:var(--text-muted)">Vent : ${wind} km/h</div><div style="margin-top:8px;padding:6px 12px;border-radius:999px;font-size:0.68rem;font-weight:600;display:inline-block;background:${good?'rgba(74,219,138,0.12)':'rgba(240,90,90,0.12)'};color:${good?'#4adb8a':'#f05a5a'};border:1px solid ${good?'rgba(74,219,138,0.3)':'rgba(240,90,90,0.3)'}">${good?'✓ Idéal pour le sport':'⚠️ Préfère le sport en intérieur'}</div></div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted)">Météo indisponible</div>';}}
+// ======= ACTUALITÉS IA =======
+async function fetchNews(){const el=document.getElementById('newsContainer');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es journaliste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: [{"titre":"...","theme":"Géopolitique","resume":"...","importance":"haute"}]',messages:[{role:'user',content:'Donne 6 actualités importantes du moment en géopolitique, économie et technologie. Factuel, concis (1-2 phrases par résumé).'}]})});const data=await res.json();const news=JSON.parse(data.content?.[0]?.text||'[]');const themeColors={'Géopolitique':'#48cae4','Économie':'#c8f04a','Tech':'#7b5ea7'};el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${news.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid ${themeColors[n.theme]||'var(--border)'}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${themeColors[n.theme]||'#6b6b80'}22;color:${themeColors[n.theme]||'#6b6b80'};text-transform:uppercase">${n.theme}</span>${n.importance==='haute'?'<span style="font-size:0.6rem;color:#f05a5a">🔥</span>':''}</div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4">${n.titre}</div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${n.resume}</div></div>`).join('')}</div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Actualités indisponibles</div>';}}
+
+// ======= FILMS =======
+const FILM_GENRE_COLORS={'Plot twist':'#9b8cff','Thriller':'#f05a5a','Drame':'#48cae4','Documentaire':'#4adb8a','Science-Fiction':'#7b5ea7','Classique':'#f4a261','Comédie':'#c8f04a','Action':'#f05a5a','Autre':'#6b6b80'};
+const FILM_SUGGESTIONS=[
+  {title:'The Others',genre:'Plot twist',year:'2001',desc:'Nicole Kidman — twist final dévastateur'},
+  {title:'Oldboy',genre:'Thriller',year:'2003',desc:'Revenge coréen avec un twist légendaire'},
+  {title:'Usual Suspects',genre:'Plot twist',year:'1995',desc:'Qui est Keyser Söze ?'},
+  {title:'Icarus',genre:'Documentaire',year:'2017',desc:'Oscar doc — dopage etatique russe'},
+  {title:'13th',genre:'Documentaire',year:'2016',desc:'Système carcéral américain — Netflix'},
+  {title:'A Beautiful Mind',genre:'Drame',year:'2001',desc:'Russell Crowe — génie et schizophrénie'},
+  {title:'Wild Wild Country',genre:'Documentaire',year:'2018',desc:'Culte religieux aux USA — Netflix'},
+  {title:'Interstellar',genre:'Science-Fiction',year:'2014',desc:'Nolan — voyage dans le temps et les dimensions'},
+  {title:'Gone Baby Gone',genre:'Thriller',year:'2007',desc:'Dilemme moral — Ben Affleck'},
+  {title:'Making a Murderer',genre:'Documentaire',year:'2015',desc:'Justice américaine — Netflix'},
+];
+let filmFilter='all';
+function addFilm(){const title=document.getElementById('filmTitle').value.trim(),genre=document.getElementById('filmGenre').value,year=document.getElementById('filmYear').value.trim();if(!title){showToast('Ajoute un titre !');return;}if(!state.films)state.films=[];state.films.push({id:Date.now(),title,genre,year,status:'avoir',note:0,avis:''});document.getElementById('filmTitle').value='';document.getElementById('filmYear').value='';save();renderFilms();showToast('Film ajouté ✓');}
+function toggleFilmStatus(id){const f=state.films.find(f=>f.id===id);if(!f)return;f.status=f.status==='avoir'?'vu':f.status==='vu'?'abandonné':'avoir';save();renderFilms();}
+function setFilmNote(id,note){const f=state.films.find(f=>f.id===id);if(f){f.note=note;save();renderFilms();}}
+function deleteFilm(id){state.films=state.films.filter(f=>f.id!==id);save();renderFilms();}
+function setFilmFilter(f){filmFilter=f;document.querySelectorAll('#filmFilters .btn').forEach(b=>{b.style.background='var(--surface2)';b.style.color='var(--text-muted)';b.style.border='1px solid var(--border)';});event.target.style.background='var(--accent)';event.target.style.color='#0e0e11';event.target.style.border='none';renderFilms();}
+function addFilmSuggestion(title,genre,year){if(!state.films)state.films=[];state.films.push({id:Date.now(),title,genre,year,status:'avoir',note:0,avis:''});save();renderFilms();showToast('Ajouté ✓');}
+async function getFilmSummary(id){const f=state.films.find(f=>f.id===id);if(!f)return;const el=document.getElementById('film-sum-'+id);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:'Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.',messages:[{role:'user',content:`Présente "${f.title}" (${f.year}).`}]})});const data=await res.json();el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${(data.content?.[0]?.text||'').replace(/\n/g,'<br>')}</div>`;}catch(e){el.innerHTML='';}}
+function renderFilms(){
+  if(!state.films)state.films=[];
+  let films=[...state.films];
+  if(filmFilter==='avoir')films=films.filter(f=>f.status==='avoir');
+  else if(filmFilter==='vu')films=films.filter(f=>f.status==='vu');
+  else if(filmFilter!=='all')films=films.filter(f=>f.genre===filmFilter);
+  const STATUS_COLORS={avoir:'var(--border)',vu:'rgba(74,219,138,0.3)',abandonné:'rgba(240,90,90,0.3)'};
+  const STATUS_LABELS={avoir:'🎬 À voir',vu:'✅ Vu',abandonné:'❌ Abandonné'};
+  const el=document.getElementById('filmList');
+  if(!el)return;
+  el.innerHTML=films.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun film</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${films.map(f=>{const color=FILM_GENRE_COLORS[f.genre]||'#6b6b80';return `<div style="background:var(--surface);border:1px solid ${STATUS_COLORS[f.status]};border-radius:var(--radius);padding:16px;border-left:3px solid ${color}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div style="flex:1"><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${f.title}</div><div style="font-size:0.62rem;color:${color};margin-top:2px">${f.genre}${f.year?' · '+f.year:''}</div></div><button class="btn btn-danger" onclick="deleteFilm(${f.id})">✕</button></div><div id="film-sum-${f.id}"></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:6px"><div onclick="toggleFilmStatus(${f.id})" style="cursor:pointer;padding:5px 12px;border-radius:999px;font-size:0.65rem;font-weight:600;background:${f.status==='vu'?'rgba(74,219,138,0.15)':f.status==='abandonné'?'rgba(240,90,90,0.12)':'var(--surface2)'};border:1px solid ${STATUS_COLORS[f.status]};color:${f.status==='vu'?'#4adb8a':f.status==='abandonné'?'#f05a5a':'var(--text-muted)'}">${STATUS_LABELS[f.status]}</div>${f.status==='vu'?`<div style="display:flex;gap:2px">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<span onclick="setFilmNote(${f.id},${n})" style="cursor:pointer;font-size:0.7rem;color:${n<=f.note?'#f4a261':'var(--border)'}">★</span>`).join('')}</div>`:`<button onclick="getFilmSummary(${f.id})" style="font-size:0.6rem;color:var(--text-muted);background:transparent;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:1px">📖 Synopsis IA</button>`}</div></div>`;}).join('')}</div>`;
+  const suggEl=document.getElementById('filmSuggestions');
+  if(suggEl){const existing=(state.films||[]).map(f=>f.title.toLowerCase());const toShow=FILM_SUGGESTIONS.filter(s=>!existing.includes(s.title.toLowerCase()));suggEl.innerHTML=toShow.length===0?'<div style="font-size:0.72rem;color:var(--text-muted)">Tous les films suggérés sont dans ta liste !</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">${toShow.map(s=>`<div onclick="addFilmSuggestion('${s.title.replace(/'/g,"\'")}','${s.genre}','${s.year}')" style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid ${FILM_GENRE_COLORS[s.genre]||'#6b6b80'};border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:2px">${s.title} <span style="font-size:0.6rem;color:var(--text-muted)">${s.year}</span></div><div style="font-size:0.62rem;color:${FILM_GENRE_COLORS[s.genre]||'#6b6b80'};margin-bottom:4px">${s.genre}</div><div style="font-size:0.65rem;color:var(--text-muted)">${s.desc}</div></div>`).join('')}</div>`;}
+}
+// ======= PODCAST RECO =======
+const PODCAST_RECO=[{cat:'🌐 Géopolitique',items:[{name:'Géopolitique profonde',desc:'Analyses hebdomadaires sur les tensions mondiales'},{name:'Le dessous des cartes (Arte)',desc:'Cartographie des enjeux géopolitiques'},{name:'Affaires Étrangères (France Culture)',desc:'Politique internationale approfondie'}]},{cat:'📈 Économie & Finance',items:[{name:'Génération Do It Yourself',desc:'Entrepreneuriat, finance, liberté financière'},{name:'Hacking Finance',desc:'Investissement, bourse, patrimoine'},{name:'Planet Money (NPR)',desc:'Économie mondiale — anglais B2+'}]},{cat:'💻 Tech',items:[{name:'Lex Fridman Podcast',desc:'IA, science, tech — anglais C1'},{name:'No Limit Secu',desc:'Cybersécurité en français'},{name:'Darknet Diaries',desc:'Histoires vraies de hacks — anglais C1'}]},{cat:'🧠 Développement perso',items:[{name:'Huberman Lab',desc:'Neurosciences, sommeil, performance — anglais B2+'},{name:'The Tim Ferriss Show',desc:'Interviews de performers — anglais C1'},{name:'Choses à Savoir',desc:'Culture générale en 5 min'}]}];
+function renderPodcastReco(){const el=document.getElementById('podcastReco');if(!el)return;el.innerHTML=PODCAST_RECO.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:flex;flex-direction:column;gap:6px">${cat.items.map(p=>`<div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px"><div style="font-size:0.75rem;font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.62rem;color:var(--text-muted)">${p.desc}</div></div>`).join('')}</div></div>`).join('');}
+
+// ======= MÉDITATION =======
+let meditTimer = null, meditSeconds = 10*60, meditRunning = false, meditDuration = 10;
+let meditType = 'respiration', breathPhase = 0, breathTimer = null;
+
+const MEDIT_INSTRUCTIONS = {
+  'respiration': {
+    label: '🌬️ Respiration 4-7-8',
+    text: 'Inspire par le nez pendant 4 secondes → retiens 7 secondes → expire lentement par la bouche pendant 8 secondes. Cette technique active le système nerveux parasympathique et réduit le stress en quelques minutes.',
+    breath: ['Inspire... (4s)', 'Retiens... (7s)', 'Expire... (8s)'],
+    durations: [4000, 7000, 8000],
+  },
+  'pleine-conscience': {
+    label: '🧠 Pleine conscience',
+    text: 'Observe tes pensées sans les juger. Ramène doucement ton attention sur ta respiration chaque fois que ton esprit s\'égare. Ne cherche pas à vider ton esprit — observe simplement ce qui se passe.',
+    breath: ['Observe...', 'Respire...', 'Relâche...'],
+    durations: [5000, 5000, 5000],
+  },
+  'body-scan': {
+    label: '🫁 Body scan',
+    text: 'Parcours mentalement ton corps de la tête aux pieds. Remarque les sensations sans chercher à les modifier. Détends chaque zone au fil de ton attention : crâne, nuque, épaules, poitrine, ventre, bras, jambes.',
+    breath: ['Scanne...', 'Détends...', 'Relâche...'],
+    durations: [6000, 6000, 6000],
+  },
+  'visualisation': {
+    label: '✨ Visualisation positive',
+    text: 'Ferme les yeux. Visualise un endroit où tu te sens en sécurité et serein — une plage, une forêt, un coin calme. Engage tous tes sens : qu\'est-ce que tu vois, entends, ressens ? Reste dans cet espace mental.',
+    breath: ['Visualise...', 'Ressens...', 'Ancre...'],
+    durations: [5000, 5000, 5000],
+  },
+};
+
+function setMeditType(type) {
+  meditType = type;
+  document.querySelectorAll('[id^="mtype-"]').forEach(btn => {
+    btn.className = 'btn'; btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)';
+  });
+  const btn = document.getElementById('mtype-' + type);
+  if (btn) { btn.className = 'btn btn-primary'; btn.style.cssText = 'background:#9b8cff;color:#fff;border:none'; }
+  const instr = MEDIT_INSTRUCTIONS[type];
+  const instrEl = document.getElementById('meditInstruction');
+  if (instrEl) instrEl.textContent = instr?.text || '';
+}
+
+function setMeditDur(min) {
+  meditDuration = min; meditSeconds = min * 60;
+  updateMeditDisplay();
+  document.querySelectorAll('[id^="mdur-"]').forEach(btn => {
+    btn.className = 'btn'; btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)';
+  });
+  const btn = document.getElementById('mdur-' + min);
+  if (btn) { btn.className = 'btn btn-primary'; btn.style.cssText = 'background:#9b8cff;color:#fff;border:none'; }
+}
+
+function updateMeditDisplay() {
+  const m = Math.floor(meditSeconds/60), s = meditSeconds%60;
+  const el = document.getElementById('meditDisplay');
+  if (el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startBreathCycle() {
+  const instr = MEDIT_INSTRUCTIONS[meditType];
+  if (!instr) return;
+  const circle = document.getElementById('breathCircle');
+  const status = document.getElementById('meditStatus');
+  const phases = instr.breath, durations = instr.durations;
+  let phase = 0;
+  function nextPhase() {
+    if (!meditRunning) return;
+    if (circle) {
+      circle.style.transform = phase === 0 ? 'scale(1.6)' : phase === 1 ? 'scale(1.6)' : 'scale(1)';
+      circle.style.background = phase === 0 ? 'rgba(123,94,167,0.3)' : phase === 1 ? 'rgba(123,94,167,0.4)' : 'rgba(123,94,167,0.1)';
+      circle.textContent = phases[phase];
+    }
+    if (status) status.textContent = phases[phase];
+    breathTimer = setTimeout(() => { phase = (phase+1) % phases.length; nextPhase(); }, durations[phase]);
+  }
+  nextPhase();
+}
+
+function startMedit() {
+  if (meditRunning) return;
+  meditRunning = true;
+  document.getElementById('meditStartBtn').style.opacity = '0.5';
+  startBreathCycle();
+  meditTimer = setInterval(() => {
+    meditSeconds--;
+    updateMeditDisplay();
+    if (meditSeconds <= 0) {
+      stopMedit(true);
+    }
+  }, 1000);
+}
+
+function stopMedit(completed = false) {
+  clearInterval(meditTimer); clearTimeout(breathTimer);
+  meditRunning = false;
+  const startBtn = document.getElementById('meditStartBtn');
+  if (startBtn) startBtn.style.opacity = '1';
+  const circle = document.getElementById('breathCircle');
+  if (circle) { circle.textContent = ''; circle.style.transform = 'scale(1)'; circle.style.background = 'rgba(123,94,167,0.15)'; }
+  if (completed) {
+    document.getElementById('meditStatus').textContent = '✅ Session terminée !';
+    if (!state.meditSessions) state.meditSessions = {};
+    const t = today();
+    if (!state.meditSessions[t]) state.meditSessions[t] = [];
+    state.meditSessions[t].push({ type: meditType, duration: meditDuration, time: new Date().toLocaleTimeString('fr-FR') });
+    save(); renderMeditStats(); showToast('Session de méditation terminée 🧘 ✓');
+    meditSeconds = meditDuration * 60; updateMeditDisplay();
+  }
+}
+
+function pauseMedit() {
+  if (!meditRunning) return;
+  clearInterval(meditTimer); clearTimeout(breathTimer);
+  meditRunning = false;
+  document.getElementById('meditStatus').textContent = 'En pause...';
+  const startBtn = document.getElementById('meditStartBtn');
+  if (startBtn) startBtn.style.opacity = '1';
+}
+
+function resetMedit() {
+  stopMedit(false);
+  meditSeconds = meditDuration * 60;
+  updateMeditDisplay();
+  document.getElementById('meditStatus').textContent = 'Prêt';
+}
+
+function renderMeditStats() {
+  if (!state.meditSessions) state.meditSessions = {};
+  const weekDates = getWeekDates();
+  const totalSessions = weekDates.reduce((s,d) => s + (state.meditSessions[d]?.length||0), 0);
+  const totalMin = weekDates.reduce((s,d) => s + (state.meditSessions[d]||[]).reduce((a,m)=>a+m.duration,0), 0);
+  const todaySessions = state.meditSessions[today()] || [];
+  const statsEl = document.getElementById('meditStats');
+  if (!statsEl) return;
+  statsEl.innerHTML = `
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${totalSessions}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Sessions / semaine</div>
+    </div>
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${totalMin}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Minutes / semaine</div>
+    </div>
+    <div style="text-align:center;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);flex:1">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${todaySessions.length}</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Sessions aujourd'hui</div>
+    </div>`;
+}
+
+function renderBienetre() {
+  if (!state.bienetre) state.bienetre = {};
+  const d = getBienetrDay(), t = today();
+  const sleepBed = document.getElementById('sleepBed'); if(sleepBed) sleepBed.value = d.bed||'';
+  const sleepWake = document.getElementById('sleepWake'); if(sleepWake) sleepWake.value = d.wake||'';
+  if (d.bed && d.wake) saveSleep();
+  if (d.sleepQ) saveSleepQuality(d.sleepQ);
+  if (d.energy) saveEnergy(d.energy);
+  if (d.mood) saveMood(d.mood);
+  const grat = document.getElementById('gratitudeText'); if(grat && d.gratitude) grat.value = d.gratitude;
+  const note = document.getElementById('bienetrNote'); if(note && d.note) note.value = d.note;
+  if (state.currentRetro) {
+    if (state.currentRetro.good) { const el=document.getElementById('retroGood'); if(el)el.value=state.currentRetro.good; }
+    if (state.currentRetro.block) { const el=document.getElementById('retroBlock'); if(el)el.value=state.currentRetro.block; }
+    if (state.currentRetro.next) { const el=document.getElementById('retroNext'); if(el)el.value=state.currentRetro.next; }
+  }
+  const weekDates = getWeekDates();
+  const histEl = document.getElementById('energyHistory');
+  const colors = ['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+  if (histEl) histEl.innerHTML = `<div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:8px">${weekDates.map((d,i)=>{
+    const day=state.bienetre[d]||{}, e=day.energy||0, isT=d===t;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:0.62rem;color:${e>0?colors[e]:'var(--text-muted)'}">${e>0?e:'-'}</div><div style="width:100%;height:${Math.max(4,e*12)}px;background:${e>0?colors[e]:'var(--border)'};border-radius:4px 4px 0 0"></div><div style="font-size:0.58rem;color:${isT?'var(--accent)':'var(--text-muted)'}">${DAYS_FR[i]}</div></div>`;
+  }).join('')}</div><div style="font-size:0.65rem;color:var(--text-muted)">Humeur : ${weekDates.map(d=>(state.bienetre[d]||{}).mood||'○').join('  ')}</div>`;
+  // Init méditation
+  setMeditType('respiration');
+  setMeditDur(10);
+  renderMeditStats();
+}
+
+// ======= DCA TRACKER =======
+function addDCA() {
+  const name = document.getElementById('dcaName').value.trim();
+  const env = document.getElementById('dcaEnv').value;
+  const amount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+  const day = parseInt(document.getElementById('dcaDay').value) || 1;
+  if (!name || !amount) { showToast('Remplis nom et montant !'); return; }
+  if (!state.dcaList) state.dcaList = [];
+  state.dcaList.push({ id: Date.now(), name, env, amount, day, active: true });
+  ['dcaName','dcaAmount','dcaDay'].forEach(id => document.getElementById(id).value = '');
+  save(); renderDCA(); showToast('DCA ajouté ✓');
+}
+
+function toggleDCA(id) {
+  const item = state.dcaList?.find(d => d.id === id);
+  if (item) { item.active = !item.active; save(); renderDCA(); }
+}
+
+function deleteDCA(id) {
+  state.dcaList = state.dcaList.filter(d => d.id !== id);
+  save(); renderDCA();
+}
+
+function renderDCA() {
+  if (!state.dcaList) state.dcaList = [];
+  const el = document.getElementById('dcaList');
+  const totalEl = document.getElementById('dcaTotal');
+  if (!el) return;
+  const ENV_COLORS = { PEA: '#c8f04a', CTO: '#48cae4', AV: '#9b8cff' };
+  const totalActive = state.dcaList.filter(d => d.active).reduce((s,d) => s + d.amount, 0);
+  el.innerHTML = state.dcaList.length === 0
+    ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun DCA programmé</div>'
+    : `<div style="display:flex;flex-direction:column;gap:8px">` +
+      state.dcaList.map(d => `
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid ${d.active?ENV_COLORS[d.env]||'var(--border)':'var(--border)'};opacity:${d.active?1:0.5};flex-wrap:wrap">
+          <div style="width:10px;height:10px;border-radius:50%;background:${d.active?ENV_COLORS[d.env]||'var(--accent)':'var(--text-muted)'};flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text)">${d.name}</div>
+            <div style="font-size:0.62rem;color:var(--text-muted)">${d.env} · Prélèvement le ${d.day} du mois</div>
+          </div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:${ENV_COLORS[d.env]||'var(--accent)'}">${d.amount} €/mois</div>
+          <div onclick="toggleDCA(${d.id})" style="cursor:pointer;padding:4px 10px;border-radius:999px;font-size:0.62rem;background:${d.active?'rgba(74,219,138,0.12)':'var(--surface)'};border:1px solid ${d.active?'rgba(74,219,138,0.3)':'var(--border)'};color:${d.active?'#4adb8a':'var(--text-muted)'}">${d.active?'Actif':'Pausé'}</div>
+          <button class="btn btn-danger" onclick="deleteDCA(${d.id})">✕</button>
+        </div>`).join('') + '</div>';
+  if (totalEl) totalEl.innerHTML = `Total DCA actifs : <span style="color:var(--accent);font-weight:700">${totalActive} €/mois</span> · <span style="color:var(--text-muted)">soit ${(totalActive*12).toLocaleString('fr-FR')} €/an</span>`;
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -1500,6 +2861,7 @@ chartScript.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd
 chartScript.onload=()=>{renderBudget();};
 document.head.appendChild(chartScript);
 
+initTheme();
 initHeader();
 initFocus();
 renderProjects();
@@ -1519,6 +2881,34 @@ renderBienetre();
 renderNutrition();
 renderPortfolio();
 renderTempsLibres();
+renderCalendar();
+renderBadges();
+renderKPIs();
+renderAlerts();
+renderFocus();
+renderFinance2();
+renderDigital();
+renderFilms();
+renderPodcastReco();
+renderPortfolio();
+renderPatrimoine();
+renderDCA();
+// Init invest env tabs
+switchInvEnv('pea');
+// Init sub-tabs
+const alimNut=document.getElementById('alim-nutrition');if(alimNut)alimNut.style.display='none';
+['sim','objs','backup'].forEach(t=>{const el=document.getElementById('fin-'+t);if(el)el.style.display='none';});
+['livres','podcasts'].forEach(t=>{const el=document.getElementById('media-'+t);if(el)el.style.display='none';});
+if(!state.films)state.films=[];save();
+// Merge nouveaux champs state si absents
+if(!state.priorities)state.priorities={};
+if(!state.pomodoroSessions)state.pomodoroSessions={};
+if(!state.finObjs)state.finObjs=[];
+if(!state.digitalRules)state.digitalRules=[{id:1,text:"Pas plus d'1h de jeu vidéo par jour",done:false},{id:2,text:'Téléphone en silencieux pendant le travail',done:false},{id:3,text:"Pas d'écran 30 min avant de dormir",done:false},{id:4,text:'Pas de téléphone pendant les repas',done:false}];
+if(!state.screenTime)state.screenTime={};
+save();
+// Météo async
+fetchWeather();
 if(state.savingsGoal)document.getElementById('savingsGoal').value=state.savingsGoal;
 scheduleMidnightRefresh();
 </script>
