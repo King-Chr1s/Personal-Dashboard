@@ -1037,13 +1037,13 @@
 
   <!-- Paramètres IA -->
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.2)">
-    <div class="card-title" style="color:var(--accent)">⚙️ Paramètres IA — Clé Gemini</div>
+    <div class="card-title" style="color:var(--accent)">⚙️ Paramètres IA — Clé Groq</div>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
-      Colle ta clé API Gemini ici — obtiens-la gratuitement sur <strong style="color:var(--accent)">aistudio.google.com</strong> → Get API key → Create API key.<br>
+      Colle ta clé API Groq ici — obtiens-la gratuitement sur <strong style="color:var(--accent)">console.groq.com</strong> → API Keys → Create API key (commence par gsk_...).<br>
       Elle se sauvegarde automatiquement dans ton navigateur.
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <input class="inp" type="password" id="geminiKeyInput" placeholder="AIzaSy..." style="flex:1;min-width:200px"/>
+      <input class="inp" type="password" id="geminiKeyInput" placeholder="gsk_..." style="flex:1;min-width:200px"/>
       <button class="btn btn-primary" onclick="saveGeminiKey()">💾 Sauvegarder la clé</button>
       <button class="btn" onclick="testGeminiKey()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
     </div>
@@ -3016,40 +3016,38 @@ async function loadFromDrive() {
 
 
 // ======= GEMINI AI =======
-function getGeminiKey() {
-  return localStorage.getItem('gemini_api_key') || '';
-}
-function getGeminiUrl() {
-  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getGeminiKey()}`;
+function getAIKey() {
+  return localStorage.getItem('ai_api_key') || '';
 }
 
 async function callGemini(systemPrompt, userMessage, maxTokens=800) {
-  const key = getGeminiKey();
+  const key = getAIKey();
   if (!key) {
-    showToast('⚙️ Configure ta clé Gemini dans Paramètres !');
-    // Open digital tab settings
+    showToast('⚙️ Configure ta clé IA dans Digital → Paramètres !');
     return null;
   }
   try {
-    const res = await fetch(getGeminiUrl(), {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`
+      },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: (systemPrompt ? systemPrompt + '\n\n' : '') + userMessage
-          }]
-        }],
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: 0.7
-        }
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          ...(systemPrompt ? [{role:'system', content: systemPrompt}] : []),
+          {role:'user', content: userMessage}
+        ],
+        max_tokens: maxTokens,
+        temperature: 0.7
       })
     });
     const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    if (data.error) { console.error('Groq error:', data.error); return null; }
+    return data.choices?.[0]?.message?.content || null;
   } catch(e) {
-    console.error('Gemini error:', e);
+    console.error('Groq error:', e);
     return null;
   }
 }
@@ -3058,11 +3056,11 @@ async function callGemini(systemPrompt, userMessage, maxTokens=800) {
 // ======= PARAMÈTRES IA =======
 function saveGeminiKey() {
   const key = document.getElementById('geminiKeyInput').value.trim();
-  if (!key || !key.startsWith('AIza')) {
-    document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#f05a5a">❌ Clé invalide — elle doit commencer par AIza...</span>';
+  if (!key || !key.startsWith('gsk_')) {
+    document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#f05a5a">❌ Clé invalide — elle doit commencer par gsk_...</span>';
     return;
   }
-  localStorage.setItem('gemini_api_key', key);
+  localStorage.setItem('ai_api_key', key);
   document.getElementById('geminiKeyInput').value = '';
   document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#4adb8a">✅ Clé sauvegardée ! Toutes les fonctions IA sont maintenant actives.</span>';
   showToast('Clé Gemini sauvegardée ✓');
@@ -3081,7 +3079,7 @@ async function testGeminiKey() {
 }
 
 function initGeminiSettings() {
-  const key = getGeminiKey();
+  const key = getAIKey();
   const statusEl = document.getElementById('geminiKeyStatus');
   if (!statusEl) return;
   if (key) {
