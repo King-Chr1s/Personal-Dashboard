@@ -179,6 +179,7 @@
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
     <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.04 — Dashboard Personnel</div>
+    <div id="iaStatusBadge" onclick="switchTab('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer IA</div>
   </div>
 </div>
 
@@ -1033,6 +1034,22 @@
   </div>
   <div class="card" style="margin-bottom:20px"><div class="card-title">🎬 Alternatives légales & gratuites</div><div id="freeAlternativesList"></div></div>
   <div class="card"><div class="card-title">💡 Conseils détox digital</div><div id="digitalTipsList"></div></div>
+
+  <!-- Paramètres IA -->
+  <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.2)">
+    <div class="card-title" style="color:var(--accent)">⚙️ Paramètres IA — Clé Gemini</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
+      Colle ta clé API Gemini ici — obtiens-la gratuitement sur <strong style="color:var(--accent)">aistudio.google.com</strong> → Get API key → Create API key.<br>
+      Elle se sauvegarde automatiquement dans ton navigateur.
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <input class="inp" type="password" id="geminiKeyInput" placeholder="AIzaSy..." style="flex:1;min-width:200px"/>
+      <button class="btn btn-primary" onclick="saveGeminiKey()">💾 Sauvegarder la clé</button>
+      <button class="btn" onclick="testGeminiKey()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+    </div>
+    <div id="geminiKeyStatus" style="font-size:0.68rem;color:var(--text-muted)"></div>
+  </div>
+
 </div>
 
 <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Changer le thème">🌙</button>
@@ -2999,12 +3016,22 @@ async function loadFromDrive() {
 
 
 // ======= GEMINI AI =======
-const GEMINI_API_KEY = 'AIzaSyDk76clDr1o4sj8krLLSkW9jao8kpRL5kI';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDk76clDr1o4sj8krLLSkW9jao8kpRL5kI';
+function getGeminiKey() {
+  return localStorage.getItem('gemini_api_key') || '';
+}
+function getGeminiUrl() {
+  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getGeminiKey()}`;
+}
 
 async function callGemini(systemPrompt, userMessage, maxTokens=800) {
+  const key = getGeminiKey();
+  if (!key) {
+    showToast('⚙️ Configure ta clé Gemini dans Paramètres !');
+    // Open digital tab settings
+    return null;
+  }
   try {
-    const res = await fetch(GEMINI_URL, {
+    const res = await fetch(getGeminiUrl(), {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -3024,6 +3051,43 @@ async function callGemini(systemPrompt, userMessage, maxTokens=800) {
   } catch(e) {
     console.error('Gemini error:', e);
     return null;
+  }
+}
+
+
+// ======= PARAMÈTRES IA =======
+function saveGeminiKey() {
+  const key = document.getElementById('geminiKeyInput').value.trim();
+  if (!key || !key.startsWith('AIza')) {
+    document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#f05a5a">❌ Clé invalide — elle doit commencer par AIza...</span>';
+    return;
+  }
+  localStorage.setItem('gemini_api_key', key);
+  document.getElementById('geminiKeyInput').value = '';
+  document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#4adb8a">✅ Clé sauvegardée ! Toutes les fonctions IA sont maintenant actives.</span>';
+  showToast('Clé Gemini sauvegardée ✓');
+}
+
+async function testGeminiKey() {
+  const statusEl = document.getElementById('geminiKeyStatus');
+  statusEl.innerHTML = '<span style="color:var(--text-muted)">⏳ Test en cours...</span>';
+  const text = await callGemini('', 'Réponds juste: OK', 10);
+  if (text) {
+    statusEl.innerHTML = '<span style="color:#4adb8a">✅ Clé valide — IA opérationnelle !</span>';
+    showToast('IA opérationnelle ✓');
+  } else {
+    statusEl.innerHTML = '<span style="color:#f05a5a">❌ Clé invalide ou expirée — vérifie sur aistudio.google.com</span>';
+  }
+}
+
+function initGeminiSettings() {
+  const key = getGeminiKey();
+  const statusEl = document.getElementById('geminiKeyStatus');
+  if (!statusEl) return;
+  if (key) {
+    statusEl.innerHTML = '<span style="color:#4adb8a">✅ Clé configurée — IA active</span>';
+  } else {
+    statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Aucune clé — configure-la pour activer l\'IA</span>';
   }
 }
 
@@ -3068,6 +3132,7 @@ renderAlerts();
 renderFocus();
 renderFinance2();
 renderDigital();
+initGeminiSettings();
 renderFilms();
 renderPodcastReco();
 renderPortfolio();
