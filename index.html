@@ -3106,41 +3106,75 @@ async function callGemini(systemPrompt, userMessage, maxTokens=800) {
 }
 
 
-// ======= PARAMÈTRES IA =======
-function saveGeminiKey() {
-  const key = document.getElementById('geminiKeyInput').value.trim();
-  if (!key || !key.startsWith('gsk_')) {
-    document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#f05a5a">❌ Clé invalide — elle doit commencer par gsk_...</span>';
-    return;
-  }
-  localStorage.setItem('ai_api_key', key);
-  document.getElementById('geminiKeyInput').value = '';
-  document.getElementById('geminiKeyStatus').innerHTML = '<span style="color:#4adb8a">✅ Clé sauvegardée ! Toutes les fonctions IA sont maintenant actives.</span>';
-  showToast('Clé Gemini sauvegardée ✓');
+// ======= PARAMÈTRES API =======
+function saveApiKey(type) {
+  const inputs = { groq: 'groqKeyInput', td: 'tdKeyInput' };
+  const storageKeys = { groq: 'ai_api_key', td: 'twelvedata_api_key' };
+  const el = document.getElementById(inputs[type]);
+  const key = el ? el.value.trim() : '';
+  if (!key) { showToast('Colle ta clé dabord !'); return; }
+  localStorage.setItem(storageKeys[type], key);
+  el.value = '';
+  showToast('Clé sauvegardée ✓');
+  initApiSettings();
 }
 
-async function testGeminiKey() {
-  const statusEl = document.getElementById('geminiKeyStatus');
-  statusEl.innerHTML = '<span style="color:var(--text-muted)">⏳ Test en cours...</span>';
-  const text = await callGemini('', 'Réponds juste: OK', 10);
-  if (text) {
-    statusEl.innerHTML = '<span style="color:#4adb8a">✅ Clé valide — IA opérationnelle !</span>';
-    showToast('IA opérationnelle ✓');
+async function testApiKey(type) {
+  const statusEl = document.getElementById(type === 'groq' ? 'groqStatus' : 'tdStatus');
+  if (statusEl) statusEl.innerHTML = '<span style="color:var(--text-muted)">⏳ Test...</span>';
+  if (type === 'groq') {
+    const text = await callGemini('', 'Réponds uniquement: OK', 20);
+    if (statusEl) statusEl.innerHTML = text
+      ? '<span style="color:#4adb8a">✅ IA opérationnelle !</span>'
+      : '<span style="color:#f05a5a">❌ Clé invalide</span>';
+    if (text) showToast('IA opérationnelle ✓');
   } else {
-    statusEl.innerHTML = '<span style="color:#f05a5a">❌ Clé invalide ou expirée — vérifie sur aistudio.google.com</span>';
+    const key = getTwelveDataKey();
+    if (!key) { if (statusEl) statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Aucune clé saisie</span>'; return; }
+    try {
+      const res = await fetch(`https://api.twelvedata.com/price?symbol=AAPL&apikey=${key}`, { signal: AbortSignal.timeout(6000) });
+      const data = await res.json();
+      if (data.price) {
+        if (statusEl) statusEl.innerHTML = '<span style="color:#4adb8a">✅ Cours boursiers actifs !</span>';
+        showToast('Twelve Data opérationnel ✓');
+      } else {
+        if (statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ ${data.message || 'Clé invalide'}</span>`;
+      }
+    } catch(e) { if (statusEl) statusEl.innerHTML = '<span style="color:#f05a5a">❌ Connexion échouée</span>'; }
   }
 }
 
-function initGeminiSettings() {
-  const key = getAIKey();
-  const statusEl = document.getElementById('geminiKeyStatus');
-  if (!statusEl) return;
-  if (key) {
-    statusEl.innerHTML = '<span style="color:#4adb8a">✅ Clé configurée — IA active</span>';
-  } else {
-    statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Aucune clé — configure-la pour activer l\'IA</span>';
+function initApiSettings() {
+  const groqKey = getAIKey();
+  const tdKey = getTwelveDataKey();
+  const badge = document.getElementById('iaStatusBadge');
+  const groqBadge = document.getElementById('groqBadge');
+  const tdBadge = document.getElementById('tdBadge');
+  const configured = '<span style="background:rgba(74,219,138,0.15);color:#4adb8a;border:1px solid rgba(74,219,138,0.3);padding:2px 8px;border-radius:999px;font-size:0.6rem">✅ Configuré</span>';
+  const notConfigured = '<span style="background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3);padding:2px 8px;border-radius:999px;font-size:0.6rem">⚠️ Non configuré</span>';
+  if (groqBadge) groqBadge.innerHTML = groqKey ? configured : notConfigured;
+  if (tdBadge) tdBadge.innerHTML = tdKey ? configured : notConfigured;
+  if (badge) {
+    const allOk = groqKey && tdKey;
+    const someOk = groqKey || tdKey;
+    badge.textContent = allOk ? '🤖 IA + 📈 Bourse' : someOk ? '⚙️ Config partielle' : '⚙️ Configurer APIs';
+    badge.style.background = allOk ? 'rgba(74,219,138,0.15)' : someOk ? 'rgba(244,162,97,0.15)' : 'rgba(240,90,90,0.12)';
+    badge.style.color = allOk ? '#4adb8a' : someOk ? '#f4a261' : '#f05a5a';
+    badge.style.borderColor = allOk ? 'rgba(74,219,138,0.3)' : someOk ? 'rgba(244,162,97,0.3)' : 'rgba(240,90,90,0.3)';
   }
+  // Restore existing key status messages
+  const groqStatus = document.getElementById('groqStatus');
+  const tdStatus = document.getElementById('tdStatus');
+  if (groqStatus) groqStatus.innerHTML = groqKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
+  if (tdStatus) tdStatus.innerHTML = tdKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
 }
+
+// Keep backward compat
+function saveGeminiKey() { saveApiKey('groq'); }
+function testGeminiKey() { testApiKey('groq'); }
+function initGeminiSettings() { initApiSettings(); }
+
+
 
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
