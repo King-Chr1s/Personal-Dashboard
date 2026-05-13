@@ -667,67 +667,6 @@
 </div>
 
 
-<!-- ===== FOCUS ===== -->
-<!-- ===== FOCUS & PRODUCTIVITÉ ===== -->
-<div class="panel" id="panel-focus">
-
-  <!-- 3 Priorités du jour -->
-  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
-    <div class="card-title" style="color:var(--accent)">🎯 Mes 3 priorités du jour</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Avant de commencer ta journée — quelles sont les 3 choses les plus importantes à accomplir ?</div>
-    <div style="display:flex;flex-direction:column;gap:10px" id="prioritiesList">
-      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent);width:24px">1</span><input class="inp" type="text" id="prio1" placeholder="Priorité n°1 (la plus importante)" style="flex:1" oninput="savePriorities()"/></div>
-      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent3);width:24px">2</span><input class="inp" type="text" id="prio2" placeholder="Priorité n°2" style="flex:1" oninput="savePriorities()"/></div>
-      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-muted);width:24px">3</span><input class="inp" type="text" id="prio3" placeholder="Priorité n°3" style="flex:1" oninput="savePriorities()"/></div>
-    </div>
-  </div>
-
-  <!-- Pomodoro -->
-  <div class="grid-2" style="margin-bottom:20px">
-    <div class="card">
-      <div class="card-title">⏱️ Pomodoro Timer</div>
-      <div style="text-align:center;padding:20px 0">
-        <div style="font-family:'DM Serif Display',serif;font-size:4rem;color:var(--accent);line-height:1;margin-bottom:8px" id="pomodoroDisplay">25:00</div>
-        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px" id="pomodoroStatus">Prêt à démarrer</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="startPomodoro()" id="pomodoroStartBtn">▶ Démarrer</button>
-          <button class="btn" onclick="pausePomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">⏸ Pause</button>
-          <button class="btn" onclick="resetPomodoro()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">↺ Reset</button>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">
-          <button onclick="setPomoDuration(25)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">25 min</button>
-          <button onclick="setPomoDuration(45)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">45 min</button>
-          <button onclick="setPomoDuration(5)" class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:0.65rem;padding:6px 12px">5 min 🧘</button>
-        </div>
-      </div>
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted)">
-        <span>Sessions aujourd'hui</span>
-        <span id="pomodoroCount" style="color:var(--accent);font-weight:600">0</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">📵 Mode Focus</div>
-      <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">Active le mode focus pour masquer les distractions et te concentrer sur une seule chose.</div>
-      <div style="margin-bottom:14px">
-        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Sur quoi je travaille</div>
-        <input class="inp" type="text" id="focusTask" placeholder="Ex: Préparer ma présentation Sage..." style="width:100%"/>
-      </div>
-      <button onclick="toggleFocusMode()" id="focusModeBtn" class="btn btn-primary" style="width:100%">🎯 Activer le mode focus</button>
-      <div style="margin-top:12px;font-size:0.65rem;color:var(--text-muted)">Le mode focus simplifie l'affichage et met en avant uniquement l'essentiel.</div>
-    </div>
-  </div>
-
-  <!-- Suivi des sessions Pomodoro -->
-  <div class="card">
-    <div class="card-title">📊 Historique sessions cette semaine</div>
-    <div id="pomodoroHistory"></div>
-  </div>
-
-</div>
-
-
-
 <!-- ===== PLANNING ===== -->
 <div class="panel" id="panel-planning">
   <!-- Focus du jour -->
@@ -1043,11 +982,21 @@
   <div id="fin-backup" style="display:none">
     <div class="card" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
       <div class="card-title" style="color:var(--accent)">💾 Sauvegarde & Restauration</div>
-      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">Sauvegarde toutes tes données en 1 clic. Fonctionne sur tous les navigateurs et ordinateurs.</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">Sauvegarde automatique sur Google Drive — accessible depuis tous tes appareils.</div>
+      
+      <div style="background:var(--surface2);border:1px solid rgba(72,202,228,0.3);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent4);margin-bottom:10px">☁️ Google Drive — Sync automatique</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="btn btn-primary" onclick="syncToDrive()" style="background:var(--accent4);color:#0e0e11">☁️ Sauvegarder sur Drive</button>
+          <button class="btn" onclick="loadFromDrive()" style="background:var(--surface2);border:1px solid rgba(72,202,228,0.3);color:var(--accent4)">📥 Restaurer depuis Drive</button>
+        </div>
+        <div id="driveStatus" style="font-size:0.68rem;color:var(--text-muted)">Clique pour synchroniser avec Google Drive</div>
+      </div>
+
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="backupData()">📥 Sauvegarder mes données</button>
+        <button class="btn btn-primary" onclick="backupData()">📥 Télécharger sauvegarde (.json)</button>
         <label class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);cursor:pointer">
-          📤 Restaurer une sauvegarde
+          📤 Restaurer depuis fichier
           <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)"/>
         </label>
       </div>
@@ -1538,7 +1487,39 @@ const REPAS_SLOTS=[
   {id:'midi',label:'Déjeuner',icon:'☀️',color:'#c8f04a'},
   {id:'soir',label:'Dîner',icon:'🌙',color:'#7b5ea7'},
 ];
-const FOOD_MACROS={'Œufs':{p:13,c:1,cal:155},'Poulet':{p:31,c:0,cal:165},'Riz':{p:3,c:28,cal:130},'Pâtes':{p:5,c:25,cal:131},'Patate douce':{p:2,c:20,cal:86},'Yaourt':{p:8,c:6,cal:61},'Saumon':{p:25,c:0,cal:208},'Thon':{p:30,c:0,cal:130},'Lentilles':{p:9,c:20,cal:116},'Légumes':{p:2,c:7,cal:35},'Flocons avoine':{p:5,c:30,cal:150},'Banane':{p:1,c:23,cal:89},'Pain complet':{p:4,c:20,cal:110}};
+const FOOD_MACROS={
+  'oeuf':       {p:13,c:1,cal:155},  'oeufs':{p:13,c:1,cal:155},
+  'poulet':     {p:31,c:0,cal:165},
+  'riz':        {p:3,c:28,cal:130},
+  'pates':      {p:5,c:25,cal:131},  'pâtes':{p:5,c:25,cal:131},
+  'patate douce':{p:2,c:20,cal:86},
+  'yaourt':     {p:8,c:6,cal:61},
+  'saumon':     {p:25,c:0,cal:208},
+  'thon':       {p:30,c:0,cal:130},
+  'lentilles':  {p:9,c:20,cal:116},
+  'legumes':    {p:2,c:7,cal:35},    'légumes':{p:2,c:7,cal:35},
+  'avoine':     {p:5,c:30,cal:150},  'flocons':{p:5,c:30,cal:150},
+  'banane':     {p:1,c:23,cal:89},
+  'pain':       {p:4,c:20,cal:110},
+  'boeuf':      {p:26,c:0,cal:250},  'bœuf':{p:26,c:0,cal:250}, 'steak':{p:26,c:0,cal:250},
+  'porc':       {p:27,c:0,cal:242},
+  'dinde':      {p:29,c:0,cal:157},
+  'sardine':    {p:25,c:0,cal:208},  'sardines':{p:25,c:0,cal:208},
+  'quinoa':     {p:4,c:21,cal:120},
+  'fromage':    {p:25,c:1,cal:350},
+  'amandes':    {p:21,c:6,cal:579},  'noix':{p:15,c:7,cal:654},
+  'avocat':     {p:2,c:9,cal:160},
+  'tomate':     {p:1,c:4,cal:18},    'tomates':{p:1,c:4,cal:18},
+  'epinard':    {p:3,c:4,cal:23},    'épinards':{p:3,c:4,cal:23},
+  'brocoli':    {p:3,c:7,cal:34},    'brocolis':{p:3,c:7,cal:34},
+  'lait':       {p:3,c:5,cal:61},
+  'proteine':   {p:25,c:3,cal:120},  'protéine':{p:25,c:3,cal:120}, 'whey':{p:25,c:3,cal:120},
+};
+function normalizeFood(str) {
+  return str.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z ]/g,'').trim();
+}
 function repasNav(dir) { const d=new Date(repasDate); d.setDate(d.getDate()+dir); repasDate=d.toISOString().slice(0,10); renderRepas(); }
 function repasGoToday() { repasDate=today(); renderRepas(); }
 function saveRepasItem(slot,field,val) {
@@ -1547,11 +1528,21 @@ function saveRepasItem(slot,field,val) {
   state.repas[repasDate][slot][field]=val; save(); updateMacros();
 }
 function autoCalcMacros(slot) {
-  const content=(state.repas[repasDate]?.[slot]?.content||'').toLowerCase();
-  let totalCal=0, totalProt=0;
-  Object.entries(FOOD_MACROS).forEach(([food,m])=>{ if(content.includes(food.toLowerCase())){totalCal+=m.cal; totalProt+=m.p;} });
-  if(totalCal>0){saveRepasItem(slot,'calories',totalCal); saveRepasItem(slot,'proteins',totalProt); document.getElementById(`cal-${slot}`).value=totalCal; document.getElementById(`prot-${slot}`).value=totalProt; showToast('Macros estimés ✓');}
-  else showToast('Aucun aliment reconnu — saisie manuelle');
+  const raw=(state.repas[repasDate]?.[slot]?.content||'');
+  const normalized=normalizeFood(raw);
+  let totalCal=0, totalProt=0, found=[];
+  Object.entries(FOOD_MACROS).forEach(([food,m])=>{
+    if(normalized.includes(normalizeFood(food))){totalCal+=m.cal; totalProt+=m.p; found.push(food);}
+  });
+  if(totalCal>0){
+    saveRepasItem(slot,'calories',totalCal);
+    saveRepasItem(slot,'proteins',totalProt);
+    const calEl=document.getElementById('cal-'+slot);
+    const protEl=document.getElementById('prot-'+slot);
+    if(calEl)calEl.value=totalCal;
+    if(protEl)protEl.value=totalProt;
+    showToast('Macros estimés: '+found.join(', ')+' ✓');
+  } else showToast('Aucun aliment reconnu — essaie: oeuf, poulet, riz, saumon...');
 }
 function updateMacros() {
   const dayData=state.repas[repasDate]||{};
@@ -2155,7 +2146,7 @@ async function askFormationAdvice(){
   try {
     const modules=(state.modules||[]).map(m=>m.name).join(', ');
     const context=`Tu es un conseiller en formation professionnelle pour la France. L'utilisateur est en support IT dans une ESN, il vise une transition vers un éditeur logiciel et souhaite à terme devenir formateur indépendant Qualiopi dans les domaines compta/IT. Modules en cours: ${modules||'aucun'}. Donne des conseils concrets, priorisés, adaptés au marché français (CPF, OPCO, Qualiopi). Sois direct et actionnable.`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:q}]})});
+    const res=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:context,messages:[{role:'user',content:q}]})});
     const data=await res.json(); typingEl.remove();
     const text=data.content?.[0]?.text||'Erreur';
     chat.innerHTML+=`<div class="ai-msg assistant">${text.replace(/\n/g,'<br>')}</div>`;
@@ -2435,7 +2426,7 @@ async function suggestWords(lang) {
   el.innerHTML = '<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/claude', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:800,
@@ -2567,10 +2558,10 @@ function addScreenTime(){const app=document.getElementById('screenAppInput').val
 function deleteScreenTime(id){const t=today();if(state.screenTime[t])state.screenTime[t]=state.screenTime[t].filter(s=>s.id!==id);save();renderDigital();}
 function renderDigital(){if(!state.digitalRules)state.digitalRules=[];if(!state.screenTime)state.screenTime={};document.getElementById('digitalRulesList').innerHTML=state.digitalRules.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleDigitalRule(${r.id})" style="width:20px;height:20px;border-radius:5px;flex-shrink:0;cursor:pointer;background:${r.done?'#4adb8a':'var(--surface2)'};border:2px solid ${r.done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${r.done?'✓':''}</div><span style="flex:1;font-size:0.75rem;color:${r.done?'var(--text-muted)':'var(--text)'};text-decoration:${r.done?'line-through':'none'}">${r.text}</span><button class="btn btn-danger" onclick="deleteDigitalRule(${r.id})">✕</button></div>`).join('')||'<div style="font-size:0.72rem;color:var(--text-muted)">Ajoute tes règles</div>';const t=today(),st=state.screenTime[t]||[],total=st.reduce((s,x)=>s+x.mins,0),limit=90,over=total>limit;document.getElementById('screenTimeList').innerHTML=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.72rem;color:${over?'#f05a5a':'var(--text-muted)'};margin-bottom:6px"><span>Total aujourd'hui</span><span style="font-weight:700;color:${over?'#f05a5a':'#4adb8a'}">${total} min${over?' ⚠️':' ✓'}</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.min(100,total/limit*100)}%;background:${over?'#f05a5a':'#4adb8a'}"></div></div></div>${st.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.72rem"><span>${s.app}</span><div style="display:flex;align-items:center;gap:8px"><span style="color:${s.mins>30?'#f4a261':'var(--text-muted)'}">${s.mins} min</span><button class="btn btn-danger" onclick="deleteScreenTime(${s.id})">✕</button></div></div>`).join('')}`;document.getElementById('freeAlternativesList').innerHTML=FREE_ALTERNATIVES.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">${cat.items.map(item=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${item.name}</div><span style="font-size:0.55rem;padding:2px 6px;border-radius:999px;background:rgba(74,219,138,0.12);color:#4adb8a;border:1px solid rgba(74,219,138,0.3)">Gratuit</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:4px">${item.desc}</div><div style="font-size:0.6rem;color:var(--accent3)">Remplace : ${item.replaces}</div><a href="${item.url}" target="_blank" style="font-size:0.58rem;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:1px;display:block;margin-top:6px">Visiter →</a></div>`).join('')}</div></div>`).join('');document.getElementById('digitalTipsList').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${DIGITAL_TIPS.map(tip=>`<div style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:1.2rem">${tip.icon}</span><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text)">${tip.title}</div></div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${tip.desc}</div></div>`).join('')}`;}
 // ======= RECETTES IA =======
-async function suggestMeal(slot){const el=document.getElementById('mealSuggestResult-'+slot);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:'Tu es nutritionniste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: {"nom":"...","ingredients":["..."],"proteines":30,"calories":450,"preparation":"...","temps":"15 min"}',messages:[{role:'user',content:`Suggère une recette ${slot==='matin'?'de petit-déjeuner':slot==='midi'?'de déjeuner':'de dîner'} équilibrée, riche en protéines, simple à préparer pour un sportif actif.`}]})});const data=await res.json();const recipe=JSON.parse(data.content?.[0]?.text||'{}');el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--accent3)44;border-radius:10px;padding:14px;cursor:pointer" onclick="applyRecipe('${slot}','${(recipe.nom||'').replace(/'/g,"\\'")}',${recipe.proteines||0},${recipe.calories||0},'${((recipe.ingredients||[]).join(', ')).replace(/'/g,"\\'")}')"><div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px">${recipe.nom||'Recette'} <span style="font-size:0.6rem;color:var(--text-muted)">⏱️ ${recipe.temps||''}</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:8px">${(recipe.ingredients||[]).join(', ')}</div><div style="display:flex;gap:16px;font-size:0.7rem;margin-bottom:6px"><span style="color:#48cae4">💪 ${recipe.proteines||0}g protéines</span><span style="color:#f4a261">🔥 ${recipe.calories||0} kcal</span></div><div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5">${recipe.preparation||''}</div><div style="font-size:0.62rem;color:var(--accent);margin-top:8px;text-transform:uppercase;letter-spacing:1px">→ Cliquer pour appliquer</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie</div>';}}
+async function suggestMeal(slot){const el=document.getElementById('mealSuggestResult-'+slot);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:'Tu es nutritionniste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: {"nom":"...","ingredients":["..."],"proteines":30,"calories":450,"preparation":"...","temps":"15 min"}',messages:[{role:'user',content:`Suggère une recette ${slot==='matin'?'de petit-déjeuner':slot==='midi'?'de déjeuner':'de dîner'} équilibrée, riche en protéines, simple à préparer pour un sportif actif.`}]})});const data=await res.json();const recipe=JSON.parse(data.content?.[0]?.text||'{}');el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--accent3)44;border-radius:10px;padding:14px;cursor:pointer" onclick="applyRecipe('${slot}','${(recipe.nom||'').replace(/'/g,"\\'")}',${recipe.proteines||0},${recipe.calories||0},'${((recipe.ingredients||[]).join(', ')).replace(/'/g,"\\'")}')"><div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px">${recipe.nom||'Recette'} <span style="font-size:0.6rem;color:var(--text-muted)">⏱️ ${recipe.temps||''}</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:8px">${(recipe.ingredients||[]).join(', ')}</div><div style="display:flex;gap:16px;font-size:0.7rem;margin-bottom:6px"><span style="color:#48cae4">💪 ${recipe.proteines||0}g protéines</span><span style="color:#f4a261">🔥 ${recipe.calories||0} kcal</span></div><div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5">${recipe.preparation||''}</div><div style="font-size:0.62rem;color:var(--accent);margin-top:8px;text-transform:uppercase;letter-spacing:1px">→ Cliquer pour appliquer</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie</div>';}}
 function applyRecipe(slot,nom,proteines,calories,ingredients){saveRepasItem(slot,'content',ingredients);saveRepasItem(slot,'proteins',proteines);saveRepasItem(slot,'calories',calories);renderRepas();showToast('Recette appliquée ✓');}
 // ======= RÉSUMÉ LIVRE IA =======
-async function summarizeBook(title){const el=document.getElementById('bookSummaryResult');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';el.style.display='block';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es un assistant culturel. Donne un résumé structuré et utile du livre.',messages:[{role:'user',content:`Résume le livre "${title}" : auteur/contexte, idées principales, points clés à retenir, pourquoi le lire. Sois concis.`}]})});const data=await res.json();const text=data.content?.[0]?.text||'Erreur';el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:10px">📖 ${title}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.7">${text.replace(/\n/g,'<br>')}</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur</div>';}}
+async function summarizeBook(title){const el=document.getElementById('bookSummaryResult');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';el.style.display='block';try{const res=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es un assistant culturel. Donne un résumé structuré et utile du livre.',messages:[{role:'user',content:`Résume le livre "${title}" : auteur/contexte, idées principales, points clés à retenir, pourquoi le lire. Sois concis.`}]})});const data=await res.json();const text=data.content?.[0]?.text||'Erreur';el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:10px">📖 ${title}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.7">${text.replace(/\n/g,'<br>')}</div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur</div>';}}
 // ======= QUIZ VOCABULAIRE =======
 let quizState={lang:'en',words:[],current:0,score:0,answered:false};
 function startVocabQuiz(lang){const words=(state.langues[lang]?.vocab||[]).filter(v=>v.maitrise<3);if(words.length<3){showToast('Ajoute au moins 3 mots non maîtrisés !');return;}quizState={lang,words:words.sort(()=>Math.random()-0.5).slice(0,10),current:0,score:0,answered:false};renderQuiz();}
@@ -2579,7 +2570,7 @@ function answerQuiz(correct,idx){if(quizState.answered)return;quizState.answered
 // ======= MÉTÉO =======
 async function fetchWeather(){const el=document.getElementById('weatherWidget');if(!el)return;try{const geoRes=await fetch('https://ipapi.co/json/');const geo=await geoRes.json();const lat=geo.latitude||45.75,lon=geo.longitude||4.85,city=geo.city||'Ma ville';const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);const data=await res.json();const w=data.current_weather;const temp=Math.round(w.temperature),wind=Math.round(w.windspeed),wcode=w.weathercode;const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',80:'🌦️',81:'🌧️',95:'⛈️'};const icon=icons[wcode]||'🌡️';const good=temp>=10&&temp<=28&&wcode<60;el.innerHTML=`<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><div style="text-align:center"><div style="font-size:2.5rem">${icon}</div><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent)">${temp}°C</div></div><div><div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px">${city}</div><div style="font-size:0.7rem;color:var(--text-muted)">Vent : ${wind} km/h</div><div style="margin-top:8px;padding:6px 12px;border-radius:999px;font-size:0.68rem;font-weight:600;display:inline-block;background:${good?'rgba(74,219,138,0.12)':'rgba(240,90,90,0.12)'};color:${good?'#4adb8a':'#f05a5a'};border:1px solid ${good?'rgba(74,219,138,0.3)':'rgba(240,90,90,0.3)'}">${good?'✓ Idéal pour le sport':'⚠️ Préfère le sport en intérieur'}</div></div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted)">Météo indisponible</div>';}}
 // ======= ACTUALITÉS IA =======
-async function fetchNews(){const el=document.getElementById('newsContainer');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es journaliste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: [{"titre":"...","theme":"Géopolitique","resume":"...","importance":"haute"}]',messages:[{role:'user',content:'Donne 6 actualités importantes du moment en géopolitique, économie et technologie. Factuel, concis (1-2 phrases par résumé).'}]})});const data=await res.json();const news=JSON.parse(data.content?.[0]?.text||'[]');const themeColors={'Géopolitique':'#48cae4','Économie':'#c8f04a','Tech':'#7b5ea7'};el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${news.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid ${themeColors[n.theme]||'var(--border)'}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${themeColors[n.theme]||'#6b6b80'}22;color:${themeColors[n.theme]||'#6b6b80'};text-transform:uppercase">${n.theme}</span>${n.importance==='haute'?'<span style="font-size:0.6rem;color:#f05a5a">🔥</span>':''}</div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4">${n.titre}</div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${n.resume}</div></div>`).join('')}</div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Actualités indisponibles</div>';}}
+async function fetchNews(){const el=document.getElementById('newsContainer');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:'Tu es journaliste. Réponds UNIQUEMENT en JSON valide sans markdown. Format: [{"titre":"...","theme":"Géopolitique","resume":"...","importance":"haute"}]',messages:[{role:'user',content:'Donne 6 actualités importantes du moment en géopolitique, économie et technologie. Factuel, concis (1-2 phrases par résumé).'}]})});const data=await res.json();const news=JSON.parse(data.content?.[0]?.text||'[]');const themeColors={'Géopolitique':'#48cae4','Économie':'#c8f04a','Tech':'#7b5ea7'};el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${news.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid ${themeColors[n.theme]||'var(--border)'}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${themeColors[n.theme]||'#6b6b80'}22;color:${themeColors[n.theme]||'#6b6b80'};text-transform:uppercase">${n.theme}</span>${n.importance==='haute'?'<span style="font-size:0.6rem;color:#f05a5a">🔥</span>':''}</div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4">${n.titre}</div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${n.resume}</div></div>`).join('')}</div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Actualités indisponibles</div>';}}
 
 // ======= FILMS =======
 const FILM_GENRE_COLORS={'Plot twist':'#9b8cff','Thriller':'#f05a5a','Drame':'#48cae4','Documentaire':'#4adb8a','Science-Fiction':'#7b5ea7','Classique':'#f4a261','Comédie':'#c8f04a','Action':'#f05a5a','Autre':'#6b6b80'};
@@ -2602,7 +2593,7 @@ function setFilmNote(id,note){const f=state.films.find(f=>f.id===id);if(f){f.not
 function deleteFilm(id){state.films=state.films.filter(f=>f.id!==id);save();renderFilms();}
 function setFilmFilter(f){filmFilter=f;document.querySelectorAll('#filmFilters .btn').forEach(b=>{b.style.background='var(--surface2)';b.style.color='var(--text-muted)';b.style.border='1px solid var(--border)';});event.target.style.background='var(--accent)';event.target.style.color='#0e0e11';event.target.style.border='none';renderFilms();}
 function addFilmSuggestion(title,genre,year){if(!state.films)state.films=[];state.films.push({id:Date.now(),title,genre,year,status:'avoir',note:0,avis:''});save();renderFilms();showToast('Ajouté ✓');}
-async function getFilmSummary(id){const f=state.films.find(f=>f.id===id);if(!f)return;const el=document.getElementById('film-sum-'+id);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:'Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.',messages:[{role:'user',content:`Présente "${f.title}" (${f.year}).`}]})});const data=await res.json();el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${(data.content?.[0]?.text||'').replace(/\n/g,'<br>')}</div>`;}catch(e){el.innerHTML='';}}
+async function getFilmSummary(id){const f=state.films.find(f=>f.id===id);if(!f)return;const el=document.getElementById('film-sum-'+id);if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';try{const res=await fetch('/.netlify/functions/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:'Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.',messages:[{role:'user',content:`Présente "${f.title}" (${f.year}).`}]})});const data=await res.json();el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${(data.content?.[0]?.text||'').replace(/\n/g,'<br>')}</div>`;}catch(e){el.innerHTML='';}}
 function renderFilms(){
   if(!state.films)state.films=[];
   let films=[...state.films];
@@ -2845,6 +2836,112 @@ function renderDCA() {
           <button class="btn btn-danger" onclick="deleteDCA(${d.id})">✕</button>
         </div>`).join('') + '</div>';
   if (totalEl) totalEl.innerHTML = `Total DCA actifs : <span style="color:var(--accent);font-weight:700">${totalActive} €/mois</span> · <span style="color:var(--text-muted)">soit ${(totalActive*12).toLocaleString('fr-FR')} €/an</span>`;
+}
+
+
+// ======= GOOGLE DRIVE SYNC =======
+async function getGoogleToken() {
+  try {
+    // Use Google Identity Services
+    return new Promise((resolve) => {
+      if (typeof google === 'undefined') {
+        resolve(null);
+        return;
+      }
+      google.accounts.oauth2.initTokenClient({
+        client_id: '650308870963-example.apps.googleusercontent.com',
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: (response) => resolve(response.access_token),
+      }).requestAccessToken();
+    });
+  } catch(e) { return null; }
+}
+
+async function syncToDrive() {
+  const statusEl = document.getElementById('driveStatus');
+  if (statusEl) statusEl.textContent = '⏳ Connexion à Google Drive...';
+  
+  try {
+    // Load Google Identity Services if not loaded
+    if (typeof google === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    const token = await getGoogleToken();
+    if (!token) {
+      if (statusEl) statusEl.textContent = '❌ Connexion Google annulée';
+      return;
+    }
+
+    const data = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+    const res = await fetch('/.netlify/functions/drive-sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save', token, data }),
+    });
+    const result = await res.json();
+    
+    if (result.success) {
+      const now = new Date().toLocaleString('fr-FR');
+      if (statusEl) statusEl.innerHTML = `✅ Sauvegardé sur Drive — ${now}`;
+      showToast('Sauvegarde Drive réussie ✓');
+      localStorage.setItem('drive_last_sync', now);
+    } else {
+      if (statusEl) statusEl.textContent = '❌ Erreur: ' + (result.error || 'inconnue');
+    }
+  } catch(e) {
+    // Fallback: just download the file
+    if (statusEl) statusEl.textContent = '⚠️ Drive non disponible — utilise la sauvegarde locale';
+    backupData();
+  }
+}
+
+async function loadFromDrive() {
+  const statusEl = document.getElementById('driveStatus');
+  if (statusEl) statusEl.textContent = '⏳ Chargement depuis Google Drive...';
+  
+  try {
+    if (typeof google === 'undefined') {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    const token = await getGoogleToken();
+    if (!token) {
+      if (statusEl) statusEl.textContent = '❌ Connexion Google annulée';
+      return;
+    }
+
+    const res = await fetch('/.netlify/functions/drive-sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'load', token }),
+    });
+    const result = await res.json();
+    
+    if (result.success && result.data) {
+      localStorage.setItem('chris_dashboard', JSON.stringify(result.data));
+      const modDate = new Date(result.modifiedTime).toLocaleString('fr-FR');
+      if (statusEl) statusEl.innerHTML = `✅ Données restaurées depuis Drive — sauvegarde du ${modDate}`;
+      showToast('Restauration depuis Drive réussie ✓');
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      if (statusEl) statusEl.textContent = result.message || '❌ Aucune sauvegarde trouvée sur Drive';
+    }
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '⚠️ Drive non disponible — utilise la restauration locale';
+  }
 }
 
 // ======= AUTO-REFRESH MINUIT =======
