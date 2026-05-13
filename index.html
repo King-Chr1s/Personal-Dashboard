@@ -1035,19 +1035,51 @@
   <div class="card" style="margin-bottom:20px"><div class="card-title">🎬 Alternatives légales & gratuites</div><div id="freeAlternativesList"></div></div>
   <div class="card"><div class="card-title">💡 Conseils détox digital</div><div id="digitalTipsList"></div></div>
 
-  <!-- Paramètres IA -->
+  <!-- Paramètres API -->
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.2)">
-    <div class="card-title" style="color:var(--accent)">⚙️ Paramètres IA — Clé Groq</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px;line-height:1.6">
-      Colle ta clé API Groq ici — obtiens-la gratuitement sur <strong style="color:var(--accent)">console.groq.com</strong> → API Keys → Create API key (commence par gsk_...).<br>
-      Elle se sauvegarde automatiquement dans ton navigateur.
+    <div class="card-title" style="color:var(--accent)">⚙️ Paramètres — Clés API</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px;line-height:1.6">
+      Configure tes clés API une seule fois — elles sont sauvegardées dans ton navigateur.
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <input class="inp" type="password" id="geminiKeyInput" placeholder="gsk_..." style="flex:1;min-width:200px"/>
-      <button class="btn btn-primary" onclick="saveGeminiKey()">💾 Sauvegarder la clé</button>
-      <button class="btn" onclick="testGeminiKey()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+
+    <!-- Groq IA -->
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:1rem">🤖</span>
+        <div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Groq — Fonctions IA</div>
+          <div style="font-size:0.62rem;color:var(--text-muted)">console.groq.com → API Keys → Create API key (gsk_...)</div>
+        </div>
+        <div id="groqBadge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="inp" type="password" id="groqKeyInput" placeholder="gsk_..." style="flex:1;min-width:180px"/>
+        <button class="btn btn-primary" onclick="saveApiKey('groq')" style="background:#9b8cff">💾 Sauvegarder</button>
+        <button class="btn" onclick="testApiKey('groq')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+      </div>
+      <div id="groqStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:6px"></div>
     </div>
-    <div id="geminiKeyStatus" style="font-size:0.68rem;color:var(--text-muted)"></div>
+
+    <!-- Twelve Data -->
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:1rem">📈</span>
+        <div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Twelve Data — Cours boursiers</div>
+          <div style="font-size:0.62rem;color:var(--text-muted)">twelvedata.com → Sign up gratuit → API key (800 req/jour)</div>
+        </div>
+        <div id="tdBadge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="inp" type="password" id="tdKeyInput" placeholder="Clé Twelve Data..." style="flex:1;min-width:180px"/>
+        <button class="btn btn-primary" onclick="saveApiKey('td')" style="background:#c8f04a;color:#0e0e11">💾 Sauvegarder</button>
+        <button class="btn" onclick="testApiKey('td')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+      </div>
+      <div id="tdStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:6px"></div>
+    </div>
+
+    <!-- Status global -->
+    <div id="geminiKeyStatus" style="display:none"></div>
   </div>
 
 </div>
@@ -1765,29 +1797,50 @@ function switchInvEnv(env) {
 }
 
 // --- Price fetching with fallback ---
+function getTwelveDataKey() { return localStorage.getItem('twelvedata_api_key') || ''; }
+
 async function fetchPrice(ticker) {
   if (!ticker) return null;
+  const tdKey = getTwelveDataKey();
 
-  // Finnhub API — gratuit, pas de CORS
-  const FINNHUB_KEY = 'd0oodl1r01qi0rk0ptggd0oodl1r01qi0rk0pth0';
+  // Method 1: Twelve Data API (if key configured)
+  if (tdKey) {
+    try {
+      const res = await fetch(
+        `https://api.twelvedata.com/price?symbol=${ticker}&apikey=${tdKey}`,
+        { signal: AbortSignal.timeout(8000) }
+      );
+      const data = await res.json();
+      if (data.price && !data.code) return Math.round(parseFloat(data.price) * 100) / 100;
+    } catch(e) {}
+  }
+
+  // Method 2: allorigins proxy -> Yahoo Finance (fallback sans clé)
   try {
-    const res = await fetch(
-      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`,
-      { signal: AbortSignal.timeout(6000) }
+    const yahooUrl = encodeURIComponent(
+      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`
     );
-    const data = await res.json();
-    if (data.c && data.c > 0) return Math.round(data.c * 100) / 100;
+    const res = await fetch(
+      `https://api.allorigins.win/get?url=${yahooUrl}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    const wrapper = await res.json();
+    if (wrapper.contents) {
+      const data = JSON.parse(wrapper.contents);
+      const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+      if (price && price > 0) return Math.round(price * 100) / 100;
+    }
   } catch(e) {}
 
-  // Fallback Yahoo Finance
+  // Method 3: corsproxy.io fallback
   try {
     const res = await fetch(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
-      { signal: AbortSignal.timeout(5000) }
+      `https://corsproxy.io/?https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
+      { signal: AbortSignal.timeout(8000) }
     );
     const data = await res.json();
     const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    if (price) return Math.round(price * 100) / 100;
+    if (price && price > 0) return Math.round(price * 100) / 100;
   } catch(e) {}
 
   return null;
@@ -3130,7 +3183,7 @@ renderAlerts();
 renderFocus();
 renderFinance2();
 renderDigital();
-initGeminiSettings();
+initApiSettings();
 renderFilms();
 renderPodcastReco();
 renderPortfolio();
