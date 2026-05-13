@@ -1516,9 +1516,11 @@ const FOOD_MACROS={
   'proteine':   {p:25,c:3,cal:120},  'protéine':{p:25,c:3,cal:120}, 'whey':{p:25,c:3,cal:120},
 };
 function normalizeFood(str) {
-  return str.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z ]/g,'').trim();
+  const s = str.toLowerCase();
+  const nfd = s.normalize('NFD');
+  let result = '';
+  for(let i=0;i<nfd.length;i++){const c=nfd.charCodeAt(i);if(c>=0x0300&&c<=0x036f)continue;result+=nfd[i];}
+  return result.split('').filter(c => (c >= 'a' && c <= 'z') || c === ' ').join('').trim();
 }
 function repasNav(dir) { const d=new Date(repasDate); d.setDate(d.getDate()+dir); repasDate=d.toISOString().slice(0,10); renderRepas(); }
 function repasGoToday() { repasDate=today(); renderRepas(); }
@@ -2148,8 +2150,7 @@ async function askFormationAdvice(){
     const context=`Tu es un conseiller en formation professionnelle pour la France. L'utilisateur est en support IT dans une ESN, il vise une transition vers un éditeur logiciel et souhaite à terme devenir formateur indépendant Qualiopi dans les domaines compta/IT. Modules en cours: ${modules||'aucun'}. Donne des conseils concrets, priorisés, adaptés au marché français (CPF, OPCO, Qualiopi). Sois direct et actionnable.`;
     typingEl.remove();
     const text = await callGemini(context, q, 1000) || 'Erreur de connexion';
-    chat.innerHTML+=`<div class="ai-msg assistant">${text.replace(/
-/g,'<br>')}</div>`;
+    chat.innerHTML+=`<div class="ai-msg assistant">${text.split('\n').join('<br>')}</div>`;
   } catch(e){typingEl.remove();chat.innerHTML+=`<div class="ai-msg assistant">⚠️ Erreur de connexion.</div>`;}
   chat.scrollTop=chat.scrollHeight;
 }
@@ -2561,7 +2562,7 @@ async function suggestMeal(slot){
   const prompt=`Tu es nutritionniste. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format exact: {"nom":"...","ingredients":["..."],"proteines":30,"calories":450,"preparation":"étapes courtes","temps":"15 min"}. Suggère une recette de ${slotName} équilibrée, riche en protéines, simple pour un sportif actif.`;
   try {
     const text = await callGemini('', prompt, 600);
-    const clean = text.replace(/```json|```/g,'').trim();
+    const clean = text.replace(/```json/g,'').replace(/```/g,'').trim();
     const recipe = JSON.parse(clean);
     const nom = (recipe.nom||'Recette').replace(/'/g,"\'");
     const ingr = (recipe.ingredients||[]).join(', ').replace(/'/g,"\'");
@@ -2589,8 +2590,7 @@ async function summarizeBook(title){
     800
   );
   if(text) {
-    el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:10px">📖 ${title}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.7">${text.replace(/
-/g,'<br>')}</div></div>`;
+    el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px"><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:10px">📖 ${title}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.7">${text.split('\n').join('<br>')}</div></div>`;
   } else {
     el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie</div>';
   }
@@ -2636,8 +2636,7 @@ async function getFilmSummary(id){
   if(!el)return;
   el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';
   const text = await callGemini('Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.', `Présente le film "${f.title}" (${f.year}).`, 200);
-  if(text) el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${text.replace(/
-/g,'<br>')}</div>`;
+  if(text) el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${text.split('\n').join('<br>')}</div>`;
   else el.innerHTML='';
 }
 function renderFilms(){
