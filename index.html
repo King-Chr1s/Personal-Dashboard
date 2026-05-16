@@ -195,6 +195,8 @@
   <button class="tab" onclick="switchTab('invest')">📈 Invest.</button>
   <button class="tab" onclick="switchTab('finances')">💶 Finances</button>
   <button class="tab" onclick="switchTab('formation')">🎓 Formation</button>
+  <button class="tab" onclick="switchTab('apprentissage')">🧠 Apprentissage</button>
+  <button class="tab" onclick="switchTab('carriere')">💼 Carrière</button>
   <button class="tab" onclick="switchTab('digital')">📱 Digital</button>
 </div>
 
@@ -454,9 +456,10 @@
         <button class="btn btn-primary" onclick="addEnvPosition('pea')">+</button>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="refreshEnvPrices('pea')">🔄 Actualiser les cours</button>
-      <div id="pea-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.72rem;color:var(--text-muted)">
+      💡 <strong style="color:var(--text)">Saisie manuelle</strong> — modifie le cours directement dans le tableau. 
+      Consulte les cours sur <a href="https://www.boursorama.com/bourse/actions/" target="_blank" style="color:var(--accent)">Boursorama</a> 
+      ou <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent)">Yahoo Finance</a>.
     </div>
     <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="pea-table"></div></div>
     <div class="grid-3" id="pea-stats"></div>
@@ -476,9 +479,10 @@
         <button class="btn btn-primary" onclick="addEnvPosition('cto')">+</button>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="refreshEnvPrices('cto')">🔄 Actualiser les cours</button>
-      <div id="cto-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.72rem;color:var(--text-muted)">
+      💡 <strong style="color:var(--text)">Saisie manuelle</strong> — modifie le cours directement dans le tableau.
+      Consulte sur <a href="https://www.boursorama.com/bourse/actions/" target="_blank" style="color:var(--accent)">Boursorama</a>
+      ou <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent)">Yahoo Finance</a>.
     </div>
     <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="cto-table"></div></div>
     <div class="grid-3" id="cto-stats"></div>
@@ -498,9 +502,10 @@
         <button class="btn btn-primary" onclick="addEnvPosition('av')">+</button>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="refreshEnvPrices('av')">🔄 Actualiser les cours</button>
-      <div id="av-refresh-status" style="font-size:0.65rem;color:var(--text-muted)">Cours non chargés</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.72rem;color:var(--text-muted)">
+      💡 <strong style="color:var(--text)">Saisie manuelle</strong> — modifie le cours directement dans le tableau.
+      Consulte sur <a href="https://www.boursorama.com/bourse/actions/" target="_blank" style="color:var(--accent)">Boursorama</a>
+      ou <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent)">Yahoo Finance</a>.
     </div>
     <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="av-table"></div></div>
     <div class="grid-3" id="av-stats"></div>
@@ -608,13 +613,10 @@
 <div class="panel" id="panel-formation">
   <!-- IA Conseils -->
   <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
-    <div class="card-title" style="color:var(--accent)">🤖 Conseils formation IA — situation actuelle</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Décris ta situation et obtiens des conseils personnalisés sur quoi apprendre en priorité.</div>
-    <div id="formationAdviceChat" style="max-height:280px;overflow-y:auto;margin-bottom:12px"></div>
-    <div style="display:flex;gap:8px">
-      <input class="inp" type="text" id="formationQuestion" placeholder="Ex: Je suis en support IT, je veux évoluer vers la compta/finance…" style="flex:1"/>
-      <button class="btn btn-primary" onclick="askFormationAdvice()">Conseiller →</button>
-    </div>
+    <div class="card-title" style="color:var(--accent)">🤖 Suggestions formation IA — basées sur ton profil</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère des recommandations personnalisées selon ta situation actuelle.</div>
+    <button class="btn btn-primary" onclick="suggestFormation()" style="margin-bottom:12px">✨ Générer des suggestions</button>
+    <div id="formationSuggestionResult"></div>
   </div>
 
   <!-- Plateformes de formation -->
@@ -1084,6 +1086,250 @@
 
 </div>
 
+
+<!-- ===== APPRENTISSAGE ===== -->
+<div class="panel" id="panel-apprentissage">
+
+  <!-- Sous-onglets -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap">
+    <button class="btn btn-primary" id="appr-tab-journal" onclick="switchApprTab('journal')" style="font-size:0.7rem;padding:7px 14px">📝 Journal</button>
+    <button class="btn" id="appr-tab-fiches" onclick="switchApprTab('fiches')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🗂️ Fiches</button>
+    <button class="btn" id="appr-tab-feynman" onclick="switchApprTab('feynman')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🧠 Feynman</button>
+  </div>
+
+  <!-- Journal quotidien -->
+  <div id="appr-journal">
+    <div class="focus-block" style="margin-bottom:20px">
+      <div class="focus-label">📝 Journal d'apprentissage du jour</div>
+      <div style="font-size:0.72rem;color:var(--text);margin-top:4px" id="journalDateLabel">—</div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Qu'as-tu appris aujourd'hui ?</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <select class="inp" id="journalCat" style="width:160px">
+          <option value="Langues">🌍 Langues</option>
+          <option value="IT">💻 IT</option>
+          <option value="Comptabilité">🧾 Comptabilité</option>
+          <option value="Formation">🎓 Formation</option>
+          <option value="Culture">📚 Culture</option>
+          <option value="Sport">💪 Sport</option>
+          <option value="Autre">📦 Autre</option>
+        </select>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:0.7rem;color:var(--text-muted)">Confiance :</span>
+          <div style="display:flex;gap:4px" id="journalConfidenceBtns">
+            <button onclick="setJournalConfidence(1)" id="jc-1" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">1</button>
+            <button onclick="setJournalConfidence(2)" id="jc-2" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">2</button>
+            <button onclick="setJournalConfidence(3)" id="jc-3" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">3</button>
+            <button onclick="setJournalConfidence(4)" id="jc-4" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">4</button>
+            <button onclick="setJournalConfidence(5)" id="jc-5" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">5</button>
+          </div>
+        </div>
+      </div>
+      <textarea class="inp" id="journalText" rows="4" style="width:100%;resize:none;font-size:0.78rem" placeholder="Décris ce que tu as appris, compris, découvert..."></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <button class="btn btn-primary" onclick="saveJournalEntry()">💾 Enregistrer</button>
+      </div>
+    </div>
+    <!-- Historique -->
+    <div class="card">
+      <div class="card-title">📅 Historique des apprentissages</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="journalFilters">
+        <button class="btn btn-primary" onclick="setJournalFilter('all')">Tous</button>
+        <button class="btn" onclick="setJournalFilter('Langues')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🌍 Langues</button>
+        <button class="btn" onclick="setJournalFilter('IT')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">💻 IT</button>
+        <button class="btn" onclick="setJournalFilter('Comptabilité')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🧾 Compta</button>
+      </div>
+      <div id="journalHistory"></div>
+    </div>
+  </div>
+
+  <!-- Fiches de révision -->
+  <div id="appr-fiches" style="display:none">
+    <!-- Fiches à réviser aujourd'hui -->
+    <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
+      <div class="card-title" style="color:var(--accent)">🔔 À réviser aujourd'hui</div>
+      <div id="fichesAReviser"></div>
+    </div>
+    <!-- Mode révision -->
+    <div id="revisionMode" style="display:none;margin-bottom:20px">
+      <div class="card" style="text-align:center;padding:30px">
+        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px" id="revisionProgress">—</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:20px" id="revisionQuestion">—</div>
+        <div id="revisionAnswer" style="display:none;background:var(--surface2);border-radius:10px;padding:16px;margin-bottom:20px;text-align:left">
+          <div style="font-size:0.65rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Réponse</div>
+          <div style="font-size:0.78rem;color:var(--text)" id="revisionAnswerText"></div>
+        </div>
+        <div id="revisionBtns">
+          <button class="btn btn-primary" onclick="showRevisionAnswer()">👁️ Voir la réponse</button>
+        </div>
+      </div>
+    </div>
+    <!-- Ajouter fiche -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">+ Nouvelle fiche</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <input class="inp" type="text" id="ficheTitle" placeholder="Titre / concept clé" style="width:100%"/>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select class="inp" id="ficheCat" style="flex:1">
+            <option value="Langues">🌍 Langues</option>
+            <option value="IT">💻 IT</option>
+            <option value="Comptabilité">🧾 Comptabilité</option>
+            <option value="Formation">🎓 Formation</option>
+            <option value="Culture">📚 Culture</option>
+            <option value="Autre">📦 Autre</option>
+          </select>
+        </div>
+        <textarea class="inp" id="ficheResume" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Résumé en 2-3 lignes..."></textarea>
+        <textarea class="inp" id="fichePoints" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Points clés (un par ligne)..."></textarea>
+        <textarea class="inp" id="ficheExemple" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Exemple concret..."></textarea>
+        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="addFiche()">💾 Créer la fiche</button>
+          <button class="btn" onclick="exportFichesPDF()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">📄 Exporter PDF</button>
+        </div>
+      </div>
+    </div>
+    <!-- Liste fiches -->
+    <div id="fichesList"></div>
+  </div>
+
+  <!-- Méthode Feynman -->
+  <div id="appr-feynman" style="display:none">
+    <div style="background:linear-gradient(135deg,rgba(123,94,167,0.08),rgba(72,202,228,0.06));border:1px solid rgba(123,94,167,0.2);border-radius:var(--radius);padding:18px;margin-bottom:20px">
+      <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#9b8cff;margin-bottom:6px">🧠 Méthode Feynman</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.6">La meilleure façon de savoir si tu as vraiment compris quelque chose : <strong style="color:var(--text)">l'expliquer simplement comme si tu l'enseignais</strong>. Si tu bloques, c'est là que tu dois retravailler.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Concept à maîtriser</div>
+      <input class="inp" type="text" id="feynmanConcept" placeholder="Ex: La TVA déductible, le Present Perfect, le VLOOKUP Excel..." style="width:100%;margin-bottom:16px"/>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="font-size:0.65rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">1️⃣ Explique simplement (comme à un enfant de 10 ans)</div>
+          <textarea class="inp" id="feynman1" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Utilise des mots simples, pas de jargon..."></textarea>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:#f4a261;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">2️⃣ Où tu bloques / ce qui reste flou</div>
+          <textarea class="inp" id="feynman2" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Sois honnête — c'est là que tu dois retravailler..."></textarea>
+        </div>
+        <div>
+          <div style="font-size:0.65rem;color:#4adb8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">3️⃣ Reformule encore plus simplement</div>
+          <textarea class="inp" id="feynman3" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Version encore plus claire après avoir revu ce qui bloquait..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="saveFeynman()">💾 Sauvegarder</button>
+          <button class="btn" onclick="convertFeynmanToFiche()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">→ Convertir en fiche</button>
+        </div>
+      </div>
+    </div>
+    <div class="card section-gap"><div class="card-title">📚 Feynman sauvegardés</div><div id="feynmanHistory"></div></div>
+  </div>
+</div>
+
+<!-- ===== CARRIÈRE ===== -->
+<div class="panel" id="panel-carriere">
+
+  <!-- Sous-onglets -->
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap">
+    <button class="btn btn-primary" id="carr-tab-candidatures" onclick="switchCarrTab('candidatures')" style="font-size:0.7rem;padding:7px 14px">📋 Candidatures</button>
+    <button class="btn" id="carr-tab-entretiens" onclick="switchCarrTab('entretiens')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🎯 Entretiens</button>
+    <button class="btn" id="carr-tab-salaires" onclick="switchCarrTab('salaires')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">💶 Salaires & Évolution</button>
+    <button class="btn" id="carr-tab-veille" onclick="switchCarrTab('veille')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">💡 Veille métier</button>
+  </div>
+
+  <!-- Candidatures -->
+  <div id="carr-candidatures">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Ajouter une candidature</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input class="inp" type="text" id="candEntreprise" placeholder="Entreprise" style="flex:1;min-width:140px"/>
+          <input class="inp" type="text" id="candPoste" placeholder="Poste visé" style="flex:1;min-width:140px"/>
+          <input class="inp" type="date" id="candDate" style="width:140px"/>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select class="inp" id="candStatut" style="flex:1">
+            <option value="Envoyée">📤 Envoyée</option>
+            <option value="En attente">⏳ En attente</option>
+            <option value="Entretien">🎯 Entretien</option>
+            <option value="Offre">🎉 Offre reçue</option>
+            <option value="Refus">❌ Refus</option>
+          </select>
+          <input class="inp" type="text" id="candSalaire" placeholder="Salaire visé (€)" style="width:160px"/>
+          <button class="btn btn-primary" onclick="addCandidature()">+ Ajouter</button>
+        </div>
+        <textarea class="inp" id="candNotes" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Notes, contacts, liens..."></textarea>
+      </div>
+    </div>
+    <!-- Stats candidatures -->
+    <div class="grid-3" id="candStats" style="margin-bottom:20px"></div>
+    <!-- Liste candidatures -->
+    <div id="candList"></div>
+  </div>
+
+  <!-- Entretiens -->
+  <div id="carr-entretiens" style="display:none">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="color:var(--accent)">🎯 Préparation entretiens</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Questions fréquentes pour les postes IT/Support/Compta/Formateur. Clique sur une question pour préparer ta réponse.</div>
+      <div id="entretiensQuestions"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">✍️ Mes réponses préparées</div>
+      <div id="entretiensReponses"></div>
+    </div>
+  </div>
+
+  <!-- Salaires & Évolution -->
+  <div id="carr-salaires" style="display:none">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">⚖️ Calculateur salaire net/brut FR</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Estimation basée sur les charges salariales françaises 2024 (~23% cadre, ~20% non-cadre).</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Salaire brut mensuel (€)</div>
+          <input class="inp" type="number" id="salaireBrut" placeholder="Ex: 3000" style="width:160px" oninput="calcSalaire()"/>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Statut</div>
+          <select class="inp" id="salaireStatut" onchange="calcSalaire()">
+            <option value="non-cadre">Non-cadre</option>
+            <option value="cadre">Cadre</option>
+          </select>
+        </div>
+      </div>
+      <div id="salaireResults"></div>
+    </div>
+    <!-- Perspectives évolution -->
+    <div class="card">
+      <div class="card-title">📈 Perspectives d'évolution — Ton profil</div>
+      <div id="evolutionPerspectives"></div>
+    </div>
+  </div>
+
+  <!-- Veille métier -->
+  <div id="carr-veille" style="display:none">
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="color:var(--accent)">💡 Veille métier — IT / Compta / Formateur</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Sites et ressources à consulter régulièrement pour rester à jour.</div>
+      <div id="veilleMetier"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📰 Mes notes de veille</div>
+      <div class="add-row" style="margin-top:0;margin-bottom:14px">
+        <input class="inp" type="text" id="veilleInput" placeholder="Une info, tendance, outil découvert..." style="flex:1"/>
+        <select class="inp" id="veilleCat" style="width:130px">
+          <option value="IT">💻 IT</option>
+          <option value="Compta">🧾 Compta</option>
+          <option value="Formation">🎓 Formation</option>
+          <option value="Autre">📦 Autre</option>
+        </select>
+        <button class="btn btn-primary" onclick="addVeilleNote()">+</button>
+      </div>
+      <div id="veilleNotes"></div>
+    </div>
+  </div>
+</div>
+
 <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Changer le thème">🌙</button>
 <div class="toast" id="toast"></div>
 <script>
@@ -1162,7 +1408,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, meditSessions:{}, dcaList:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -1272,7 +1518,9 @@ function switchTab(name) {
   if(name==='alimentation'){renderRepas();renderNutrition();}
   if(name==='mediatheque'){renderFilms();renderCulture();}
   if(name==='finances'){renderBudget();renderFinance2();}
-  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();fetchWeather();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();}
+  if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
+  if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
 }
 function switchAlimTab(tab){
   ['repas','nutrition'].forEach(t=>{
@@ -1685,7 +1933,7 @@ function renderLangues(){
       <div class="card-title" style="color:${color}">Grammaire · ${gramDone}/${data.grammaire.length}</div>
       <div class="prog-bar-bg" style="margin-bottom:14px"><div class="prog-bar-fill" style="width:${data.grammaire.length>0?Math.round(gramDone/data.grammaire.length*100):0}%;background:${color}"></div></div>
       ${data.grammaire.map(g=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleGrammaire('${lang}',${g.id})" style="width:18px;height:18px;border-radius:4px;flex-shrink:0;cursor:pointer;background:${g.done?color:'var(--surface2)'};border:2px solid ${g.done?color:'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${g.done?'✓':''}</div><span style="flex:1;font-size:0.75rem;color:${g.done?'var(--text-muted)':'var(--text)'};text-decoration:${g.done?'line-through':'none'}">${g.name}</span><span onclick="deleteGrammaire('${lang}',${g.id})" style="cursor:pointer;color:var(--text-muted);font-size:0.65rem">✕</span></div>`).join('')}
-      <div class="add-row" style="margin-top:12px"><input class="inp" type="text" id="gram-input-${lang}" placeholder="Ajouter une règle..." style="flex:1"/><button class="btn btn-primary" onclick="addGrammaire('${lang}')">+</button></div>
+      <div class="add-row" style="margin-top:12px"><input class="inp" type="text" id="gram-input-${lang}" placeholder="Ajouter une règle..." style="flex:1"/><button class="btn btn-primary" onclick="addGrammaire('${lang}')">+</button><button class="btn" onclick="exportGrammairePDF('${lang}')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:0.68rem">📄 PDF</button></div>
     </div>
     <div class="card">
       <div class="card-title" style="color:${color}">Sessions semaine</div>
@@ -1799,51 +2047,23 @@ function switchInvEnv(env) {
 // --- Price fetching with fallback ---
 function getTwelveDataKey() { return localStorage.getItem('twelvedata_api_key') || ''; }
 
+// Cours manuels uniquement — pas d'API automatique (trop restrictif)
+// Utilise les liens Boursorama/Yahoo pour consulter le cours puis saisis-le manuellement
 async function fetchPrice(ticker) {
-  if (!ticker) return null;
-  const tdKey = getTwelveDataKey();
-
-  // Method 1: Twelve Data API (if key configured)
-  if (tdKey) {
-    try {
-      const res = await fetch(
-        `https://api.twelvedata.com/price?symbol=${ticker}&apikey=${tdKey}`,
-        { signal: AbortSignal.timeout(8000) }
-      );
-      const data = await res.json();
-      if (data.price && !data.code) return Math.round(parseFloat(data.price) * 100) / 100;
-    } catch(e) {}
-  }
-
-  // Method 2: allorigins proxy -> Yahoo Finance (fallback sans clé)
-  try {
-    const yahooUrl = encodeURIComponent(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`
-    );
-    const res = await fetch(
-      `https://api.allorigins.win/get?url=${yahooUrl}`,
-      { signal: AbortSignal.timeout(8000) }
-    );
-    const wrapper = await res.json();
-    if (wrapper.contents) {
-      const data = JSON.parse(wrapper.contents);
-      const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-      if (price && price > 0) return Math.round(price * 100) / 100;
-    }
-  } catch(e) {}
-
-  // Method 3: corsproxy.io fallback
-  try {
-    const res = await fetch(
-      `https://corsproxy.io/?https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`,
-      { signal: AbortSignal.timeout(8000) }
-    );
-    const data = await res.json();
-    const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-    if (price && price > 0) return Math.round(price * 100) / 100;
-  } catch(e) {}
-
+  // Retourne null pour forcer la saisie manuelle
+  // Le bouton "Actualiser" est remplacé par des liens directs
   return null;
+}
+
+function getBoursoramaLink(ticker) {
+  if (!ticker) return null;
+  const t = ticker.replace('.PA','').replace('.MC','').replace('.MI','').toLowerCase();
+  return `https://www.boursorama.com/recherche/ajax?query=${t}`;
+}
+
+function getYahooLink(ticker) {
+  if (!ticker) return null;
+  return `https://finance.yahoo.com/quote/${ticker}`;
 }
 
 function getYahooLink(ticker) {
@@ -1953,8 +2173,12 @@ function renderEnvTable(env) {
           const lastUpd = p.lastUpdate ? `<div style="font-size:0.55rem;color:var(--text-muted)">↻ ${p.lastUpdate}</div>` : '';
           return `<tr style="border-bottom:1px solid var(--border)">
             <td style="padding:8px 4px">
-              <div style="font-weight:600;color:var(--text)">${p.name} ${yahooLink}</div>
-              <div style="font-size:0.6rem;color:var(--text-muted)">${p.ticker||''} · ${p.type}</div>
+              <div style="font-weight:600;color:var(--text)">${p.name}</div>
+              <div style="font-size:0.6rem;color:var(--text-muted);display:flex;align-items:center;gap:6px">
+                ${p.ticker||''} · ${p.type}
+                ${p.ticker ? `<a href="https://www.boursorama.com/recherche/ajax?query=${p.ticker.replace('.PA','').replace('.MC','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.58rem">Boursorama ↗</a>` : ''}
+                ${p.ticker ? `<a href="https://finance.yahoo.com/quote/${p.ticker}" target="_blank" style="color:var(--accent4);text-decoration:none;font-size:0.58rem">Yahoo ↗</a>` : ''}
+              </div>
             </td>
             <td style="text-align:right;padding:4px">
               <input type="number" value="${p.qty}" step="any" onchange="updateEnvField('${env}',${p.id},'qty',this.value)"
@@ -3175,6 +3399,550 @@ function testGeminiKey() { testApiKey('groq'); }
 function initGeminiSettings() { initApiSettings(); }
 
 
+
+// ======= APPRENTISSAGE =======
+let journalConfidence = 3, journalFilter = 'all';
+
+function switchApprTab(tab) {
+  ['journal','fiches','feynman'].forEach(t => {
+    const el = document.getElementById('appr-'+t); if(el) el.style.display = t===tab?'block':'none';
+    const btn = document.getElementById('appr-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='journal')renderJournal();
+  else if(tab==='fiches')renderFiches();
+  else if(tab==='feynman')renderFeynman();
+}
+
+function setJournalConfidence(n) {
+  journalConfidence = n;
+  const colors = ['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+  [1,2,3,4,5].forEach(i => {
+    const btn = document.getElementById('jc-'+i);
+    if(btn){btn.style.background=i<=n?colors[n]:'var(--surface2)';btn.style.color=i<=n?'#0e0e11':'var(--text-muted)';btn.style.borderColor=i<=n?colors[n]:'var(--border)';}
+  });
+}
+
+function saveJournalEntry() {
+  const text = document.getElementById('journalText').value.trim();
+  const cat = document.getElementById('journalCat').value;
+  if(!text){showToast('Écris ce que tu as appris !');return;}
+  if(!state.journalEntries)state.journalEntries=[];
+  state.journalEntries.unshift({id:Date.now(),date:today(),cat,text,confidence:journalConfidence});
+  document.getElementById('journalText').value='';
+  journalConfidence=3; setJournalConfidence(3);
+  save(); renderJournal(); showToast('Apprentissage enregistré ✓');
+}
+
+function deleteJournalEntry(id){state.journalEntries=state.journalEntries.filter(e=>e.id!==id);save();renderJournal();}
+
+function setJournalFilter(f) {
+  journalFilter=f;
+  document.querySelectorAll('#journalFilters .btn').forEach(b=>{b.style.background='var(--surface2)';b.style.color='var(--text-muted)';b.style.border='1px solid var(--border)';});
+  event.target.style.background='var(--accent)';event.target.style.color='#0e0e11';event.target.style.border='none';
+  renderJournal();
+}
+
+function renderJournal() {
+  if(!state.journalEntries)state.journalEntries=[];
+  const el=document.getElementById('journalDateLabel'); if(el)el.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const histEl=document.getElementById('journalHistory'); if(!histEl)return;
+  let entries=[...state.journalEntries];
+  if(journalFilter!=='all')entries=entries.filter(e=>e.cat===journalFilter);
+  const CAT_COLORS={Langues:'#c8f04a',IT:'#48cae4',Comptabilité:'#f4a261',Formation:'#9b8cff',Culture:'#f05a5a',Sport:'#4adb8a',Autre:'#6b6b80'};
+  const CONF_COLORS=['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
+  histEl.innerHTML=entries.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun apprentissage enregistré</div>':
+    entries.map(e=>`<div style="padding:14px;background:var(--surface2);border-radius:10px;border-left:3px solid ${CAT_COLORS[e.cat]||'#6b6b80'};margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${CAT_COLORS[e.cat]||'#6b6b80'}22;color:${CAT_COLORS[e.cat]||'#6b6b80'};border:1px solid ${CAT_COLORS[e.cat]||'#6b6b80'}44">${e.cat}</span>
+          <span style="font-size:0.62rem;color:var(--text-muted)">${e.date}</span>
+          <span style="font-size:0.65rem;color:${CONF_COLORS[e.confidence]||'var(--text-muted)'}">●●●●● ${e.confidence}/5</span>
+        </div>
+        <button class="btn btn-danger" onclick="deleteJournalEntry(${e.id})">✕</button>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text);line-height:1.6">${e.text}</div>
+    </div>`).join('');
+}
+
+// ===== FICHES SM-2 =====
+function addFiche() {
+  const title=document.getElementById('ficheTitle').value.trim();
+  const cat=document.getElementById('ficheCat').value;
+  const resume=document.getElementById('ficheResume').value.trim();
+  const points=document.getElementById('fichePoints').value.trim();
+  const exemple=document.getElementById('ficheExemple').value.trim();
+  if(!title||!resume){showToast('Titre et résumé requis !');return;}
+  if(!state.fiches)state.fiches=[];
+  const now=Date.now();
+  state.fiches.push({id:now,title,cat,resume,points,exemple,maitrise:0,nextReview:today(),lastReview:null,created:today()});
+  ['ficheTitle','ficheResume','fichePoints','ficheExemple'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  save(); renderFiches(); showToast('Fiche créée ✓');
+}
+
+function deleteFiche(id){state.fiches=state.fiches.filter(f=>f.id!==id);save();renderFiches();}
+
+function reviewFiche(id, score) {
+  // SM-2 algorithm
+  const fiche = state.fiches.find(f=>f.id===id);
+  if(!fiche)return;
+  fiche.lastReview = today();
+  fiche.maitrise = Math.max(0, Math.min(5, score));
+  // Calculate next review based on score
+  const intervals = [1,1,3,7,14,30]; // days
+  const interval = intervals[score] || 1;
+  const next = new Date(); next.setDate(next.getDate()+interval);
+  fiche.nextReview = next.toISOString().slice(0,10);
+  save(); renderFiches();
+}
+
+let revisionQueue = [], revisionIndex = 0;
+function startRevision(fiches) {
+  revisionQueue = fiches; revisionIndex = 0;
+  document.getElementById('revisionMode').style.display='block';
+  showRevisionCard();
+}
+function showRevisionCard() {
+  if(revisionIndex>=revisionQueue.length){
+    document.getElementById('revisionMode').style.display='none';
+    showToast('Révision terminée ✓'); renderFiches(); return;
+  }
+  const f=revisionQueue[revisionIndex];
+  document.getElementById('revisionProgress').textContent=`${revisionIndex+1}/${revisionQueue.length}`;
+  document.getElementById('revisionQuestion').textContent=f.title;
+  document.getElementById('revisionAnswerText').innerHTML=`<strong>${f.resume}</strong>${f.points?'<br><br>'+f.points.split('\n').map(p=>'• '+p).join('<br>'):''}${f.exemple?'<br><br><em>Ex: '+f.exemple+'</em>':''}`;
+  document.getElementById('revisionAnswer').style.display='none';
+  document.getElementById('revisionBtns').innerHTML='<button class="btn btn-primary" onclick="showRevisionAnswer()">👁️ Voir la réponse</button>';
+}
+function showRevisionAnswer() {
+  document.getElementById('revisionAnswer').style.display='block';
+  document.getElementById('revisionBtns').innerHTML=`
+    <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:10px">Tu t\'en souvenais ?</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" onclick="scoreRevision(0)" style="background:rgba(240,90,90,0.15);border:1px solid #f05a5a;color:#f05a5a">😕 Non</button>
+      <button class="btn" onclick="scoreRevision(2)" style="background:rgba(244,162,97,0.15);border:1px solid #f4a261;color:#f4a261">🤔 Difficile</button>
+      <button class="btn" onclick="scoreRevision(4)" style="background:rgba(74,219,138,0.15);border:1px solid #4adb8a;color:#4adb8a">😊 Oui</button>
+      <button class="btn" onclick="scoreRevision(5)" style="background:rgba(72,202,228,0.15);border:1px solid #48cae4;color:#48cae4">🎯 Parfait</button>
+    </div>`;
+}
+function scoreRevision(score) {
+  reviewFiche(revisionQueue[revisionIndex].id, score);
+  revisionIndex++; showRevisionCard();
+}
+
+function exportFichesPDF() {
+  if(!state.fiches||state.fiches.length===0){showToast('Aucune fiche à exporter');return;}
+  const CAT_COLORS={Langues:'#2563eb',IT:'#0891b2',Comptabilité:'#d97706',Formation:'#7c3aed',Culture:'#dc2626',Autre:'#6b7280'};
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Fiches de révision</title>
+  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#1a1a1a}
+  h1{color:#1a1a1a;border-bottom:3px solid #c8f04a;padding-bottom:10px}
+  .fiche{border:1px solid #ddd;border-radius:8px;padding:16px;margin-bottom:16px;page-break-inside:avoid}
+  .fiche-title{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+  .fiche-cat{font-size:0.7rem;padding:2px 8px;border-radius:999px;display:inline-block;margin-bottom:10px}
+  .fiche-resume{margin-bottom:8px;font-size:0.9rem;line-height:1.5}
+  .fiche-points{font-size:0.85rem;color:#444;line-height:1.6}
+  .fiche-exemple{font-style:italic;color:#666;font-size:0.85rem;margin-top:8px}
+  .maitrise{float:right;font-size:0.75rem}
+  @media print{.fiche{page-break-inside:avoid}}</style></head><body>
+  <h1>📚 Fiches de révision — Dashboard Chris</h1>
+  <p style="color:#666;font-size:0.85rem">Généré le ${new Date().toLocaleDateString('fr-FR')} · ${state.fiches.length} fiches</p>
+  ${state.fiches.map(f=>`<div class="fiche">
+    <div class="maitrise">Maîtrise: ${f.maitrise}/5</div>
+    <div class="fiche-title">${f.title}</div>
+    <span class="fiche-cat" style="background:${CAT_COLORS[f.cat]||'#6b7280'}22;color:${CAT_COLORS[f.cat]||'#6b7280'};border:1px solid ${CAT_COLORS[f.cat]||'#6b7280'}44">${f.cat}</span>
+    <div class="fiche-resume">${f.resume}</div>
+    ${f.points?`<div class="fiche-points">${f.points.split('\n').map(p=>'• '+p).join('<br>')}</div>`:''}
+    ${f.exemple?`<div class="fiche-exemple">Exemple : ${f.exemple}</div>`:''}
+  </div>`).join('')}
+  </body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`fiches-revision-${today()}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('PDF exporté ✓ — ouvre le fichier et imprime (Cmd+P)');
+}
+
+function exportGrammairePDF(lang) {
+  if(!state.langues[lang])return;
+  const LANG_LABELS={en:'Anglais',es:'Espagnol',it:'Italien',ru:'Russe'};
+  const rules=state.langues[lang].grammaire||[];
+  if(rules.length===0){showToast('Aucune règle grammaticale');return;}
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Grammaire ${LANG_LABELS[lang]}</title>
+  <style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px}
+  h1{border-bottom:3px solid #c8f04a;padding-bottom:10px}
+  .rule{padding:12px;border:1px solid #ddd;border-radius:6px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .check{width:20px;height:20px;border-radius:4px;border:2px solid #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem}
+  .done{background:#4adb8a;border-color:#4adb8a;color:white}
+  @media print{.rule{page-break-inside:avoid}}</style></head><body>
+  <h1>📖 Règles grammaticales — ${LANG_LABELS[lang]}</h1>
+  <p style="color:#666;font-size:0.85rem">Généré le ${new Date().toLocaleDateString('fr-FR')} · ${rules.length} règles</p>
+  ${rules.map(r=>`<div class="rule"><div class="check ${r.done?'done':''}">${r.done?'✓':''}</div><span>${r.name}</span></div>`).join('')}
+  </body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`grammaire-${lang}-${today()}.html`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Export grammaire prêt — ouvre et imprime !');
+}
+
+function renderFiches() {
+  if(!state.fiches)state.fiches=[];
+  const t=today();
+  const toReview=state.fiches.filter(f=>f.nextReview<=t);
+  const fichesAReviserEl=document.getElementById('fichesAReviser');
+  if(fichesAReviserEl){
+    if(toReview.length===0){fichesAReviserEl.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">✅ Rien à réviser aujourd\'hui !</div>';}
+    else{fichesAReviserEl.innerHTML=`<div style="font-size:0.78rem;color:var(--text);margin-bottom:12px"><strong style="color:var(--accent)">${toReview.length} fiche${toReview.length>1?'s':''}</strong> à réviser aujourd\'hui</div><button class="btn btn-primary" onclick="startRevision(${JSON.stringify(toReview).replace(/"/g,'&quot;')})">▶ Commencer la révision</button>`;}
+  }
+  const CAT_COLORS={Langues:'#c8f04a',IT:'#48cae4',Comptabilité:'#f4a261',Formation:'#9b8cff',Culture:'#f05a5a',Autre:'#6b6b80'};
+  const listEl=document.getElementById('fichesList'); if(!listEl)return;
+  listEl.innerHTML=state.fiches.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucune fiche créée</div>':
+    `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${state.fiches.map(f=>{
+      const overdue=f.nextReview<=t&&f.lastReview;
+      return `<div style="background:var(--surface);border:1px solid ${overdue?'rgba(200,240,74,0.4)':'var(--border)'};border-radius:var(--radius);padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${f.title}</div>
+          <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${CAT_COLORS[f.cat]||'#6b6b80'}22;color:${CAT_COLORS[f.cat]||'#6b6b80'};border:1px solid ${CAT_COLORS[f.cat]||'#6b6b80'}44">${f.cat}</span></div>
+          <button class="btn btn-danger" onclick="deleteFiche(${f.id})">✕</button>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:8px;line-height:1.5">${f.resume.slice(0,100)}${f.resume.length>100?'...':''}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:0.62rem;color:var(--text-muted)">Maîtrise: ${'●'.repeat(f.maitrise)}${'○'.repeat(5-f.maitrise)} · Révision: ${f.nextReview}</div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+// ===== FEYNMAN =====
+function saveFeynman() {
+  const concept=document.getElementById('feynmanConcept').value.trim();
+  if(!concept){showToast('Indique le concept !');return;}
+  if(!state.feynmanNotes)state.feynmanNotes=[];
+  state.feynmanNotes.unshift({id:Date.now(),date:today(),concept,
+    explain:document.getElementById('feynman1').value,
+    blocks:document.getElementById('feynman2').value,
+    reformulate:document.getElementById('feynman3').value
+  });
+  ['feynmanConcept','feynman1','feynman2','feynman3'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  save(); renderFeynman(); showToast('Feynman sauvegardé ✓');
+}
+
+function convertFeynmanToFiche() {
+  const concept=document.getElementById('feynmanConcept').value.trim();
+  const explain=document.getElementById('feynman1').value.trim();
+  if(!concept||!explain){showToast('Remplis au moins concept et explication !');return;}
+  if(!state.fiches)state.fiches=[];
+  state.fiches.push({id:Date.now(),title:concept,cat:'Autre',resume:explain,
+    points:document.getElementById('feynman2').value,
+    exemple:document.getElementById('feynman3').value,
+    maitrise:0,nextReview:today(),lastReview:null,created:today()
+  });
+  save(); showToast('Converti en fiche ✓'); switchApprTab('fiches');
+}
+
+function deleteFeynman(id){state.feynmanNotes=state.feynmanNotes.filter(f=>f.id!==id);save();renderFeynman();}
+
+function renderFeynman() {
+  if(!state.feynmanNotes)state.feynmanNotes=[];
+  const el=document.getElementById('feynmanHistory'); if(!el)return;
+  el.innerHTML=state.feynmanNotes.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucune note Feynman</div>':
+    state.feynmanNotes.map(f=>`<div style="padding:14px;background:var(--surface2);border-radius:10px;margin-bottom:10px;border-left:3px solid #9b8cff">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text)">${f.concept}</div>
+        <div style="display:flex;gap:6px;align-items:center"><span style="font-size:0.6rem;color:var(--text-muted)">${f.date}</span><button class="btn btn-danger" onclick="deleteFeynman(${f.id})">✕</button></div>
+      </div>
+      ${f.explain?`<div style="font-size:0.72rem;color:var(--text-muted);line-height:1.5">${f.explain.slice(0,120)}${f.explain.length>120?'...':''}</div>`:''}
+    </div>`).join('');
+}
+
+function renderApprenti() {
+  if(!state.journalEntries)state.journalEntries=[];
+  if(!state.fiches)state.fiches=[];
+  if(!state.feynmanNotes)state.feynmanNotes=[];
+  renderJournal(); renderFiches(); renderFeynman();
+}
+
+// ======= CARRIÈRE =======
+function switchCarrTab(tab) {
+  ['candidatures','entretiens','salaires','veille'].forEach(t=>{
+    const el=document.getElementById('carr-'+t); if(el)el.style.display=t===tab?'block':'none';
+    const btn=document.getElementById('carr-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='candidatures')renderCandidatures();
+  else if(tab==='entretiens')renderEntretiens();
+  else if(tab==='salaires')renderSalaires();
+  else if(tab==='veille')renderVeille();
+}
+
+function addCandidature() {
+  const entreprise=document.getElementById('candEntreprise').value.trim();
+  const poste=document.getElementById('candPoste').value.trim();
+  const date=document.getElementById('candDate').value||today();
+  const statut=document.getElementById('candStatut').value;
+  const salaire=document.getElementById('candSalaire').value.trim();
+  const notes=document.getElementById('candNotes').value.trim();
+  if(!entreprise||!poste){showToast('Entreprise et poste requis !');return;}
+  if(!state.candidatures)state.candidatures=[];
+  state.candidatures.unshift({id:Date.now(),entreprise,poste,date,statut,salaire,notes});
+  ['candEntreprise','candPoste','candDate','candSalaire','candNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  save(); renderCandidatures(); showToast('Candidature ajoutée ✓');
+}
+
+function updateCandStatut(id,val){const c=state.candidatures.find(c=>c.id===id);if(c){c.statut=val;save();renderCandidatures();}}
+function deleteCandidature(id){state.candidatures=state.candidatures.filter(c=>c.id!==id);save();renderCandidatures();}
+
+function getDaysAgo(dateStr){return Math.floor((new Date()-new Date(dateStr))/86400000);}
+
+function renderCandidatures() {
+  if(!state.candidatures)state.candidatures=[];
+  const STATUT_COLORS={Envoyée:'#48cae4',Entretien:'#c8f04a','En attente':'#f4a261',Offre:'#4adb8a',Refus:'#f05a5a'};
+  // Stats
+  const total=state.candidatures.length;
+  const entretiens=state.candidatures.filter(c=>c.statut==='Entretien').length;
+  const offres=state.candidatures.filter(c=>c.statut==='Offre').length;
+  const statsEl=document.getElementById('candStats'); if(!statsEl)return;
+  statsEl.innerHTML=`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent)">${total}</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Candidatures</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:#c8f04a">${entretiens}</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Entretiens</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:#4adb8a">${offres}</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Offres</div></div>`;
+  const listEl=document.getElementById('candList'); if(!listEl)return;
+  listEl.innerHTML=state.candidatures.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucune candidature</div>':
+    `<div style="display:flex;flex-direction:column;gap:10px">${state.candidatures.map(c=>{
+      const daysAgo=getDaysAgo(c.date);
+      const relance=c.statut==='Envoyée'&&daysAgo>=7;
+      return `<div style="background:var(--surface);border:1px solid ${relance?'rgba(244,162,97,0.4)':'var(--border)'};border-radius:var(--radius);padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text)">${c.entreprise}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted)">${c.poste}${c.salaire?' · '+c.salaire+' €':''}</div>
+            <div style="font-size:0.62rem;color:var(--text-muted);margin-top:2px">${c.date} · il y a ${daysAgo} jour${daysAgo>1?'s':''}</div>
+            ${relance?`<div style="font-size:0.65rem;color:#f4a261;margin-top:4px">⚡ Pense à relancer !</div>`:''}
+            ${c.notes?`<div style="font-size:0.68rem;color:var(--text-muted);margin-top:6px;font-style:italic">${c.notes}</div>`:''}
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select class="inp" onchange="updateCandStatut(${c.id},this.value)" style="font-size:0.68rem;padding:5px 8px;background:${STATUT_COLORS[c.statut]||'var(--surface2)'}22;color:${STATUT_COLORS[c.statut]||'var(--text)'};border-color:${STATUT_COLORS[c.statut]||'var(--border)'}44">
+              ${['Envoyée','En attente','Entretien','Offre','Refus'].map(s=>`<option value="${s}" ${s===c.statut?'selected':''}>${s}</option>`).join('')}
+            </select>
+            <button class="btn btn-danger" onclick="deleteCandidature(${c.id})">✕</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+const ENTRETIEN_QUESTIONS = {
+  'IT/Support':[
+    {q:'Parle-moi de ton parcours et pourquoi ce poste ?',tip:'Sois concis, lié au poste.'},
+    {q:'Comment gères-tu un ticket urgent pendant une intervention ?',tip:'Priorise, communique, documente.'},
+    {q:'Quelle est ta méthode pour diagnostiquer un problème réseau ?',tip:'Approche méthodique OSI.'},
+    {q:'Tu ne connais pas une technologie demandée — que fais-tu ?',tip:'Honnêteté + capacité d\'apprentissage.'},
+    {q:'Donne un exemple de situation difficile avec un utilisateur.',tip:'Écoute, empathie, solution.'},
+  ],
+  'Comptabilité':[
+    {q:'Explique la différence entre bilan et compte de résultat.',tip:'Bilan = photo, CR = film.'},
+    {q:'Comment géres-tu les rapprochements bancaires ?',tip:'Méthode, fréquence, outils.'},
+    {q:'Que sais-tu de la TVA déductible vs collectée ?',tip:'Mécanisme de base incontournable.'},
+    {q:'Quel logiciel comptable maîtrises-tu le mieux ?',tip:'Sage, Cegid, EBP — sois précis.'},
+  ],
+  'Formateur':[
+    {q:'Comment adaptes-tu ta pédagogie à différents profils ?',tip:'Visual, auditif, kinesthésique.'},
+    {q:'Donne un exemple de formation que tu as animée.',tip:'Contexte, objectifs, résultats.'},
+    {q:'Comment gères-tu un apprenant en difficulté ?',tip:'Patience, reformulation, exercices adaptés.'},
+    {q:'Pourquoi vouloir devenir formateur indépendant ?',tip:'Passion transmission + expertise terrain.'},
+  ],
+};
+
+let selectedQuestion = null, entretienReponses = {};
+function renderEntretiens() {
+  const el=document.getElementById('entretiensQuestions'); if(!el)return;
+  if(!state.entretienReponses)state.entretienReponses={};
+  el.innerHTML=Object.entries(ENTRETIEN_QUESTIONS).map(([cat,qs])=>`
+    <div style="margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${qs.map((q,i)=>{
+          const key=cat+'-'+i;
+          const answered=state.entretienReponses[key];
+          return `<div style="padding:12px;background:var(--surface2);border:1px solid ${answered?'rgba(74,219,138,0.3)':'var(--border)'};border-radius:8px;cursor:pointer" onclick="openEntretienQuestion('${cat}',${i})">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text)">${q.q}</div>
+            <div style="font-size:0.62rem;color:var(--text-muted);margin-top:3px">💡 ${q.tip}</div>
+            ${answered?`<div style="font-size:0.65rem;color:#4adb8a;margin-top:4px">✅ Réponse préparée</div>`:'<div style="font-size:0.62rem;color:var(--accent);margin-top:4px">→ Cliquer pour préparer</div>'}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+  const repEl=document.getElementById('entretiensReponses'); if(!repEl)return;
+  const reponses=Object.entries(state.entretienReponses||{});
+  repEl.innerHTML=reponses.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Clique sur une question pour préparer ta réponse</div>':
+    reponses.map(([key,rep])=>`<div style="padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px"><div style="font-size:0.65rem;color:var(--accent);margin-bottom:4px">${key.split('-')[0]}</div><div style="font-size:0.75rem;color:var(--text);line-height:1.5">${rep}</div></div>`).join('');
+}
+
+function openEntretienQuestion(cat, idx) {
+  const q=ENTRETIEN_QUESTIONS[cat][idx];
+  const key=cat+'-'+idx;
+  const existing=(state.entretienReponses||{})[key]||'';
+  const rep=prompt(`${q.q}\n\n💡 Conseil: ${q.tip}\n\nTa réponse:`, existing);
+  if(rep!==null){
+    if(!state.entretienReponses)state.entretienReponses={};
+    state.entretienReponses[key]=rep;
+    save(); renderEntretiens();
+  }
+}
+
+function calcSalaire() {
+  const brut=parseFloat(document.getElementById('salaireBrut').value)||0;
+  const statut=document.getElementById('salaireStatut').value;
+  if(!brut){document.getElementById('salaireResults').innerHTML='';return;}
+  const tauxCharges=statut==='cadre'?0.25:0.22;
+  const net=Math.round(brut*(1-tauxCharges));
+  const netAnnuel=net*12;
+  const brutAnnuel=brut*12;
+  // IR estimation simplifiée
+  const irMensuel=Math.max(0,Math.round((netAnnuel>15000?(netAnnuel-15000)*0.11:0)/12));
+  const netApresIR=net-irMensuel;
+  document.getElementById('salaireResults').innerHTML=`
+    <div class="grid-3" style="margin-bottom:16px">
+      <div style="text-align:center;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">${net.toLocaleString('fr-FR')} €</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Net mensuel estimé</div></div>
+      <div style="text-align:center;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#4adb8a">${netApresIR.toLocaleString('fr-FR')} €</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Net après IR estimé</div></div>
+      <div style="text-align:center;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)"><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#48cae4">${netAnnuel.toLocaleString('fr-FR')} €</div><div style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Net annuel</div></div>
+    </div>
+    <div style="font-size:0.65rem;color:var(--text-muted);padding:10px;background:var(--surface2);border-radius:8px">⚠️ Estimation basée sur ~${Math.round(tauxCharges*100)}% de charges salariales (${statut}). IR calculé sur la base d'une imposition simple. Pour un calcul exact, utilise le simulateur officiel impots.gouv.fr</div>`;
+}
+
+const EVOLUTION_DATA = [
+  {role:'Technicien IT Support N1/N2',salaire:'28 000 — 36 000 €/an',color:'#48cae4',attendus:['Active Directory, Microsoft 365','Tickets GLPI/ServiceNow','ITIL Foundation','Relationnel et réactivité'],evolution:'→ N3, Chef de projet IT, Admin sys'},
+  {role:'Administrateur systèmes & réseaux',salaire:'38 000 — 52 000 €/an',color:'#c8f04a',attendus:['PowerShell, Azure AD','Virtualisation VMware/Hyper-V','Certif CompTIA / Microsoft','Anglais technique B2+'],evolution:'→ Architecte SI, DSI, Consultant'},
+  {role:'Consultant logiciel ERP/Compta',salaire:'38 000 — 55 000 €/an',color:'#f4a261',attendus:['Sage, Cegid ou SAP','Comptabilité générale niveau DCG','Pédagogie et formation','Certification éditeur'],evolution:'→ Chef de projet ERP, Formateur'},
+  {role:'Formateur indépendant (Qualiopi)',salaire:'400 — 900 €/jour',color:'#9b8cff',attendus:['Expertise terrain 3-5 ans min','Titre FPA ou équivalent RNCP','Qualiopi obligatoire pour CPF','Outils e-learning (Articulate)'],evolution:'→ Plateforme formation, Organisme'},
+  {role:'Comptable / Chef comptable',salaire:'32 000 — 55 000 €/an',color:'#4adb8a',attendus:['DCG minimum','Sage 100 ou Cegid','Rigueur et autonomie','Maîtrise fiscale et sociale'],evolution:'→ DAF, Expert-comptable (DEC)'},
+];
+
+function renderSalaires() {
+  const el=document.getElementById('evolutionPerspectives'); if(!el)return;
+  el.innerHTML=EVOLUTION_DATA.map(d=>`
+    <div style="padding:16px;background:var(--surface2);border-left:3px solid ${d.color};border-radius:0 10px 10px 0;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${d.role}</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:${d.color}">${d.salaire}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${d.attendus.map(a=>`<span style="font-size:0.62rem;padding:2px 8px;border-radius:999px;background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${a}</span>`).join('')}</div>
+      <div style="font-size:0.65rem;color:var(--text-muted)">${d.evolution}</div>
+    </div>`).join('');
+}
+
+const VEILLE_SITES = [
+  {cat:'💻 IT & Support',sites:[
+    {name:'IT-Connect.fr',url:'https://www.it-connect.fr',desc:'Tutoriels Windows Server, Azure, réseau'},
+    {name:'Korben.info',url:'https://korben.info',desc:'Veille tech, outils, sécurité'},
+    {name:'Microsoft Learn',url:'https://learn.microsoft.com/fr-fr',desc:'Formations officielles Microsoft'},
+    {name:'ITIL Foundation Blog',url:'https://www.axelos.com/best-practice-solutions/itil',desc:'Bonnes pratiques ITSM'},
+  ]},
+  {cat:'🧾 Comptabilité & Finance',sites:[
+    {name:'Compta-facile.com',url:'https://www.compta-facile.com',desc:'Cours et fiches pratiques comptabilité'},
+    {name:'Le Plan Comptable',url:'https://www.le-plan-comptable.fr',desc:'Référence PCG français'},
+    {name:'Sage Academy',url:'https://www.sage.com/fr-fr/formation',desc:'Formations officielles Sage'},
+    {name:'Les Échos Executives',url:'https://business.lesechos.fr',desc:'Actualités finance & gestion'},
+  ]},
+  {cat:'🎓 Formation & Pédagogie',sites:[
+    {name:'Centre Inffo',url:'https://www.centre-inffo.fr',desc:'Actualités formation professionnelle FR'},
+    {name:'Mon Compte Formation',url:'https://www.moncompteformation.gouv.fr',desc:'Référentiel CPF officiel'},
+    {name:'e-Learning Industry',url:'https://elearningindustry.com',desc:'Tendances e-learning mondial'},
+    {name:'Articulate Blog',url:'https://blogs.articulate.com',desc:'Conseils création e-learning'},
+  ]},
+];
+
+function addVeilleNote() {
+  const text=document.getElementById('veilleInput').value.trim();
+  const cat=document.getElementById('veilleCat').value;
+  if(!text)return;
+  if(!state.veilleNotes)state.veilleNotes=[];
+  state.veilleNotes.unshift({id:Date.now(),date:today(),cat,text});
+  document.getElementById('veilleInput').value='';
+  save(); renderVeille(); showToast('Note ajoutée ✓');
+}
+function deleteVeilleNote(id){state.veilleNotes=state.veilleNotes.filter(n=>n.id!==id);save();renderVeille();}
+
+function renderVeille() {
+  const sitesEl=document.getElementById('veilleMetier'); if(!sitesEl)return;
+  sitesEl.innerHTML=VEILLE_SITES.map(cat=>`
+    <div style="margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">
+        ${cat.sites.map(s=>`<a href="${s.url}" target="_blank" style="text-decoration:none;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:block;transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--text);margin-bottom:3px">${s.name} ↗</div>
+          <div style="font-size:0.62rem;color:var(--text-muted)">${s.desc}</div>
+        </a>`).join('')}
+      </div>
+    </div>`).join('');
+  if(!state.veilleNotes)state.veilleNotes=[];
+  const notesEl=document.getElementById('veilleNotes'); if(!notesEl)return;
+  const CAT_COLORS={IT:'#48cae4',Compta:'#f4a261',Formation:'#9b8cff',Autre:'#6b6b80'};
+  notesEl.innerHTML=state.veilleNotes.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:12px">Aucune note</div>':
+    state.veilleNotes.map(n=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${CAT_COLORS[n.cat]||'#6b6b80'}22;color:${CAT_COLORS[n.cat]||'#6b6b80'};white-space:nowrap">${n.cat}</span>
+      <div style="flex:1;font-size:0.75rem;color:var(--text)">${n.text}</div>
+      <span style="font-size:0.6rem;color:var(--text-muted);white-space:nowrap">${n.date}</span>
+      <button class="btn btn-danger" onclick="deleteVeilleNote(${n.id})">✕</button>
+    </div>`).join('');
+}
+
+// ======= FIX SUGGEST WORDS =====
+// Override suggestWords to properly add words
+async function suggestWords(lang) {
+  const el = document.getElementById('wordSuggestResult-'+lang);
+  if(!el)return;
+  el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+  const existing=(state.langues[lang]?.vocab||[]).map(v=>v.mot).slice(0,10).join(', ');
+  const level=state.langues[lang]?.vocab?.length>20?'B2':'A2/B1';
+  const LANG_NAMES={en:'anglais',es:'espagnol',it:'italien',ru:'russe'};
+  const prompt=`Tu es professeur de ${LANG_NAMES[lang]||lang}. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format exact: [{"mot":"word","trad":"traduction en français"}]. Suggère 8 mots ou expressions utiles en ${LANG_NAMES[lang]||lang} pour un apprenant niveau ${level}. Mots à éviter car déjà connus: ${existing||'aucun'}. Privilégie vocabulaire professionnel, quotidien et expressions idiomatiques.`;
+  try {
+    const text = await callGemini('', prompt, 600);
+    if(!text){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur IA — configure ta clé Groq dans Digital → Paramètres</div>';return;}
+    const clean=text.replace(/```json/g,'').replace(/```/g,'').trim();
+    const words=JSON.parse(clean);
+    el.innerHTML=`<div style="margin-top:12px"><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Suggestions — clique pour ajouter</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${words.map(w=>`<div onclick="addSuggestedWord('${lang}','${w.mot.replace(/'/g,"\\'")}','${w.trad.replace(/'/g,"\\'")}',this)"
+          style="padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s"
+          onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.dataset.added)this.style.borderColor='var(--border)'">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--text)">${w.mot}</div>
+          <div style="font-size:0.65rem;color:var(--text-muted)">${w.trad}</div>
+          <div style="font-size:0.58rem;color:var(--accent);margin-top:3px">+ Ajouter</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  } catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur parsing — réessaie</div>';}
+}
+
+function addSuggestedWord(lang, mot, trad, el) {
+  if(!state.langues[lang])return;
+  if(!state.langues[lang].vocab)state.langues[lang].vocab=[];
+  if(state.langues[lang].vocab.find(v=>v.mot===mot)){showToast('Mot déjà dans ta liste !');return;}
+  state.langues[lang].vocab.push({id:Date.now(),mot,trad,maitrise:0});
+  save();
+  // Visual feedback
+  el.style.background='rgba(74,219,138,0.15)';
+  el.style.borderColor='#4adb8a';
+  el.dataset.added='true';
+  el.querySelector('div:last-child').textContent='✓ Ajouté';
+  el.querySelector('div:last-child').style.color='#4adb8a';
+  showToast(`"${mot}" ajouté ✓`);
+}
+
+// ======= FIX FORMATION - Suggestion IA + Supprimer =======
+async function suggestFormation() {
+  const el=document.getElementById('formationSuggestionResult');
+  if(!el)return;
+  el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+  const modules=(state.modules||[]).map(m=>m.name).join(', ')||'aucun';
+  const certs=(state.customCerts||[]).map(c=>c.name).join(', ')||'aucune';
+  const prompt=`Tu es conseiller en formation professionnelle France. Profil: support IT dans une ESN, vise transition vers éditeur logiciel / formateur indépendant Qualiopi, domaines compta/IT. Modules actuels: ${modules}. Certifications: ${certs}. Recommande 5 formations ou certifications prioritaires avec: nom, pourquoi, durée, financement CPF possible ou non. Sois concis et actionnable.`;
+  const text=await callGemini('',prompt,800);
+  if(text){el.innerHTML=`<div style="font-size:0.75rem;color:var(--text);line-height:1.7;padding:14px;background:var(--surface2);border-radius:10px">${text.split('\n').join('<br>')}</div>`;}
+  else{el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Configure ta clé Groq dans Digital → Paramètres</div>';}
+}
 
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
