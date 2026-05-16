@@ -27,7 +27,7 @@
   .tabs { display: flex; gap: 4px; margin-bottom: 28px; background: var(--surface); border-radius: 16px; padding: 4px; flex-wrap: wrap; }
   .tab { padding: 8px 14px; border-radius: 12px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.72rem; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; }
   .tab.active { background: var(--accent); color: #0e0e11; font-weight: 600; }
-  .panel { display: none; } .panel.active { display: block; }
+  .panel { display: none; visibility: hidden; } .panel.active { display: block; visibility: visible; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -388,9 +388,6 @@
     <!-- Stats méditation -->
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px" id="meditStats"></div>
   </div>
-
-</div>
-
 
   <!-- Habitudes quotidiennes -->
   <div class="card section-gap">
