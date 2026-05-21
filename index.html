@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mon Tableau">
 <link rel="manifest" href="manifest.json">
-<title>Dashboard · Chris v2.06</title>
+<title>Dashboard · Chris v2.07</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -28,6 +28,56 @@
   .tab { padding: 8px 14px; border-radius: 12px; border: none; background: transparent; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.72rem; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; }
   .tab.active { background: var(--accent); color: #0e0e11; font-weight: 600; }
   .panel { display: none; visibility: hidden; } .panel.active { display: block; visibility: visible; }
+
+  /* ===== MOBILE OPTIMISATION ===== */
+  @media (max-width: 768px) {
+    body { padding-bottom: 80px !important; }
+    .tabs { display: none !important; }
+    .mobile-nav { display: flex !important; }
+    .header { padding: 12px 16px !important; }
+    h1 { font-size: 1.6rem !important; }
+    .card { padding: 14px !important; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+    .add-row { flex-direction: column !important; }
+    .add-row .inp, .add-row .btn { width: 100% !important; }
+    .inp { font-size: 16px !important; } /* prevent zoom on iOS */
+    .btn { min-height: 44px; } /* iOS tap target */
+    .subtabs { flex-wrap: wrap !important; }
+    .big-stat { font-size: 2.5rem !important; }
+  }
+  @media (min-width: 769px) {
+    .mobile-nav { display: none !important; }
+  }
+
+  /* Mobile bottom nav */
+  .mobile-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: var(--surface); border-top: 1px solid var(--border);
+    display: none; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding: 0; gap: 0;
+  }
+  .mobile-nav-item {
+    flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+    padding: 8px 14px; cursor: pointer; gap: 3px; border: none;
+    background: transparent; color: var(--text-muted); font-family: 'DM Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.5px; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent; min-width: 60px;
+  }
+  .mobile-nav-item.active { color: var(--accent); }
+  .mobile-nav-item .nav-icon { font-size: 1.3rem; }
+  .mobile-nav-item .nav-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); display: none;
+  }
+  .mobile-nav-item.active .nav-dot { display: block; }
+
+  /* Rappels badge */
+  .rappel-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f05a5a; color: white; border-radius: 999px;
+    font-size: 0.6rem; font-weight: 700; min-width: 18px; height: 18px;
+    padding: 0 5px; margin-left: 4px; vertical-align: middle;
+  }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -183,7 +233,11 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.06 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.07 — Dashboard Personnel</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+      <div id="iaStatusBadge" onclick="switchTabFromRappel('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer APIs</div>
+      <div onclick="switchTabFromRappel('synthese')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(240,90,90,0.12);color:#f05a5a;border:1px solid rgba(240,90,90,0.3);display:none" id="rappelsBadge">0</div>
+    </div>
     <div id="iaStatusBadge" onclick="switchTab('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer IA</div>
   </div>
 </div>
@@ -217,6 +271,9 @@
     <div class="card-title">🌤️ Météo & Sport extérieur</div>
     <div id="weatherWidget"><div style="font-size:0.72rem;color:var(--text-muted)">Chargement...</div></div>
   </div>
+
+  <!-- Rappels intelligents -->
+  <div id="rappelsContainer" style="margin-bottom:20px"></div>
 
   <!-- Récap hebdomadaire -->
   <div style="margin-bottom:20px">
@@ -557,21 +614,32 @@
     <div class="card" style="margin-bottom:16px">
       <div class="card-title" style="color:#9b8cff">🏦 Assurance-Vie</div>
       <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Enveloppe fiscale avantageuse après 8 ans — fonds euros + unités de compte.</div>
+
+      <!-- Montant total AV -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:14px;background:var(--surface2);border-radius:10px;border:1px solid rgba(155,140,255,0.3)">
+        <div style="flex:1">
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Valeur totale du contrat</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input class="inp" type="number" id="av-total" placeholder="Ex: 15000" style="width:150px" step="0.01" oninput="updateAVTotal()"/>
+            <span style="font-size:0.75rem;color:var(--text-muted)">€</span>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff" id="av-total-display">— €</div>
+          <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">Valeur contrat</div>
+        </div>
+      </div>
+
+      <!-- Ajouter une ligne de répartition -->
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Répartition des supports</div>
       <div class="add-row">
-        <input class="inp" type="text" id="av-ticker" placeholder="Ticker ou code ISIN" style="width:130px"/>
-        <input class="inp" type="text" id="av-name" placeholder="Nom du fonds/UC" style="flex:1;min-width:120px"/>
-        <select class="inp" id="av-type"><option value="Fonds euros">💎 Fonds euros</option><option value="ETF">🌍 ETF</option><option value="Action">📈 Action</option><option value="SCPI">🏠 SCPI</option></select>
-        <input class="inp" type="number" id="av-qty" placeholder="Parts" style="width:70px" step="any"/>
-        <input class="inp" type="number" id="av-pru" placeholder="VL/PRU (€)" style="width:90px" step="any"/>
-        <button class="btn btn-primary" onclick="addEnvPosition('av')">+</button>
+        <input class="inp" type="text" id="av-name" placeholder="Nom du fonds/UC (ex: Fonds euros, MSCI World…)" style="flex:2;min-width:140px"/>
+        <select class="inp" id="av-type"><option value="Fonds euros">💎 Fonds euros</option><option value="ETF">🌍 ETF/UC</option><option value="SCPI">🏠 SCPI</option><option value="Action">📈 Action</option><option value="Autre">📦 Autre</option></select>
+        <input class="inp" type="number" id="av-pct" placeholder="% répartition" style="width:120px" min="0" max="100" step="0.1"/>
+        <button class="btn btn-primary" onclick="addAVLine()">+ Ajouter</button>
       </div>
     </div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.72rem;color:var(--text-muted)">
-      💡 <strong style="color:var(--text)">Saisie manuelle</strong> — modifie le cours directement dans le tableau.
-      Consulte sur <a href="https://www.boursorama.com/bourse/actions/" target="_blank" style="color:var(--accent)">Boursorama</a>
-      ou <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent)">Yahoo Finance</a>.
-    </div>
-    <div class="card" style="margin-bottom:16px;overflow-x:auto"><div id="av-table"></div></div>
+    <div class="card" style="margin-bottom:16px"><div id="av-table"></div></div>
     <div class="grid-3" id="av-stats"></div>
   </div>
 
@@ -1424,6 +1492,52 @@
   </div>
 </div>
 
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-item active" onclick="mobileTab('synthese',this)">
+    <span class="nav-icon">📊</span><span>Synthèse</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('planning',this)">
+    <span class="nav-icon">⏱️</span><span>Planning</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('bienetre',this)">
+    <span class="nav-icon">🧘</span><span>Bien-être</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('sport',this)">
+    <span class="nav-icon">💪</span><span>Sport</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('alimentation',this)">
+    <span class="nav-icon">🍽️</span><span>Alim.</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('langues',this)">
+    <span class="nav-icon">🌍</span><span>Langues</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('invest',this)">
+    <span class="nav-icon">📈</span><span>Invest.</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('finances',this)">
+    <span class="nav-icon">💶</span><span>Finances</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('formation',this)">
+    <span class="nav-icon">🎓</span><span>Formation</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('apprentissage',this)">
+    <span class="nav-icon">🧠</span><span>Apprend.</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('carriere',this)">
+    <span class="nav-icon">💼</span><span>Carrière</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('mediatheque',this)">
+    <span class="nav-icon">🎬</span><span>Médias</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('objectifs',this)">
+    <span class="nav-icon">🎯</span><span>Objectifs</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('digital',this)">
+    <span class="nav-icon">📱</span><span>Digital</span><div class="nav-dot"></div>
+  </button>
+</nav>
+
 <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Changer le thème">🌙</button>
 <div class="toast" id="toast"></div>
 <script>
@@ -1502,7 +1616,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -1612,7 +1726,7 @@ function switchTab(name) {
   if(name==='alimentation'){renderRepas();renderNutrition();}
   if(name==='mediatheque'){renderFilms();renderCulture();}
   if(name==='finances'){renderBudget();renderFinance2();}
-  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();}
   if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
   if(name==='formation'){renderFormation();switchFormTab('roadmap');}
   if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
@@ -2261,7 +2375,9 @@ function switchInvEnv(env) {
     activeBtn.className = 'btn btn-primary';
     activeBtn.style.cssText = 'font-size:0.7rem;padding:7px 14px';
   }
-  if (['pea','cto','av'].includes(env)) renderEnvTable(env);
+  if (env === 'pea') renderEnvTable('pea');
+  else if (env === 'cto') renderEnvTable('cto');
+  else if (env === 'av') renderAV();
   else if (env === 'livrets') renderPortfolio();
   else if (env === 'crypto') renderPortfolio();
   else if (env === 'noncote') renderPortfolio();
@@ -2450,7 +2566,7 @@ function renderPatrimoine() {
   if (!state.envPositions) state.envPositions = { pea:[], cto:[], av:[] };
   const peaVal  = (state.envPositions.pea||[]).reduce((s,p) => s + p.current*p.qty, 0);
   const ctoVal  = (state.envPositions.cto||[]).reduce((s,p) => s + p.current*p.qty, 0);
-  const avVal   = (state.envPositions.av||[]).reduce((s,p)  => s + p.current*p.qty, 0);
+  const avVal   = state.avData?.total || 0;
   const livVal  = (state.livrets||[]).reduce((s,l) => s + l.solde, 0);
   const cryptoVal = (state.cryptos||[]).reduce((s,c) => s + c.current*c.qty, 0);
   const ncVal   = (state.nonCote||[]).reduce((s,n) => s + n.montant, 0);
@@ -4668,6 +4784,349 @@ function generateWeeklyRecap(){
   </div>`;
 }
 
+// ======= ASSURANCE-VIE =======
+function updateAVTotal() {
+  const val = parseFloat(document.getElementById('av-total')?.value) || 0;
+  if(!state.avData) state.avData = { total: 0, lines: [] };
+  state.avData.total = val;
+  const el = document.getElementById('av-total-display');
+  if(el) el.textContent = val > 0 ? val.toLocaleString('fr-FR') + ' €' : '— €';
+  save(); renderAV();
+}
+
+function addAVLine() {
+  const name = document.getElementById('av-name')?.value.trim();
+  const type = document.getElementById('av-type')?.value;
+  const pct  = parseFloat(document.getElementById('av-pct')?.value) || 0;
+  if(!name) { showToast('Donne un nom au support !'); return; }
+  if(pct <= 0 || pct > 100) { showToast('Le % doit être entre 1 et 100'); return; }
+  if(!state.avData) state.avData = { total: 0, lines: [] };
+  // Check total % doesn't exceed 100
+  const currentTotal = state.avData.lines.reduce((s,l) => s + l.pct, 0);
+  if(currentTotal + pct > 100) {
+    showToast(`Total dépasserait 100% (actuellement ${currentTotal}%)`); return;
+  }
+  state.avData.lines.push({ id: Date.now(), name, type, pct });
+  document.getElementById('av-name').value = '';
+  document.getElementById('av-pct').value = '';
+  save(); renderAV(); showToast('Support ajouté ✓');
+}
+
+function deleteAVLine(id) {
+  if(!state.avData) return;
+  state.avData.lines = state.avData.lines.filter(l => l.id !== id);
+  save(); renderAV();
+}
+
+function updateAVLinePct(id, val) {
+  const line = state.avData?.lines?.find(l => l.id === id);
+  if(line) { line.pct = parseFloat(val) || 0; save(); renderAV(); }
+}
+
+function renderAV() {
+  if(!state.avData) state.avData = { total: 0, lines: [] };
+  const { total, lines } = state.avData;
+
+  // Restore total input
+  const totalInput = document.getElementById('av-total');
+  if(totalInput && total > 0 && !totalInput.value) totalInput.value = total;
+  const totalDisplay = document.getElementById('av-total-display');
+  if(totalDisplay) totalDisplay.textContent = total > 0 ? total.toLocaleString('fr-FR') + ' €' : '— €';
+
+  const tableEl = document.getElementById('av-table');
+  const statsEl = document.getElementById('av-stats');
+  if(!tableEl) return;
+
+  const totalPct = lines.reduce((s,l) => s + l.pct, 0);
+  const remaining = Math.max(0, 100 - totalPct);
+  const TYPE_COLORS = { 'Fonds euros':'#9b8cff','ETF/UC':'#c8f04a','SCPI':'#f4a261','Action':'#48cae4','Autre':'#6b6b80' };
+
+  if(lines.length === 0) {
+    tableEl.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Ajoute tes supports pour voir la répartition</div>';
+    if(statsEl) statsEl.innerHTML = '';
+    return;
+  }
+
+  tableEl.innerHTML = `
+    <!-- Barre de répartition visuelle -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;height:24px;border-radius:8px;overflow:hidden;margin-bottom:8px">
+        ${lines.map(l => {
+          const color = TYPE_COLORS[l.type] || '#6b6b80';
+          return `<div style="width:${l.pct}%;background:${color};transition:width 0.3s" title="${l.name} — ${l.pct}%"></div>`;
+        }).join('')}
+        ${remaining > 0 ? `<div style="width:${remaining}%;background:var(--border)" title="Non alloué — ${remaining.toFixed(1)}%"></div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${lines.map(l => {
+          const color = TYPE_COLORS[l.type] || '#6b6b80';
+          return `<div style="display:flex;align-items:center;gap:4px;font-size:0.62rem;color:var(--text-muted)"><div style="width:8px;height:8px;border-radius:50%;background:${color}"></div>${l.name}</div>`;
+        }).join('')}
+        ${remaining > 0 ? `<div style="display:flex;align-items:center;gap:4px;font-size:0.62rem;color:var(--text-muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--border)"></div>Non alloué</div>` : ''}
+      </div>
+    </div>
+
+    <!-- Tableau des supports -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${lines.map(l => {
+        const color = TYPE_COLORS[l.type] || '#6b6b80';
+        const montant = total > 0 ? Math.round(l.pct / 100 * total) : null;
+        return `<div style="padding:12px;background:var(--surface2);border-radius:10px;border-left:3px solid ${color};display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:2;min-width:120px">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text)">${l.name}</div>
+            <div style="font-size:0.62rem;color:${color};margin-top:2px">${l.type}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="number" value="${l.pct}" min="0" max="100" step="0.1"
+              onchange="updateAVLinePct(${l.id},this.value)"
+              style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);font-size:0.75rem;text-align:right;font-family:'DM Mono',monospace"/>
+            <span style="font-size:0.75rem;color:var(--text-muted)">%</span>
+          </div>
+          ${montant !== null ? `<div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:${color};min-width:80px;text-align:right">~${montant.toLocaleString('fr-FR')} €</div>` : ''}
+          <button class="btn btn-danger" onclick="deleteAVLine(${l.id})">✕</button>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Avertissement si total ≠ 100% -->
+    ${Math.abs(totalPct - 100) > 0.5 ? `<div style="margin-top:12px;padding:8px 12px;background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.3);border-radius:8px;font-size:0.68rem;color:#f4a261">
+      ⚠️ Total : ${totalPct.toFixed(1)}% — ${remaining > 0 ? remaining.toFixed(1)+'% non alloué' : (totalPct-100).toFixed(1)+'% de trop'}
+    </div>` : `<div style="margin-top:12px;padding:8px 12px;background:rgba(74,219,138,0.1);border:1px solid rgba(74,219,138,0.3);border-radius:8px;font-size:0.68rem;color:#4adb8a">✅ Répartition totale : 100%</div>`}`;
+
+  if(statsEl) {
+    statsEl.innerHTML = `
+      <div style="text-align:center;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#9b8cff">${total > 0 ? total.toLocaleString('fr-FR') + ' €' : '—'}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Valeur contrat</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#4adb8a">${lines.length}</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Supports</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:var(--surface);border:1px solid ${Math.abs(totalPct-100)<0.5?'rgba(74,219,138,0.3)':'rgba(244,162,97,0.3)'};border-radius:var(--radius)">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:${Math.abs(totalPct-100)<0.5?'#4adb8a':'#f4a261'}">${totalPct.toFixed(1)}%</div>
+        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">Alloué</div>
+      </div>`;
+  }
+
+  renderPatrimoine();
+}
+
+// ======= IA INVEST =======
+async function askInvestAdvice() {
+  const q = document.getElementById('investQuestion')?.value.trim();
+  if(!q){showToast('Pose une question !');return;}
+  const chat = document.getElementById('investAdviceChat');
+  if(!chat)return;
+  chat.innerHTML += `<div class="ai-msg user" style="text-align:right;margin-bottom:8px;font-size:0.75rem;color:var(--text)">${q}</div>`;
+  document.getElementById('investQuestion').value = '';
+  const typingEl = document.createElement('div');
+  typingEl.className = 'ai-typing';
+  typingEl.style.cssText = 'padding:8px 0;margin-bottom:8px';
+  typingEl.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(typingEl);
+  chat.scrollTop = chat.scrollHeight;
+  const peaVal = (state.envPositions?.pea||[]).reduce((s,p)=>s+p.current*p.qty,0);
+  const ctoVal = (state.envPositions?.cto||[]).reduce((s,p)=>s+p.current*p.qty,0);
+  const context = `Tu es un conseiller en investissement. Profil: particulier français, patrimoine PEA ${peaVal.toFixed(0)}€, CTO ${ctoVal.toFixed(0)}€. Conseil non contractuel, à titre informatif uniquement. Sois concis et pratique.`;
+  typingEl.remove();
+  const text = await callGemini(context, q, 800) || 'Erreur de connexion — vérifie ta clé Groq dans Digital → Paramètres.';
+  chat.innerHTML += `<div class="ai-msg assistant" style="margin-bottom:8px;font-size:0.75rem;color:var(--text-muted);line-height:1.6;padding:10px;background:var(--surface2);border-radius:8px">${text.split('\n').join('<br>')}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ======= MOBILE NAVIGATION =======
+function mobileTab(name, btn) {
+  // Update active state in mobile nav
+  document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // Switch panel
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name);
+  if(panel) panel.classList.add('active');
+  // Also sync desktop tabs
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  // Trigger renders
+  if(name==='planning'){renderProjects();renderWeekSummary();renderTempsLibres();renderFocus();}
+  if(name==='alimentation'){renderRepas();renderNutrition();}
+  if(name==='mediatheque'){renderFilms();renderCulture();}
+  if(name==='finances'){renderBudget();renderFinance2();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();}
+  if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
+  if(name==='formation'){renderFormation();switchFormTab('roadmap');}
+  if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
+  if(name==='bienetre'){renderHabitudes();renderHydration();renderPoids();}
+  // Scroll to top
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ======= RAPPELS INTELLIGENTS =======
+function getRappels() {
+  const rappels = [];
+  const t = today();
+
+  // 1. Sport non fait depuis X jours
+  if(state.sport) {
+    const weekDates = getWeekDates();
+    const sportDays = weekDates.filter(d => state.sport[d]?.done).length;
+    const lastSport = [...weekDates].reverse().find(d => state.sport[d]?.done);
+    const daysSince = lastSport ? Math.floor((new Date(t) - new Date(lastSport)) / 86400000) : 7;
+    if(daysSince >= 3) rappels.push({
+      level: daysSince >= 5 ? 'urgent' : 'attention',
+      icon: '💪', text: `Sport non fait depuis ${daysSince} jour${daysSince>1?'s':''}`,
+      action: 'sport', cta: 'Voir le programme'
+    });
+  }
+
+  // 2. Fiches SM-2 à réviser
+  const fichesAReviser = (state.fiches||[]).filter(f => f.nextReview && f.nextReview <= t);
+  if(fichesAReviser.length > 0) rappels.push({
+    level: fichesAReviser.length >= 5 ? 'urgent' : 'attention',
+    icon: '🗂️', text: `${fichesAReviser.length} fiche${fichesAReviser.length>1?'s':''} à réviser aujourd'hui`,
+    action: 'apprentissage', cta: 'Réviser maintenant'
+  });
+
+  // 3. Candidatures à relancer
+  const aRelancer = (state.candidatures||[]).filter(c => {
+    if(c.statut !== 'Envoyée') return false;
+    return Math.floor((new Date(t) - new Date(c.date)) / 86400000) >= 7;
+  });
+  if(aRelancer.length > 0) rappels.push({
+    level: 'attention',
+    icon: '💼', text: `${aRelancer.length} candidature${aRelancer.length>1?'s':''} à relancer (J+7)`,
+    action: 'carriere', cta: 'Voir les candidatures'
+  });
+
+  // 4. Habitudes non cochées hier
+  if(state.habitudes?.length > 0) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    const yDate = yesterday.toISOString().slice(0,10);
+    const yLog = state.habitudesLog?.[yDate] || [];
+    const missed = state.habitudes.filter(h => !yLog.includes(h.id)).length;
+    if(missed > 0 && missed === state.habitudes.length) rappels.push({
+      level: 'info',
+      icon: '🎯', text: `Aucune habitude cochée hier`,
+      action: 'bienetre', cta: 'Voir les habitudes'
+    });
+  }
+
+  // 5. Objectifs en retard
+  const retard = (state.objectifs||[]).filter(o => {
+    if(o.done || !o.deadline) return false;
+    return o.deadline < t;
+  });
+  if(retard.length > 0) rappels.push({
+    level: 'urgent',
+    icon: '🎯', text: `${retard.length} objectif${retard.length>1?'s':''} en retard sur la deadline`,
+    action: 'objectifs', cta: 'Voir les objectifs'
+  });
+
+  // 6. Hydratation faible hier
+  if(state.hydration) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    const yDate = yesterday.toISOString().slice(0,10);
+    const yWater = state.hydration[yDate] || 0;
+    if(yWater > 0 && yWater < 6) rappels.push({
+      level: 'info',
+      icon: '💧', text: `Seulement ${yWater} verre${yWater>1?'s':''} d'eau hier — pense à t'hydrater`,
+      action: 'bienetre', cta: 'Voir hydratation'
+    });
+  }
+
+  // 7. DCA du mois à venir
+  if(state.dcaList?.length > 0) {
+    const today_d = new Date().getDate();
+    const upcoming = state.dcaList.filter(d => d.active && Math.abs(d.day - today_d) <= 2);
+    if(upcoming.length > 0) rappels.push({
+      level: 'info',
+      icon: '📅', text: `${upcoming.length} prélèvement${upcoming.length>1?'s':''} DCA prévu${upcoming.length>1?'s':''} dans les 2 jours`,
+      action: 'invest', cta: 'Voir le DCA'
+    });
+  }
+
+  // 8. Formations en retard
+  const formRetard = (state.trackerFormations||[]).filter(f => f.date && f.date < t && f.hDone < f.hTotal);
+  if(formRetard.length > 0) rappels.push({
+    level: 'attention',
+    icon: '🎓', text: `${formRetard.length} formation${formRetard.length>1?'s':''} en retard sur l'objectif`,
+    action: 'formation', cta: 'Voir le tracker'
+  });
+
+  return rappels;
+}
+
+function renderRappels() {
+  const el = document.getElementById('rappelsContainer');
+  if(!el) return;
+
+  const rappels = getRappels();
+
+  // Update badge in header
+  const badge = document.getElementById('rappelsBadge');
+  if(badge) {
+    badge.textContent = rappels.length;
+    badge.style.display = rappels.length > 0 ? 'inline-flex' : 'none';
+  }
+
+  if(rappels.length === 0) {
+    el.innerHTML = `<div style="padding:14px 16px;background:rgba(74,219,138,0.08);border:1px solid rgba(74,219,138,0.2);border-radius:var(--radius);display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.4rem">✅</span>
+      <div><div style="font-size:0.78rem;font-weight:600;color:#4adb8a">Tout est à jour !</div>
+      <div style="font-size:0.65rem;color:var(--text-muted);margin-top:2px">Aucun rappel en attente — continue comme ça.</div></div>
+    </div>`;
+    return;
+  }
+
+  const LEVEL_STYLES = {
+    urgent:    { bg: 'rgba(240,90,90,0.08)',    border: 'rgba(240,90,90,0.25)',    color: '#f05a5a',  label: 'Urgent' },
+    attention: { bg: 'rgba(244,162,97,0.08)',   border: 'rgba(244,162,97,0.25)',   color: '#f4a261',  label: 'Attention' },
+    info:      { bg: 'rgba(72,202,228,0.06)',   border: 'rgba(72,202,228,0.2)',    color: '#48cae4',  label: 'Info' },
+  };
+
+  // Sort: urgent first
+  const sorted = [...rappels].sort((a,b) => {
+    const order = { urgent:0, attention:1, info:2 };
+    return order[a.level] - order[b.level];
+  });
+
+  const urgentCount = rappels.filter(r => r.level === 'urgent').length;
+  const attentionCount = rappels.filter(r => r.level === 'attention').length;
+
+  el.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text)">
+        🔔 ${rappels.length} rappel${rappels.length>1?'s':''} en attente
+      </div>
+      ${urgentCount > 0 ? `<span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:rgba(240,90,90,0.15);color:#f05a5a;border:1px solid rgba(240,90,90,0.3)">${urgentCount} urgent${urgentCount>1?'s':''}</span>` : ''}
+      ${attentionCount > 0 ? `<span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">${attentionCount} attention</span>` : ''}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${sorted.map(r => {
+        const s = LEVEL_STYLES[r.level];
+        return `<div style="padding:12px 16px;background:${s.bg};border:1px solid ${s.border};border-radius:10px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="switchTabFromRappel('${r.action}')">
+          <span style="font-size:1.2rem;flex-shrink:0">${r.icon}</span>
+          <div style="flex:1">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text)">${r.text}</div>
+          </div>
+          <div style="font-size:0.65rem;color:${s.color};white-space:nowrap;font-weight:600">${r.cta} →</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function switchTabFromRappel(name) {
+  // Find the tab button and click it
+  const tabBtn = document.querySelector(`.tab[onclick="switchTab('${name}')"]`);
+  if(tabBtn) { tabBtn.click(); return; }
+  // Fallback for mobile
+  const mobileBtn = document.querySelector(`.mobile-nav-item[onclick*="${name}"]`);
+  if(mobileBtn) { mobileBtn.click(); return; }
+  // Direct switch
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name);
+  if(panel) panel.classList.add('active');
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -4706,6 +5165,7 @@ renderCalendar();
 renderBadges();
 renderKPIs();
 renderAlerts();
+renderRappels();
 renderFocus();
 renderFinance2();
 renderDigital();
@@ -4713,6 +5173,7 @@ initApiSettings();
 renderFilms();
 renderPodcastReco();
 renderPortfolio();
+renderAV();
 renderPatrimoine();
 renderDCA();
 // Init invest env tabs
