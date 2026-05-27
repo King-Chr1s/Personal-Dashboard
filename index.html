@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mon Tableau">
 <link rel="manifest" href="manifest.json">
-<title>Dashboard · Chris v2.07</title>
+<title>Dashboard · Chris v2.08</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,10 +51,27 @@
 
   /* Mobile bottom nav */
   .mobile-nav {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-    background: var(--surface); border-top: 1px solid var(--border);
-    display: none; overflow-x: auto; -webkit-overflow-scrolling: touch;
-    padding: 0; gap: 0;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    gap: 0;
+    touch-action: pan-x;
+    -webkit-user-select: none;
+    user-select: none;
+    overscroll-behavior-x: contain;
+    /* Fix iOS Safari fixed nav bug */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   .mobile-nav-item {
     flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
@@ -62,6 +79,8 @@
     background: transparent; color: var(--text-muted); font-family: 'DM Mono', monospace;
     font-size: 0.55rem; letter-spacing: 0.5px; text-transform: uppercase;
     -webkit-tap-highlight-color: transparent; min-width: 60px;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
   }
   .mobile-nav-item.active { color: var(--accent); }
   .mobile-nav-item .nav-icon { font-size: 1.3rem; }
@@ -233,7 +252,7 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.07 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.08 — Dashboard Personnel</div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
       <div id="iaStatusBadge" onclick="switchTabFromRappel('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer APIs</div>
       <div onclick="switchTabFromRappel('synthese')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(240,90,90,0.12);color:#f05a5a;border:1px solid rgba(240,90,90,0.3);display:none" id="rappelsBadge">0</div>
@@ -1244,6 +1263,33 @@
 
     <!-- Status global -->
     <div id="geminiKeyStatus" style="display:none"></div>
+
+    <!-- JSONBin Sync -->
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid rgba(200,240,74,0.25);margin-top:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:1rem">☁️</span>
+        <div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">JSONBin — Sync automatique Mac ↔ iPhone</div>
+          <div style="font-size:0.62rem;color:var(--text-muted)">jsonbin.io → compte gratuit → New Bin → copie le Bin ID et la Master Key</div>
+        </div>
+        <div id="syncBadge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input class="inp" type="password" id="jsonbinBinId" placeholder="Bin ID (64f3a2b8...)" style="flex:1;min-width:180px"/>
+          <button class="btn btn-primary" onclick="saveJsonbinConfig()" style="background:var(--accent);color:#0e0e11">💾 Sauvegarder</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input class="inp" type="password" id="jsonbinKey" placeholder="Master Key ($2b$10$...)" style="flex:1;min-width:180px"/>
+          <button class="btn" onclick="testJsonbin()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="syncToJsonbin(true)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:0.68rem">📤 Envoyer vers le cloud</button>
+        <button class="btn" onclick="loadFromJsonbin(true)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:0.68rem">📥 Charger depuis le cloud</button>
+      </div>
+      <div id="syncStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:8px"></div>
+    </div>
   </div>
 
 </div>
@@ -3367,34 +3413,7 @@ function showCalDay(dateStr) {
 }
 
 // ======= SUGGESTIONS MOTS IA =======
-async function suggestWords(lang) {
-  const data = state.langues[lang];
-  const color = LANG_COLORS[lang];
-  const existing = data.vocab.map(v=>v.mot).join(', ');
-  const level = data.vocab.filter(v=>v.maitrise===3).length > 10 ? 'intermédiaire/avancé' : 'débutant/intermédiaire';
-  const el = document.getElementById('wordSuggestResult-'+lang);
-  if (!el) return;
-  el.innerHTML = '<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
 
-  try {
-    const _prompt = `Tu es professeur de langue. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format exact: [{"mot":"word","trad":"traduction en français"}]. Suggère 8 mots/expressions utiles en ${LANG_LABELS[lang]} pour un apprenant niveau ${level}. Mots déjà connus à éviter: ${existing||'aucun'}. Vocabulaire professionnel, quotidien et expressions idiomatiques.`;
-    const _rawText = await callGemini('', _prompt, 800);
-    const res = { json: async () => ({ content: [{ text: _rawText }] }) };
-    const d2 = await res.json();
-    const text = d2.content?.[0]?.text || '[]';
-    const words = JSON.parse(text);
-    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px">${words.map(w=>`<div onclick="addSuggestedWord('${lang}','${w.mot.replace(/'/g,"\\'")}','${w.trad.replace(/'/g,"\\'")}'')" style="padding:10px 12px;background:var(--surface2);border:1px solid ${color}44;border-radius:8px;cursor:pointer;transition:border-color 0.15s" onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='${color}44'"><div style="font-size:0.8rem;font-weight:600;color:var(--text)">${w.mot}</div><div style="font-size:0.68rem;color:var(--text-muted)">${w.trad}</div><div style="font-size:0.58rem;color:${color};margin-top:4px;text-transform:uppercase;letter-spacing:1px">+ Ajouter</div></div>`).join('')}</div>`;
-  } catch(e) {
-    el.innerHTML = '<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie dans quelques secondes.</div>';
-  }
-}
-
-function addSuggestedWord(lang, mot, trad) {
-  if (!state.langues[lang]) return;
-  if (state.langues[lang].vocab.find(v => v.mot === mot)) { showToast('Mot déjà dans ta liste !'); return; }
-  state.langues[lang].vocab.push({id: Date.now(), mot, trad, maitrise: 0});
-  save(); renderLangues(); showToast(`"${mot}" ajouté ✓`);
-}
 
 // ======= EXPORT PDF =======
 function exportPDF() {
@@ -3996,6 +4015,9 @@ function saveApiKey(type) {
   el.value = '';
   showToast('Clé sauvegardée ✓');
   initApiSettings();
+initSyncStatus();
+// Load from cloud on startup if configured
+if(getJsonbinConfig().binId) loadFromJsonbin(false);
 }
 
 async function testApiKey(type) {
@@ -4051,7 +4073,10 @@ function initApiSettings() {
 // Keep backward compat
 function saveGeminiKey() { saveApiKey('groq'); }
 function testGeminiKey() { testApiKey('groq'); }
-function initGeminiSettings() { initApiSettings(); }
+function initGeminiSettings() { initApiSettings();
+initSyncStatus();
+// Load from cloud on startup if configured
+if(getJsonbinConfig().binId) loadFromJsonbin(false); }
 
 
 
@@ -5127,6 +5152,164 @@ function switchTabFromRappel(name) {
   if(panel) panel.classList.add('active');
 }
 
+// ======= JSONBIN SYNC =======
+let syncTimer = null;
+let lastSyncHash = null;
+let syncPending = false;
+
+function getJsonbinConfig() {
+  return {
+    binId: localStorage.getItem('jsonbin_bin_id') || '',
+    key:   localStorage.getItem('jsonbin_key') || '',
+  };
+}
+
+function saveJsonbinConfig() {
+  const binId = document.getElementById('jsonbinBinId')?.value.trim();
+  const key   = document.getElementById('jsonbinKey')?.value.trim();
+  if(!binId){ showToast('Colle le Bin ID !'); return; }
+  if(!key){   showToast('Colle la Master Key !'); return; }
+  localStorage.setItem('jsonbin_bin_id', binId);
+  localStorage.setItem('jsonbin_key', key);
+  document.getElementById('jsonbinBinId').value = '';
+  document.getElementById('jsonbinKey').value = '';
+  showToast('Config JSONBin sauvegardée ✓');
+  initSyncStatus();
+  // Load from cloud on first setup
+  loadFromJsonbin(false);
+}
+
+async function testJsonbin() {
+  const { binId, key } = getJsonbinConfig();
+  const statusEl = document.getElementById('syncStatus');
+  if(!binId || !key) {
+    if(statusEl) statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Configure d\'abord le Bin ID et la Master Key</span>';
+    return;
+  }
+  if(statusEl) statusEl.textContent = '⏳ Test en cours...';
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+      headers: { 'X-Master-Key': key }
+    });
+    if(res.ok) {
+      if(statusEl) statusEl.innerHTML = '<span style="color:#4adb8a">✅ Connexion réussie — sync prête !</span>';
+      initSyncStatus();
+      showToast('JSONBin opérationnel ✓');
+    } else {
+      if(statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Erreur ${res.status} — vérifie Bin ID et Master Key</span>`;
+    }
+  } catch(e) {
+    if(statusEl) statusEl.innerHTML = '<span style="color:#f05a5a">❌ Connexion échouée</span>';
+  }
+}
+
+async function syncToJsonbin(manual = false) {
+  const { binId, key } = getJsonbinConfig();
+  if(!binId || !key) return;
+  const statusEl = document.getElementById('syncStatus');
+  try {
+    const data = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': key,
+      },
+      body: JSON.stringify(data),
+    });
+    if(res.ok) {
+      const now = new Date().toLocaleTimeString('fr-FR');
+      lastSyncHash = JSON.stringify(data).length;
+      localStorage.setItem('last_sync_time', now);
+      if(statusEl) statusEl.innerHTML = `<span style="color:#4adb8a">☁️ Synchronisé à ${now}</span>`;
+      if(manual) showToast('Données envoyées vers le cloud ✓');
+      initSyncStatus();
+    } else {
+      if(statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Erreur sync: ${res.status}</span>`;
+    }
+  } catch(e) {
+    if(statusEl) statusEl.textContent = '⚠️ Sync échouée — hors ligne ?';
+  }
+}
+
+async function loadFromJsonbin(manual = false) {
+  const { binId, key } = getJsonbinConfig();
+  if(!binId || !key) return;
+  const statusEl = document.getElementById('syncStatus');
+  if(statusEl) statusEl.textContent = '⏳ Chargement depuis le cloud...';
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+      headers: { 'X-Master-Key': key }
+    });
+    if(res.ok) {
+      const json = await res.json();
+      const cloudData = json.record;
+      const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+
+      // Smart merge: use cloud if more recent or if manual
+      const cloudTime = cloudData._syncTime || 0;
+      const localTime = localData._syncTime || 0;
+
+      if(manual || cloudTime >= localTime) {
+        localStorage.setItem('chris_dashboard', JSON.stringify(cloudData));
+        const now = new Date().toLocaleTimeString('fr-FR');
+        if(statusEl) statusEl.innerHTML = `<span style="color:#4adb8a">📥 Données chargées depuis le cloud à ${now}</span>`;
+        if(manual) {
+          showToast('Données restaurées depuis le cloud ✓');
+          setTimeout(() => location.reload(), 1500);
+        }
+      } else {
+        if(statusEl) statusEl.innerHTML = '<span style="color:#48cae4">ℹ️ Données locales plus récentes — aucune action</span>';
+        if(manual) showToast('Données locales déjà à jour');
+      }
+      initSyncStatus();
+    } else {
+      if(statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Erreur chargement: ${res.status}</span>`;
+    }
+  } catch(e) {
+    if(statusEl) statusEl.textContent = '⚠️ Chargement échoué — hors ligne ?';
+  }
+}
+
+function initSyncStatus() {
+  const { binId, key } = getJsonbinConfig();
+  const badge = document.getElementById('syncBadge');
+  if(badge) {
+    if(binId && key) {
+      badge.innerHTML = '✅ Sync active';
+      badge.style.cssText = 'margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px;background:rgba(74,219,138,0.15);color:#4adb8a;border:1px solid rgba(74,219,138,0.3)';
+    } else {
+      badge.innerHTML = '⚠️ Non configuré';
+      badge.style.cssText = 'margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)';
+    }
+  }
+  const lastSync = localStorage.getItem('last_sync_time');
+  const statusEl = document.getElementById('syncStatus');
+  if(statusEl && lastSync && !statusEl.textContent.includes('⏳')) {
+    statusEl.innerHTML = `<span style="color:var(--text-muted)">Dernière sync : ${lastSync}</span>`;
+  }
+
+  // Start auto-sync if configured
+  if(binId && key) startAutoSync();
+}
+
+function startAutoSync() {
+  if(syncTimer) return; // Already running
+  syncTimer = setInterval(async () => {
+    const data = localStorage.getItem('chris_dashboard') || '{}';
+    const hash = data.length;
+    if(hash !== lastSyncHash) {
+      // Add sync timestamp
+      try {
+        const parsed = JSON.parse(data);
+        parsed._syncTime = Date.now();
+        localStorage.setItem('chris_dashboard', JSON.stringify(parsed));
+      } catch(e) {}
+      await syncToJsonbin(false);
+    }
+  }, 30000); // Every 30 seconds
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -5170,6 +5353,9 @@ renderFocus();
 renderFinance2();
 renderDigital();
 initApiSettings();
+initSyncStatus();
+// Load from cloud on startup if configured
+if(getJsonbinConfig().binId) loadFromJsonbin(false);
 renderFilms();
 renderPodcastReco();
 renderPortfolio();
