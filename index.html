@@ -294,6 +294,14 @@
   <!-- Rappels intelligents -->
   <div id="rappelsContainer" style="margin-bottom:20px"></div>
 
+  <!-- Objectif apprentissage semaine -->
+  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(155,140,255,0.07),rgba(72,202,228,0.05));border-color:rgba(155,140,255,0.2)">
+    <div class="card-title" style="color:#9b8cff">🎯 Objectif d'apprentissage de la semaine</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:10px">Une seule chose à la fois — la constance fait la différence.</div>
+    <input class="inp" type="text" id="learningObjective" placeholder="Ex: Maîtriser les TCD Excel, 15 min/jour..." style="width:100%;margin-bottom:8px" oninput="saveLearningObjective()"/>
+    <div id="learningStreak" style="font-size:0.68rem;color:var(--text-muted)"></div>
+  </div>
+
   <!-- Récap hebdomadaire -->
   <div style="margin-bottom:20px">
     <button class="btn btn-primary" onclick="showWeeklyRecap()" style="background:linear-gradient(135deg,#c8f04a,#48cae4);color:#0e0e11;font-weight:700">📊 Voir le récap de ma semaine</button>
@@ -1243,23 +1251,7 @@
       <div id="groqStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:6px"></div>
     </div>
 
-    <!-- Twelve Data -->
-    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <span style="font-size:1rem">📈</span>
-        <div>
-          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Twelve Data — Cours boursiers</div>
-          <div style="font-size:0.62rem;color:var(--text-muted)">twelvedata.com → Sign up gratuit → API key (800 req/jour)</div>
-        </div>
-        <div id="tdBadge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px"></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input class="inp" type="password" id="tdKeyInput" placeholder="Clé Twelve Data..." style="flex:1;min-width:180px"/>
-        <button class="btn btn-primary" onclick="saveApiKey('td')" style="background:#c8f04a;color:#0e0e11">💾 Sauvegarder</button>
-        <button class="btn" onclick="testApiKey('td')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
-      </div>
-      <div id="tdStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:6px"></div>
-    </div>
+
 
     <!-- Status global -->
     <div id="geminiKeyStatus" style="display:none"></div>
@@ -1662,7 +1654,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{},
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -1772,7 +1764,8 @@ function switchTab(name) {
   if(name==='alimentation'){renderRepas();renderNutrition();}
   if(name==='mediatheque'){renderFilms();renderCulture();}
   if(name==='finances'){renderBudget();renderFinance2();}
-  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();
+renderLearningStreak();}
   if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
   if(name==='formation'){renderFormation();switchFormTab('roadmap');}
   if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
@@ -2008,11 +2001,11 @@ const ALIMENTS_BASE=[
   {name:'Aubergine',emoji:'🍆',nutrients:{B9:0.2,Mg:0.1}},
   {name:'Poivron',emoji:'🫑',nutrients:{B9:0.3,Mg:0.1}},
   {name:'Tomate',emoji:'🍅',nutrients:{B9:0.2,Mg:0.1}},
-  {name:'Avocat',emoji:'🥑',nutrients:{B9:0.4,Mg:0.3,Omega3:0.2}},
   {name:'Butternut',emoji:'🎃',nutrients:{B9:0.2,Mg:0.2,VitD:0.1}},
   {name:'Asperges',emoji:'🌱',nutrients:{B9:0.8,Fer:0.2,Mg:0.1}},
   {name:'Artichaut',emoji:'🌿',nutrients:{B9:0.5,Mg:0.3,Fer:0.2}},
   {name:'Betterave',emoji:'🫚',nutrients:{B9:0.6,Fer:0.2,Mg:0.2}},
+  {name:'Avocat',emoji:'🥑',nutrients:{B9:0.4,Mg:0.3,Omega3:0.2}},
   // Feculents
   {name:'Riz complet',emoji:'🍚',nutrients:{Mg:0.4,B9:0.1,Zinc:0.2}},
   {name:'Pâtes complètes',emoji:'🍝',nutrients:{Mg:0.3,B9:0.2,Fer:0.2,Zinc:0.2}},
@@ -2042,7 +2035,6 @@ const ALIMENTS_BASE=[
   {name:'Fruits frais',emoji:'🍊',nutrients:{B9:0.2,Mg:0.1}},
   {name:'Kiwi',emoji:'🥝',nutrients:{B9:0.4,Mg:0.1,Fer:0.1}},
   {name:'Mangue',emoji:'🥭',nutrients:{B9:0.3,Mg:0.1,VitD:0.1}},
-  {name:'Avocat',emoji:'🥑',nutrients:{B9:0.4,Mg:0.3}},
   // Autres
   {name:'Chocolat noir',emoji:'🍫',nutrients:{Mg:0.8,Fer:0.4,Zinc:0.2}},
   {name:'Tofu',emoji:'🧊',nutrients:{B9:0.2,Fer:0.5,Mg:0.3,Zinc:0.2,Omega3:0.2}},
@@ -4006,8 +3998,8 @@ async function callGemini(systemPrompt, userMessage, maxTokens=800) {
 
 // ======= PARAMÈTRES API =======
 function saveApiKey(type) {
-  const inputs = { groq: 'groqKeyInput', td: 'tdKeyInput' };
-  const storageKeys = { groq: 'ai_api_key', td: 'twelvedata_api_key' };
+  const inputs = { groq: 'groqKeyInput' };
+  const storageKeys = { groq: 'ai_api_key' };
   const el = document.getElementById(inputs[type]);
   const key = el ? el.value.trim() : '';
   if (!key) { showToast('Colle ta clé dabord !'); return; }
@@ -4047,7 +4039,6 @@ async function testApiKey(type) {
 
 function initApiSettings() {
   const groqKey = getAIKey();
-  const tdKey = getTwelveDataKey();
   const badge = document.getElementById('iaStatusBadge');
   const groqBadge = document.getElementById('groqBadge');
   const tdBadge = document.getElementById('tdBadge');
@@ -4976,7 +4967,8 @@ function mobileTab(name, btn) {
   if(name==='alimentation'){renderRepas();renderNutrition();}
   if(name==='mediatheque'){renderFilms();renderCulture();}
   if(name==='finances'){renderBudget();renderFinance2();}
-  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();}
+  if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();
+renderLearningStreak();}
   if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
   if(name==='formation'){renderFormation();switchFormTab('roadmap');}
   if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
@@ -5310,6 +5302,54 @@ function startAutoSync() {
   }, 30000); // Every 30 seconds
 }
 
+// ======= OBJECTIF APPRENTISSAGE + STREAK =======
+function saveLearningObjective() {
+  const val = document.getElementById('learningObjective')?.value || '';
+  if(!state.learning) state.learning = {};
+  state.learning.weekObjective = val;
+  state.learning.weekObjectiveDate = today();
+  save();
+  renderLearningStreak();
+}
+
+function getLearningStreak() {
+  // Count consecutive days with at least one journal entry OR fiche revision
+  let streak = 0;
+  const d = new Date();
+  while(streak < 365) {
+    const dateStr = d.toISOString().slice(0,10);
+    const hasJournal = (state.journalEntries||[]).some(e => e.date === dateStr);
+    const hasRevision = (state.fiches||[]).some(f => f.lastReview === dateStr);
+    const hasPomodoro = (state.pomodoroSessions?.[dateStr] || 0) > 0;
+    if(hasJournal || hasRevision || hasPomodoro) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function renderLearningStreak() {
+  // Restore objective
+  const objEl = document.getElementById('learningObjective');
+  if(objEl && state.learning?.weekObjective && !objEl.value) {
+    objEl.value = state.learning.weekObjective;
+  }
+
+  const streak = getLearningStreak();
+  const streakEl = document.getElementById('learningStreak');
+  if(!streakEl) return;
+
+  if(streak === 0) {
+    streakEl.innerHTML = '<span style="color:var(--text-muted)">Commence aujourd\'hui — note ce que tu as appris dans Apprentissage → Journal</span>';
+  } else {
+    const fire = streak >= 7 ? '🔥' : streak >= 3 ? '⚡' : '✨';
+    streakEl.innerHTML = `<span style="color:${streak>=7?'#f4a261':streak>=3?'#c8f04a':'#4adb8a'};font-weight:700">${fire} Streak : ${streak} jour${streak>1?'s':''} consécutif${streak>1?'s':''} d'apprentissage</span>`;
+  }
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -5349,6 +5389,7 @@ renderBadges();
 renderKPIs();
 renderAlerts();
 renderRappels();
+renderLearningStreak();
 renderFocus();
 renderFinance2();
 renderDigital();
