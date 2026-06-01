@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0e0e11">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mon Tableau">
 <link rel="manifest" href="manifest.json">
-<title>Dashboard · Chris v2.08</title>
+<title>Dashboard · Chris v2.09</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -29,66 +29,143 @@
   .tab.active { background: var(--accent); color: #0e0e11; font-weight: 600; }
   .panel { display: none; visibility: hidden; } .panel.active { display: block; visibility: visible; }
 
-  /* ===== MOBILE OPTIMISATION ===== */
+  /* ===== MOBILE OPTIMISATION v2.09 ===== */
   @media (max-width: 768px) {
-    body { padding-bottom: 80px !important; }
+    body { padding: 0 0 76px 0 !important; background: var(--bg); }
     .tabs { display: none !important; }
     .mobile-nav { display: flex !important; }
-    .header { padding: 12px 16px !important; }
-    h1 { font-size: 1.6rem !important; }
-    .card { padding: 14px !important; }
-    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
-    .add-row { flex-direction: column !important; }
-    .add-row .inp, .add-row .btn { width: 100% !important; }
-    .inp { font-size: 16px !important; } /* prevent zoom on iOS */
-    .btn { min-height: 44px; } /* iOS tap target */
-    .subtabs { flex-wrap: wrap !important; }
-    .big-stat { font-size: 2.5rem !important; }
-  }
-  @media (min-width: 769px) {
-    .mobile-nav { display: none !important; }
+
+    /* Header mobile */
+    .header { padding: 12px 16px 8px !important; }
+    .header h1 { font-size: 1.5rem !important; }
+    .header-right { flex-direction: column; align-items: flex-end; gap: 4px; }
+
+    /* Panels */
+    .panel { padding: 12px 14px !important; }
+    .panel.active { padding: 12px 14px 24px !important; }
+
+    /* Cards */
+    .card { padding: 14px 14px !important; margin-bottom: 12px !important; border-radius: 12px !important; }
+    .card-title { font-size: 0.72rem !important; margin-bottom: 12px !important; }
+
+    /* Grids → colonne unique */
+    .grid-2, .grid-3, .grid-4, .grid-5 {
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+
+    /* Forms */
+    .add-row {
+      flex-direction: column !important;
+      gap: 8px !important;
+    }
+    .add-row .inp, .add-row select, .add-row .btn {
+      width: 100% !important;
+      min-width: unset !important;
+    }
+    .inp {
+      font-size: 16px !important; /* prevent iOS zoom */
+      padding: 12px 14px !important;
+      border-radius: 10px !important;
+    }
+    select.inp { padding: 12px 14px !important; }
+    textarea.inp { font-size: 15px !important; }
+
+    /* Buttons */
+    .btn {
+      min-height: 46px !important;
+      padding: 12px 16px !important;
+      font-size: 0.75rem !important;
+      border-radius: 10px !important;
+    }
+    .btn-danger {
+      min-height: 36px !important;
+      padding: 6px 12px !important;
+    }
+
+    /* Typography */
+    .big-stat { font-size: 2.2rem !important; }
+    .big-stat-label { font-size: 0.6rem !important; }
+    .focus-today { font-size: 1.3rem !important; }
+
+    /* Sub-tabs */
+    .subtabs, [style*="border-radius:12px;padding:4px;width:fit-content"] {
+      width: 100% !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding: 4px !important;
+    }
+
+    /* Invest tabs */
+    #invEnvTabs { width: 100% !important; overflow-x: auto !important; }
+
+    /* Tables → scroll horizontal */
+    .card [style*="overflow-x:auto"], table { overflow-x: auto !important; display: block !important; }
+
+    /* Progress bars */
+    .prog-bar-bg { height: 8px !important; }
+
+    /* Quote */
+    .quote-card { padding: 16px !important; }
+    .quote-text { font-size: 1rem !important; }
+
+    /* Pomodoro display */
+    #pomodoroDisplay { font-size: 3rem !important; }
+
+    /* Meditation circle */
+    #breathCircle { width: 70px !important; height: 70px !important; }
+
+    /* Hydration glasses */
+    #hydrationCount { font-size: 2.5rem !important; }
+
+    /* Focus block */
+    .focus-block { padding: 14px !important; }
+
+    /* Section gap */
+    .section-gap { margin-top: 12px !important; }
+
+    /* Summary rows */
+    .summary-row { flex-wrap: wrap !important; gap: 6px !important; }
+    .summary-val { font-size: 0.72rem !important; }
+
+    /* KPI cards */
+    .kpi-card { padding: 12px !important; }
+
+    /* Rappels */
+    #rappelsContainer > div > div { gap: 6px !important; }
+
+    /* Learning objective */
+    #learningObjective { font-size: 15px !important; }
+
+    /* Budget */
+    .budget-header { flex-direction: column !important; gap: 8px !important; }
+    .ie-card { padding: 12px !important; }
+
+    /* Films grid */
+    #filmList > div { grid-template-columns: 1fr !important; }
+
+    /* Portfolio */
+    #portfolioList > div { flex-wrap: wrap !important; }
+
+    /* Candidatures */
+    #candList > div > div > div:first-child { flex: 1 1 100% !important; }
+
+    /* Salary calc */
+    #salaireResults .grid-3 { grid-template-columns: 1fr !important; }
   }
 
-  /* Mobile bottom nav */
-  .mobile-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 100;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: none;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 0;
-    padding-bottom: env(safe-area-inset-bottom);
-    gap: 0;
-    touch-action: pan-x;
-    -webkit-user-select: none;
-    user-select: none;
-    overscroll-behavior-x: contain;
-    /* Fix iOS Safari fixed nav bug */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+  /* Landscape mobile */
+  @media (max-width: 768px) and (orientation: landscape) {
+    body { padding-bottom: 60px !important; }
+    .mobile-nav { height: 52px; }
+    .mobile-nav-item { padding: 6px 12px; }
   }
-  .mobile-nav-item {
-    flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
-    padding: 8px 14px; cursor: pointer; gap: 3px; border: none;
-    background: transparent; color: var(--text-muted); font-family: 'DM Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.5px; text-transform: uppercase;
-    -webkit-tap-highlight-color: transparent; min-width: 60px;
-    touch-action: manipulation;
-    -webkit-touch-callout: none;
+
+
+  /* Quick actions mobile */
+  @media (max-width: 768px) {
+    .mobile-quick-actions { display: block !important; }
   }
-  .mobile-nav-item.active { color: var(--accent); }
-  .mobile-nav-item .nav-icon { font-size: 1.3rem; }
-  .mobile-nav-item .nav-dot {
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--accent); display: none;
-  }
-  .mobile-nav-item.active .nav-dot { display: block; }
 
   /* Rappels badge */
   .rappel-badge {
@@ -241,6 +318,33 @@
   .kpi-value { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; margin-bottom: 4px; }
   .kpi-label { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
   .kpi-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* MOBILE NAV - Position fixed */
+  .mobile-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    padding-bottom: env(safe-area-inset-bottom, 8px);
+    background: var(--surface); border-top: 1px solid var(--border);
+    display: none; overflow-x: auto; overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  }
+  .mobile-nav::-webkit-scrollbar { display: none; }
+  .mobile-nav-item {
+    flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 8px 10px 6px; cursor: pointer; gap: 3px;
+    border: none; background: transparent; color: var(--text-muted);
+    font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.3px;
+    text-transform: uppercase; -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s; position: relative; min-height: 56px;
+  }
+  .mobile-nav-item.active { color: var(--accent); }
+  .mobile-nav-item .nav-icon { font-size: 1.4rem; line-height: 1; }
+  .mobile-nav-item .nav-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); display: none; margin-top: 1px;
+  }
+  .mobile-nav-item.active .nav-dot { display: block; }
+
 </style>
 </head>
 <body>
@@ -252,7 +356,7 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.08 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.09 — Dashboard Personnel</div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
       <div id="iaStatusBadge" onclick="switchTabFromRappel('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer APIs</div>
       <div onclick="switchTabFromRappel('synthese')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(240,90,90,0.12);color:#f05a5a;border:1px solid rgba(240,90,90,0.3);display:none" id="rappelsBadge">0</div>
@@ -289,6 +393,25 @@
   <div class="card" style="margin-bottom:20px">
     <div class="card-title">🌤️ Météo & Sport extérieur</div>
     <div id="weatherWidget"><div style="font-size:0.72rem;color:var(--text-muted)">Chargement...</div></div>
+  </div>
+
+  <!-- Quick actions mobile only -->
+  <div class="mobile-quick-actions" style="display:none;margin-bottom:16px">
+    <div style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Actions rapides</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <button onclick="mobileTab('bienetre',null);setTimeout(()=>addGlass(),300)" style="padding:12px 6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:0.65rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent">
+        <span style="font-size:1.4rem">💧</span><span>+1 verre</span>
+      </button>
+      <button onclick="mobileTab('sport',null)" style="padding:12px 6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:0.65rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent">
+        <span style="font-size:1.4rem">💪</span><span>Sport</span>
+      </button>
+      <button onclick="mobileTab('alimentation',null)" style="padding:12px 6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:0.65rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent">
+        <span style="font-size:1.4rem">🍽️</span><span>Repas</span>
+      </button>
+      <button onclick="mobileTab('apprentissage',null);setTimeout(()=>switchApprTab('journal'),300)" style="padding:12px 6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:0.65rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent">
+        <span style="font-size:1.4rem">📝</span><span>Journal</span>
+      </button>
+    </div>
   </div>
 
   <!-- Rappels intelligents -->
@@ -1530,49 +1653,49 @@
   </div>
 </div>
 
-<!-- Mobile Bottom Navigation -->
-<nav class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-item active" onclick="mobileTab('synthese',this)">
+<!-- Mobile Bottom Navigation v2.09 -->
+<nav class="mobile-nav" id="mobileNav" style="height:68px;align-items:stretch">
+  <button class="mobile-nav-item active" onclick="mobileTab('synthese',this)" style="min-width:62px">
     <span class="nav-icon">📊</span><span>Synthèse</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('planning',this)">
+  <button class="mobile-nav-item" onclick="mobileTab('planning',this)" style="min-width:62px">
     <span class="nav-icon">⏱️</span><span>Planning</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('bienetre',this)">
+  <button class="mobile-nav-item" onclick="mobileTab('bienetre',this)" style="min-width:62px">
     <span class="nav-icon">🧘</span><span>Bien-être</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('sport',this)">
+  <button class="mobile-nav-item" onclick="mobileTab('sport',this)" style="min-width:58px">
     <span class="nav-icon">💪</span><span>Sport</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('alimentation',this)">
+  <button class="mobile-nav-item" onclick="mobileTab('alimentation',this)" style="min-width:62px">
     <span class="nav-icon">🍽️</span><span>Alim.</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('langues',this)">
-    <span class="nav-icon">🌍</span><span>Langues</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('invest',this)">
-    <span class="nav-icon">📈</span><span>Invest.</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('finances',this)">
-    <span class="nav-icon">💶</span><span>Finances</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('formation',this)">
-    <span class="nav-icon">🎓</span><span>Formation</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('apprentissage',this)">
-    <span class="nav-icon">🧠</span><span>Apprend.</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('carriere',this)">
-    <span class="nav-icon">💼</span><span>Carrière</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('mediatheque',this)">
-    <span class="nav-icon">🎬</span><span>Médias</span><div class="nav-dot"></div>
-  </button>
-  <button class="mobile-nav-item" onclick="mobileTab('objectifs',this)">
+  <button class="mobile-nav-item" onclick="mobileTab('objectifs',this)" style="min-width:64px">
     <span class="nav-icon">🎯</span><span>Objectifs</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('digital',this)">
-    <span class="nav-icon">📱</span><span>Digital</span><div class="nav-dot"></div>
+  <button class="mobile-nav-item" onclick="mobileTab('apprentissage',this)" style="min-width:64px">
+    <span class="nav-icon">🧠</span><span>Apprend.</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('carriere',this)" style="min-width:62px">
+    <span class="nav-icon">💼</span><span>Carrière</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('formation',this)" style="min-width:64px">
+    <span class="nav-icon">🎓</span><span>Formation</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('langues',this)" style="min-width:62px">
+    <span class="nav-icon">🌍</span><span>Langues</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('invest',this)" style="min-width:60px">
+    <span class="nav-icon">📈</span><span>Invest.</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('finances',this)" style="min-width:62px">
+    <span class="nav-icon">💶</span><span>Finances</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('mediatheque',this)" style="min-width:62px">
+    <span class="nav-icon">🎬</span><span>Médias</span><div class="nav-dot"></div>
+  </button>
+  <button class="mobile-nav-item" onclick="mobileTab('digital',this)" style="min-width:58px">
+    <span class="nav-icon">⚙️</span><span>Réglages</span><div class="nav-dot"></div>
   </button>
 </nav>
 
@@ -4699,7 +4822,7 @@ function renderHabitudes(){
   if(state.habitudes.length===0){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Ajoute tes premières habitudes</div>';return;}
   const done=state.habitudes.filter(h=>todayLog.includes(h.id)).length;
   el.innerHTML=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-muted);margin-bottom:6px"><span>${done}/${state.habitudes.length} aujourd'hui</span><span style="color:${done===state.habitudes.length?'#4adb8a':'var(--text-muted)'}">${done===state.habitudes.length?'🎉 Parfait !':''}</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${state.habitudes.length>0?Math.round(done/state.habitudes.length*100):0}%;background:#4adb8a"></div></div></div>
-  <div style="display:flex;flex-direction:column;gap:6px">${state.habitudes.map(h=>{const done=todayLog.includes(h.id);return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:${done?'rgba(74,219,138,0.1)':'var(--surface2)'};border:1px solid ${done?'rgba(74,219,138,0.35)':'var(--border)'}" onclick="toggleHabitudeToday(${h.id})"><span style="font-size:1.1rem">${h.emoji}</span><span style="flex:1;font-size:0.75rem;font-weight:${done?700:400};color:${done?'#4adb8a':'var(--text)'};">${h.text}</span><div style="width:22px;height:22px;border-radius:6px;flex-shrink:0;background:${done?'#4adb8a':'var(--surface)'};border:2px solid ${done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#0e0e11">${done?'✓':''}</div><button class="btn btn-danger" onclick="event.stopPropagation();deleteHabitude(${h.id})" style="padding:3px 7px;font-size:0.6rem">✕</button></div>`;}).join('')}</div>`;
+  <div style="display:flex;flex-direction:column;gap:6px">${state.habitudes.map(h=>{const done=todayLog.includes(h.id);return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;background:${done?'rgba(74,219,138,0.1)':'var(--surface2)'};border:1px solid ${done?'rgba(74,219,138,0.35)':'var(--border)'}" onclick="toggleHabitudeToday(${h.id})" style="touch-action:manipulation"><span style="font-size:1.1rem">${h.emoji}</span><span style="flex:1;font-size:0.75rem;font-weight:${done?700:400};color:${done?'#4adb8a':'var(--text)'};">${h.text}</span><div style="width:22px;height:22px;border-radius:6px;flex-shrink:0;background:${done?'#4adb8a':'var(--surface)'};border:2px solid ${done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#0e0e11">${done?'✓':''}</div><button class="btn btn-danger" onclick="event.stopPropagation();deleteHabitude(${h.id})" style="padding:3px 7px;font-size:0.6rem">✕</button></div>`;}).join('')}</div>`;
 }
 
 // ======= POIDS =======
@@ -4975,6 +5098,11 @@ renderLearningStreak();}
   if(name==='bienetre'){renderHabitudes();renderHydration();renderPoids();}
   // Scroll to top
   window.scrollTo({top:0, behavior:'smooth'});
+  // Highlight active nav item visually
+  document.querySelectorAll('.mobile-nav-item').forEach(b => {
+    if(b !== btn) b.classList.remove('active');
+  });
+  if(btn) btn.classList.add('active');
 }
 
 // ======= RAPPELS INTELLIGENTS =======
