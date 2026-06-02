@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mon Tableau">
 <link rel="manifest" href="manifest.json">
-<title>Dashboard · Chris v2.09</title>
+<title>Dashboard · Chris v2.09b</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -356,12 +356,11 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.09 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.09b — Dashboard Personnel</div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
       <div id="iaStatusBadge" onclick="switchTabFromRappel('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer APIs</div>
       <div onclick="switchTabFromRappel('synthese')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(240,90,90,0.12);color:#f05a5a;border:1px solid rgba(240,90,90,0.3);display:none" id="rappelsBadge">0</div>
     </div>
-    <div id="iaStatusBadge" onclick="switchTab('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer IA</div>
   </div>
 </div>
 
@@ -2547,8 +2546,6 @@ function switchInvEnv(env) {
 }
 
 // --- Price fetching with fallback ---
-function getTwelveDataKey() { return localStorage.getItem('twelvedata_api_key') || ''; }
-
 // Cours manuels uniquement — pas d'API automatique (trop restrictif)
 // Utilise les liens Boursorama/Yahoo pour consulter le cours puis saisis-le manuellement
 async function fetchPrice(ticker) {
@@ -4024,8 +4021,7 @@ async function syncToDrive() {
       const now = new Date().toLocaleString('fr-FR');
       if (statusEl) statusEl.innerHTML = `✅ Sauvegardé sur Drive — ${now}`;
       showToast('Sauvegarde Drive réussie ✓');
-      localStorage.setItem('drive_last_sync', now);
-    } else {
+          } else {
       if (statusEl) statusEl.textContent = '❌ Erreur Drive: ' + JSON.stringify(result.error||'');
     }
   } catch(e) {
@@ -4132,29 +4128,37 @@ function saveApiKey(type) {
   initApiSettings();
 initSyncStatus();
 // Load from cloud on startup if configured
-if(getJsonbinConfig().binId) loadFromJsonbin(false);
+if(getJsonbinConfig().binId) {
+  // Check if local data is empty or missing
+  const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+  const localKeys = Object.keys(localData).filter(k => k !== '_syncTime' && k !== 'init').length;
+  if(localKeys === 0) {
+    // Auto-load from cloud silently
+    loadFromJsonbin(false);
+    showMobileRestoreBanner();
+  } else {
+    loadFromJsonbin(false);
+  }
+}
 }
 
 async function testApiKey(type) {
-  const statusEl = document.getElementById(type === 'groq' ? 'groqStatus' : 'tdStatus');
-  if (statusEl) statusEl.innerHTML = '<span style="color:var(--text-muted)">⏳ Test...</span>';
+  const inputs = { groq: 'groqKeyInput' };
+  const statusIds = { groq: 'groqStatus' };
+  const statusEl = document.getElementById(statusIds[type]);
   if (type === 'groq') {
-    const text = await callGemini('', 'Réponds uniquement: OK', 20);
-    if (statusEl) statusEl.innerHTML = text
-      ? '<span style="color:#4adb8a">✅ IA opérationnelle !</span>'
-      : '<span style="color:#f05a5a">❌ Clé invalide</span>';
-    if (text) showToast('IA opérationnelle ✓');
-  } else {
-    const key = getTwelveDataKey();
+    const key = getAIKey();
     if (!key) { if (statusEl) statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Aucune clé saisie</span>'; return; }
     try {
-      const res = await fetch(`https://api.twelvedata.com/price?symbol=AAPL&apikey=${key}`, { signal: AbortSignal.timeout(6000) });
-      const data = await res.json();
-      if (data.price) {
-        if (statusEl) statusEl.innerHTML = '<span style="color:#4adb8a">✅ Cours boursiers actifs !</span>';
-        showToast('Twelve Data opérationnel ✓');
+      const res = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { 'Authorization': `Bearer ${key}` },
+        signal: AbortSignal.timeout(6000)
+      });
+      if (res.ok) {
+        if (statusEl) statusEl.innerHTML = '<span style="color:#4adb8a">✅ Clé Groq valide !</span>';
+        showToast('Groq opérationnel ✓');
       } else {
-        if (statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ ${data.message || 'Clé invalide'}</span>`;
+        if (statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Clé invalide (${res.status})</span>`;
       }
     } catch(e) { if (statusEl) statusEl.innerHTML = '<span style="color:#f05a5a">❌ Connexion échouée</span>'; }
   }
@@ -4162,35 +4166,32 @@ async function testApiKey(type) {
 
 function initApiSettings() {
   const groqKey = getAIKey();
-  const badge = document.getElementById('iaStatusBadge');
+  const configured = '<span style="color:#4adb8a;font-size:0.65rem">✅ Configuré</span>';
+  const notConfigured = '<span style="color:#f4a261;font-size:0.65rem">⚠️ Non configuré</span>';
   const groqBadge = document.getElementById('groqBadge');
-  const tdBadge = document.getElementById('tdBadge');
-  const configured = '<span style="background:rgba(74,219,138,0.15);color:#4adb8a;border:1px solid rgba(74,219,138,0.3);padding:2px 8px;border-radius:999px;font-size:0.6rem">✅ Configuré</span>';
-  const notConfigured = '<span style="background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3);padding:2px 8px;border-radius:999px;font-size:0.6rem">⚠️ Non configuré</span>';
   if (groqBadge) groqBadge.innerHTML = groqKey ? configured : notConfigured;
-  if (tdBadge) tdBadge.innerHTML = tdKey ? configured : notConfigured;
-  if (badge) {
-    const allOk = groqKey && tdKey;
-    const someOk = groqKey || tdKey;
-    badge.textContent = allOk ? '🤖 IA + 📈 Bourse' : someOk ? '⚙️ Config partielle' : '⚙️ Configurer APIs';
-    badge.style.background = allOk ? 'rgba(74,219,138,0.15)' : someOk ? 'rgba(244,162,97,0.15)' : 'rgba(240,90,90,0.12)';
-    badge.style.color = allOk ? '#4adb8a' : someOk ? '#f4a261' : '#f05a5a';
-    badge.style.borderColor = allOk ? 'rgba(74,219,138,0.3)' : someOk ? 'rgba(244,162,97,0.3)' : 'rgba(240,90,90,0.3)';
-  }
-  // Restore existing key status messages
   const groqStatus = document.getElementById('groqStatus');
-  const tdStatus = document.getElementById('tdStatus');
   if (groqStatus) groqStatus.innerHTML = groqKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
-  if (tdStatus) tdStatus.innerHTML = tdKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
+  initSyncStatus();
 }
 
-// Keep backward compat
 function saveGeminiKey() { saveApiKey('groq'); }
 function testGeminiKey() { testApiKey('groq'); }
 function initGeminiSettings() { initApiSettings();
 initSyncStatus();
 // Load from cloud on startup if configured
-if(getJsonbinConfig().binId) loadFromJsonbin(false); }
+if(getJsonbinConfig().binId) {
+  // Check if local data is empty or missing
+  const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+  const localKeys = Object.keys(localData).filter(k => k !== '_syncTime' && k !== 'init').length;
+  if(localKeys === 0) {
+    // Auto-load from cloud silently
+    loadFromJsonbin(false);
+    showMobileRestoreBanner();
+  } else {
+    loadFromJsonbin(false);
+  }
+} }
 
 
 
@@ -5328,7 +5329,10 @@ async function syncToJsonbin(manual = false) {
   if(!binId || !key) return;
   const statusEl = document.getElementById('syncStatus');
   try {
-    const data = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+    let data = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+    // Always add fresh syncTime
+    data._syncTime = Date.now();
+    localStorage.setItem('chris_dashboard', JSON.stringify(data));
     const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
       method: 'PUT',
       headers: {
@@ -5364,27 +5368,34 @@ async function loadFromJsonbin(manual = false) {
     if(res.ok) {
       const json = await res.json();
       const cloudData = json.record;
-      const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
 
-      // Smart merge: use cloud if more recent or if manual
+      // Check cloud data is not empty/init
+      const cloudKeys = Object.keys(cloudData).filter(k => k !== '_syncTime' && k !== 'init');
+      if(cloudKeys.length === 0) {
+        if(statusEl) statusEl.innerHTML = '<span style="color:#f4a261">⚠️ Cloud vide — envoie d\'abord depuis ton Mac</span>';
+        if(manual) showToast('Cloud vide — envoie depuis ton Mac d\'abord');
+        return;
+      }
+
+      const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
       const cloudTime = cloudData._syncTime || 0;
       const localTime = localData._syncTime || 0;
+      const localKeys = Object.keys(localData).filter(k => k !== '_syncTime').length;
 
-      if(manual || cloudTime >= localTime) {
+      // Force load if: manual, OR local is empty, OR cloud is more recent
+      if(manual || localKeys === 0 || cloudTime > localTime) {
         localStorage.setItem('chris_dashboard', JSON.stringify(cloudData));
         const now = new Date().toLocaleTimeString('fr-FR');
-        if(statusEl) statusEl.innerHTML = `<span style="color:#4adb8a">📥 Données chargées depuis le cloud à ${now}</span>`;
-        if(manual) {
-          showToast('Données restaurées depuis le cloud ✓');
-          setTimeout(() => location.reload(), 1500);
-        }
+        if(statusEl) statusEl.innerHTML = `<span style="color:#4adb8a">📥 Données chargées à ${now}</span>`;
+        showToast('✅ Données restaurées depuis le cloud !');
+        setTimeout(() => location.reload(), 1200);
       } else {
-        if(statusEl) statusEl.innerHTML = '<span style="color:#48cae4">ℹ️ Données locales plus récentes — aucune action</span>';
+        if(statusEl) statusEl.innerHTML = '<span style="color:#48cae4">ℹ️ Données locales déjà à jour</span>';
         if(manual) showToast('Données locales déjà à jour');
       }
       initSyncStatus();
     } else {
-      if(statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Erreur chargement: ${res.status}</span>`;
+      if(statusEl) statusEl.innerHTML = `<span style="color:#f05a5a">❌ Erreur ${res.status} — vérifie Bin ID et Master Key</span>`;
     }
   } catch(e) {
     if(statusEl) statusEl.textContent = '⚠️ Chargement échoué — hors ligne ?';
@@ -5478,6 +5489,25 @@ function renderLearningStreak() {
   }
 }
 
+// ======= RESTORE BANNER =======
+function showMobileRestoreBanner() {
+  // Only show on mobile
+  if(window.innerWidth > 768) return;
+  const { binId, key } = getJsonbinConfig();
+  if(!binId || !key) return;
+  // Create banner
+  const banner = document.createElement('div');
+  banner.id = 'restoreBanner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(135deg,#c8f04a,#48cae4);color:#0e0e11;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:DM Mono,monospace;font-size:0.75rem;font-weight:600';
+  banner.innerHTML = `
+    <span>☁️ Restaurer depuis le cloud ?</span>
+    <div style="display:flex;gap:8px">
+      <button onclick="loadFromJsonbin(true);document.getElementById('restoreBanner').remove()" style="background:#0e0e11;color:#c8f04a;border:none;border-radius:6px;padding:6px 12px;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:DM Mono,monospace">📥 Restaurer</button>
+      <button onclick="document.getElementById('restoreBanner').remove()" style="background:rgba(0,0,0,0.2);color:#0e0e11;border:none;border-radius:6px;padding:6px 10px;font-size:0.72rem;cursor:pointer">✕</button>
+    </div>`;
+  document.body.prepend(banner);
+}
+
 // ======= AUTO-REFRESH MINUIT =======
 function scheduleMidnightRefresh(){
   const now=new Date(), midnight=new Date(now); midnight.setHours(24,0,0,0);
@@ -5524,7 +5554,18 @@ renderDigital();
 initApiSettings();
 initSyncStatus();
 // Load from cloud on startup if configured
-if(getJsonbinConfig().binId) loadFromJsonbin(false);
+if(getJsonbinConfig().binId) {
+  // Check if local data is empty or missing
+  const localData = JSON.parse(localStorage.getItem('chris_dashboard') || '{}');
+  const localKeys = Object.keys(localData).filter(k => k !== '_syncTime' && k !== 'init').length;
+  if(localKeys === 0) {
+    // Auto-load from cloud silently
+    loadFromJsonbin(false);
+    showMobileRestoreBanner();
+  } else {
+    loadFromJsonbin(false);
+  }
+}
 renderFilms();
 renderPodcastReco();
 renderPortfolio();
