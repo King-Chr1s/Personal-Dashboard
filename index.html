@@ -108,8 +108,10 @@
     /* Quote */
     .quote-card { padding: 16px !important; }
     .quote-text { font-size: 1rem !important; }
-    /* Meditation circle */
-    #breathCircle { width: 70px !important; height: 70px !important; }
+
+    /* Pomodoro display */
+    #pomodoroDisplay { font-size: 3rem !important; }
+
 
     /* Hydration glasses */
     #hydrationCount { font-size: 2.5rem !important; }
@@ -386,6 +388,7 @@
 
   <!-- Météo -->
   
+
   <!-- Quick actions mobile only -->
   <div class="mobile-quick-actions" style="display:none;margin-bottom:16px">
     <div style="font-size:0.6rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Actions rapides</div>
@@ -538,7 +541,7 @@
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="saveRetroEntry()">Sauvegarder →</button></div>
   </div>
-  <!-- Méditation -->
+  
 
   <!-- Habitudes quotidiennes -->
   <div class="card section-gap">
@@ -558,16 +561,7 @@
 
   <!-- Poids & Hydratation -->
   <div class="grid-2 section-gap">
-    <div class="card">
-      <div class="card-title">⚖️ Suivi poids</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-        <input class="inp" type="number" id="poidsInput" placeholder="Ex: 75.5" style="width:110px" step="0.1"/>
-        <span style="font-size:0.75rem;color:var(--text-muted)">kg</span>
-        <button class="btn btn-primary" onclick="addPoids()">Enregistrer</button>
-      </div>
-      <div id="poidsChart"></div>
-      <div style="margin-top:10px;font-size:0.68rem;color:var(--text-muted)" id="poidsTrend"></div>
-    </div>
+    
     <div class="card">
       <div class="card-title">💧 Hydratation</div>
       <div style="text-align:center;padding:10px 0">
@@ -619,11 +613,9 @@
 <!-- ===== LANGUES ===== -->
 <!-- ===== LANGUES ===== -->
 <div class="panel" id="panel-langues">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:0.62rem;color:var(--text-muted)">Langues actives — <button onclick="toggleLangSettings()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.62rem;font-family:'DM Mono',monospace">⚙️ Gérer</button></div>
-  </div>
+  <div style="margin-bottom:10px;font-size:0.62rem;color:var(--text-muted)">Langues actives — <button onclick="toggleLangSettings()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.62rem;font-family:'DM Mono',monospace">⚙️ Gérer</button></div>
   <div id="langSettingsPanel" style="display:none;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:14px">
-    <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:10px">Activer / désactiver une langue :</div>
+    <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:10px">Activer / désactiver :</div>
     <div style="display:flex;gap:14px;flex-wrap:wrap">
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.75rem;color:var(--text)"><input type="checkbox" id="lang-toggle-en" onchange="toggleLang('en',this.checked)"> 🇬🇧 Anglais</label>
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.75rem;color:var(--text)"><input type="checkbox" id="lang-toggle-es" onchange="toggleLang('es',this.checked)"> 🇪🇸 Espagnol</label>
@@ -631,11 +623,11 @@
       <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.75rem;color:var(--text)"><input type="checkbox" id="lang-toggle-ru" onchange="toggleLang('ru',this.checked)"> 🇷🇺 Russe</label>
     </div>
   </div>
-  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="langTabsRow">
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
     <button class="btn btn-primary" id="ltab-en" onclick="switchLang('en')">🇬🇧 Anglais</button>
     <button class="btn" id="ltab-es" onclick="switchLang('es')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🇪🇸 Espagnol</button>
-    <button class="btn" id="ltab-it" onclick="switchLang('it')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);;display:none">🇮🇹 Italien</button>
-    <button class="btn" id="ltab-ru" onclick="switchLang('ru')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);;display:none">🇷🇺 Russe</button>
+    <button class="btn" id="ltab-it" onclick="switchLang('it')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);display:none">🇮🇹 Italien</button>
+    <button class="btn" id="ltab-ru" onclick="switchLang('ru')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);display:none">🇷🇺 Russe</button>
   </div>
   <div id="langPanel"></div>
 
@@ -835,9 +827,10 @@
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
     <div class="card-title" style="color:var(--accent)">🤖 Conseil investissement — IA</div>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Conseil non contractuel, à croiser avec d'autres sources.</div>
-        <div style="display:flex;gap:8px">
+    <div id="investAdviceChat" style="max-height:300px;overflow-y:auto;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px">
       <input class="inp" type="text" id="investQuestion" placeholder="Ex: Diversifier mon PEA ? Quelles actions en ce moment ?" style="flex:1"/>
-      
+      <button class="btn btn-primary" onclick="askInvestAdvice()">Demander →</button>
     </div>
   </div>
 
@@ -865,8 +858,9 @@
     <div id="formRoadmapContent"></div>
     <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
       <div class="card-title" style="color:var(--accent)">🤖 Suggestion IA</div>
-      
-          </div>
+      <button class="btn btn-primary" onclick="suggestFormation()" style="margin-bottom:12px">✨ Générer des suggestions</button>
+      <div id="formationSuggestionResult"></div>
+    </div>
   </div>
 
   <div id="form-competences" style="display:none"><div id="formCompetencesContent"></div></div>
@@ -931,32 +925,24 @@
     <div class="focus-today" id="focusTodayText">—</div>
     <div class="focus-time" id="focusTodayTime">—</div>
   </div>
-  <!-- 3 Priorités -->  <!-- Projets semaine + Pomodoro -->
+  <!-- 3 Priorités -->
+  <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
+    <div class="card-title" style="color:var(--accent)">🎯 3 priorités du jour</div>
+    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Avant de commencer — quelles sont les 3 choses les plus importantes aujourd'hui ?</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent);width:24px">1</span><input class="inp" type="text" id="prio1" placeholder="Priorité n°1 (la plus importante)" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--accent3);width:24px">2</span><input class="inp" type="text" id="prio2" placeholder="Priorité n°2" style="flex:1" oninput="savePriorities()"/></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text-muted);width:24px">3</span><input class="inp" type="text" id="prio3" placeholder="Priorité n°3" style="flex:1" oninput="savePriorities()"/></div>
+    </div>
+  </div>
+  <!-- Projets semaine + Pomodoro -->
   <div class="grid-2" style="margin-bottom:20px">
     <div>
       <div class="grid-2" id="projectsGrid"></div>
       <div class="card" style="margin-top:16px"><div class="card-title">Récap semaine</div><div id="weekSummary"></div><div style="margin-top:12px"><div class="big-stat" id="totalWeek">0</div><div class="big-stat-label">minutes investies</div></div></div>
     </div>
     <!-- Pomodoro -->
-    <div class="card">
-      <div class="card-title">⏱️ Pomodoro</div>
-      <div style="text-align:center;padding:16px 0">
-        
-        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px" id="pomodoroStatus">Prêt à démarrer</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          
-          
-          
-        </div>
-        <div style="display:flex;gap:6px;justify-content:center;margin-top:12px">
-          
-          
-          
-        </div>
-      </div>
-      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-muted)"><span>Sessions aujourd'hui</span><span id="pomodoroCount" style="color:var(--accent);font-weight:600">0</span></div>
-      <div id="pomodoroHistory" style="margin-top:12px"></div>
-    </div>
+    
   </div>
   <!-- To-do + To-buy -->
   <div class="grid-2">
@@ -1024,9 +1010,9 @@
       <div class="card-title" style="color:var(--accent3)">🤖 Suggestion de repas — IA</div>
       <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère une recette équilibrée et riche en protéines. Clique pour l'appliquer.</div>
       <div class="grid-3">
-        <div><div style="font-size:0.62rem;color:var(--accent3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌅 Petit-déjeuner</div><button class="btn" onclick="suggestMeal('matin')" style="background:rgba(244,162,97,0.15);border:1px solid rgba(244,162,97,0.3);color:#f4a261;font-size:0.65rem;margin-bottom:8px;width:100%">✨ Suggérer</button><div id="mealSuggestResult-matin"></div></div>
-        <div><div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">☀️ Déjeuner</div><button class="btn" onclick="suggestMeal('midi')" style="background:rgba(244,162,97,0.15);border:1px solid rgba(244,162,97,0.3);color:#f4a261;font-size:0.65rem;margin-bottom:8px;width:100%">✨ Suggérer</button><div id="mealSuggestResult-midi"></div></div>
-        <div><div style="font-size:0.62rem;color:var(--accent2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌙 Dîner</div><button class="btn" onclick="suggestMeal('soir')" style="background:rgba(244,162,97,0.15);border:1px solid rgba(244,162,97,0.3);color:#f4a261;font-size:0.65rem;margin-bottom:8px;width:100%">✨ Suggérer</button><div id="mealSuggestResult-soir"></div></div>
+        <div><div style="font-size:0.62rem;color:var(--accent3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌅 Petit-déjeuner</div><button class="btn" onclick="suggestMeal('matin')" style="background:var(--surface2);border:1px solid rgba(244,162,97,0.3);color:var(--accent3);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-matin"></div></div>
+        <div><div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">☀️ Déjeuner</div><button class="btn" onclick="suggestMeal('midi')" style="background:var(--surface2);border:1px solid rgba(200,240,74,0.3);color:var(--accent);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-midi"></div></div>
+        <div><div style="font-size:0.62rem;color:var(--accent2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">🌙 Dîner</div><button class="btn" onclick="suggestMeal('soir')" style="background:var(--surface2);border:1px solid rgba(123,94,167,0.3);color:var(--accent2);width:100%;margin-bottom:8px;font-size:0.68rem">✨ Suggérer</button><div id="mealSuggestResult-soir"></div></div>
       </div>
     </div>
   </div>
@@ -1130,11 +1116,7 @@
 
   <!-- Podcasts & Docs sub-panel -->
   <div id="media-podcasts" style="display:none">
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-title">📰 Actualités du moment — IA</div>
-      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Géopolitique · Économie · Tech</div>
-      
-          </div>
+    
     <div class="card">
       <div class="card-title">🎧 Podcasts & Documentaires recommandés</div>
       <div id="podcastReco"></div>
@@ -1299,13 +1281,32 @@
       Configure tes clés API une seule fois — elles sont sauvegardées dans ton navigateur.
     </div>
 
+    <!-- Groq IA -->
     
+
 
 
     <!-- Status global -->
     <div id="geminiKeyStatus" style="display:none"></div>
 
-    <!-- JSONBin Sync -->
+        <!-- Groq IA -->
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:1rem">🤖</span>
+        <div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Groq — Fonctions IA</div>
+          <div style="font-size:0.62rem;color:var(--text-muted)">console.groq.com → API Keys → Create API key (gsk_...)</div>
+        </div>
+        <div id="groqBadge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;border-radius:999px"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="inp" type="password" id="groqKeyInput" placeholder="gsk_..." style="flex:1;min-width:180px"/>
+        <button class="btn btn-primary" onclick="saveApiKey('groq')" style="background:#9b8cff">💾 Sauvegarder</button>
+        <button class="btn" onclick="testApiKey('groq')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">🧪 Tester</button>
+      </div>
+      <div id="groqStatus" style="font-size:0.65rem;color:var(--text-muted);margin-top:6px"></div>
+    </div>
+<!-- JSONBin Sync -->
     <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid rgba(200,240,74,0.25);margin-top:12px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
         <span style="font-size:1rem">☁️</span>
@@ -1703,7 +1704,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, langSettings:{en:true,es:true,it:false,ru:false}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{},
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], langSettings:{en:true,es:true,it:false,ru:false}, journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{},
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -1815,8 +1816,7 @@ function switchTab(name) {
   if(name==='finances'){renderBudget();renderFinance2();}
   if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();
 renderLearningStreak();}
-  if(name==='apprentissage'){renderApprenti();
-applyLangSettings();switchApprTab('journal');}
+  if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
   if(name==='formation'){renderFormation();switchFormTab('roadmap');}
   if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
 }
@@ -2404,7 +2404,7 @@ function renderLangues(){
   <div class="card section-gap" style="background:linear-gradient(135deg,rgba(200,240,74,0.05),rgba(123,94,167,0.08));border-color:rgba(200,240,74,0.15)">
     <div class="card-title" style="color:var(--accent)">🤖 Suggestions de mots IA</div>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:12px">Génère 8 nouveaux mots/expressions adaptés à ton niveau actuel.</div>
-    
+    <button class="btn btn-primary" onclick="suggestWords('${lang}')">✨ Suggérer des mots</button>
     <div id="wordSuggestResult-${lang}" style="margin-top:12px"></div>
   </div>`;
 }
@@ -2420,7 +2420,7 @@ const BOOK_SUGGESTIONS=[
   {title:'Atomic Habits',author:'James Clear',type:'Livre',desc:'Développement perso, formation de bonnes habitudes'},
   {title:'The Psychology of Money',author:'Morgan Housel',type:'Livre',desc:'Finance personnelle, incontournable'},
   {title:'Deep Work',author:'Cal Newport',type:'Livre',desc:'Concentration et productivité'},
-  {title:'Sapiens',author:'Yuval Noah Harari',type:'Livre',desc:"Histoire de l\'humanité, fascinant"},
+  {title:'Sapiens',author:'Yuval Noah Harari',type:'Livre',desc:'Histoire de l\'humanité, fascinant'},
   {title:'Da Vinci Code',author:'Dan Brown',type:'Roman policier',desc:'Page-turner parfait pour commencer'},
   {title:'Le Nom de la Rose',author:'Umberto Eco',type:'Roman policier',desc:'Polar médiéval, riche et dense'},
 ];
@@ -2812,152 +2812,137 @@ function switchFormTab(tab) {
 // ---- DATA ----
 const FORM_ROADMAP = [
   {
-    horizon:'Court terme — 0 à 12 mois',
-    icon:'🚀',color:'#c8f04a',
+    horizon:'Court terme — 0 à 12 mois',icon:'🚀',color:'#c8f04a',
     objectif:'Consolider N1 → N2 / Référent IT & IA',
     priorites:[
-      {label:'ITIL 4 Foundation',detail:'Référentiel ITSM universel. Indispensable pour évoluer en IT. Examen ~300€, finançable CPF.',priorite:1,cpf:true},
-      {label:'Microsoft 365 (MS-900)',detail:'Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€. Passeport vers les certifs avancées.',priorite:1,cpf:false},
-      {label:'Excel avancé + Power Query',detail:'TCD, formules avancées, Power Query, Power Pivot. Indispensable partout. 15 min/jour suffit.',priorite:1,cpf:false},
-      {label:'Power BI',detail:'Reporting et tableaux de bord. Microsoft Learn gratuit. Très demandé en ESN.',priorite:2,cpf:false},
-      {label:'IA générative appliquée',detail:'Prompt engineering, outils IA au quotidien (ChatGPT, Copilot, Claude). Gain de productivité immédiat.',priorite:2,cpf:false},
+      {label:'ITIL 4 Foundation',detail:"Référentiel ITSM universel. Indispensable pour évoluer en IT. Examen ~300€, finançable CPF.",priorite:1,cpf:true},
+      {label:'Microsoft 365 (MS-900)',detail:"Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€.",priorite:1,cpf:false},
+      {label:'Excel avancé + Power Query',detail:"TCD, formules avancées, Power Query. Indispensable partout. 15 min/jour suffit.",priorite:1,cpf:false},
+      {label:'Power BI',detail:"Reporting et tableaux de bord. Microsoft Learn gratuit. Très demandé en ESN.",priorite:2,cpf:false},
+      {label:"IA générative appliquée",detail:"Prompt engineering, outils IA au quotidien (ChatGPT, Copilot, Claude). Gain de productivité immédiat.",priorite:2,cpf:false},
     ],
   },
   {
-    horizon:'Moyen terme — 1 à 3 ans',
-    icon:'📈',color:'#48cae4',
-    objectif:'Consultant IT / Expert IA & Data',
+    horizon:'Moyen terme — 1 à 3 ans',icon:'📈',color:'#48cae4',
+    objectif:"Consultant IT / Expert IA & Data",
     priorites:[
-      {label:'Azure Fundamentals (AZ-900)',detail:'Certification cloud Microsoft. Très accessible, gratuit sur Microsoft Learn. Examen ~100€.',priorite:1,cpf:false},
-      {label:'Python bases',detail:'Scripts, automatisation, data. CS50P Harvard gratuit. 15 min/jour, résultats en 3 mois.',priorite:1,cpf:false},
-      {label:'SQL',detail:'Extraction données, reporting, connexion ERP. SQLZoo gratuit. Complément parfait à Power BI.',priorite:2,cpf:false},
-      {label:'Microsoft Copilot / IA M365',detail:"IA intégrée dans l'écosystème Microsoft. Certification Copilot disponible. Très demandé en ESN.",priorite:2,cpf:false},
-      {label:'Azure AI Fundamentals (AI-900)',detail:'Fondamentaux IA/ML Microsoft. Gratuit sur Microsoft Learn. Examen ~100€.',priorite:3,cpf:false},
+      {label:'Azure Fundamentals (AZ-900)',detail:"Certification cloud Microsoft. Très accessible, gratuit sur Microsoft Learn. Examen ~100€.",priorite:1,cpf:false},
+      {label:'Python bases',detail:"Scripts, automatisation, data. CS50P Harvard gratuit. 15 min/jour, résultats en 3 mois.",priorite:1,cpf:false},
+      {label:'SQL',detail:"Extraction données, reporting, connexion ERP. SQLZoo gratuit. Complément parfait à Power BI.",priorite:2,cpf:false},
+      {label:'Microsoft Copilot / AI-900',detail:"IA intégrée dans l'écosystème Microsoft. Très demandé en ESN. Certif ~100€.",priorite:2,cpf:false},
     ],
   },
   {
-    horizon:'Long terme — 3 à 5 ans',
-    icon:'🎓',color:'#9b8cff',
-    objectif:'Formateur indépendant Qualiopi — spécialité IA & outils numériques',
+    horizon:'Long terme — 3 à 5 ans',icon:'🎓',color:'#9b8cff',
+    objectif:"Formateur indépendant Qualiopi — spécialité IA & outils numériques",
     priorites:[
-      {label:'Titre FPA (Formateur Pro Adultes)',detail:'RNCP niveau 5. Obligatoire pour certains marchés. Finançable OPCO/CPF. Durée 6-12 mois.',priorite:1,cpf:true},
-      {label:'Certification Qualiopi',detail:'Obligatoire pour accéder aux financements CPF. Audit qualité de tes pratiques.',priorite:1,cpf:false},
-      {label:'Créer formations IA/numérique',detail:'Niche très porteuse. Articuler expertise terrain + pédagogie. Articulate Rise pour e-learning.',priorite:2,cpf:false},
-      {label:'Statut micro-entrepreneur',detail:'Démarrage activité formateur indépendant. URSSAF, numéro formateur, OPCO.',priorite:2,cpf:false},
+      {label:'Titre FPA (Formateur Pro Adultes)',detail:"RNCP niveau 5. Obligatoire pour certains marchés. Finançable CPF/OPCO.",priorite:1,cpf:true},
+      {label:'Certification Qualiopi',detail:"Obligatoire pour accéder aux financements CPF. Audit qualité de tes pratiques.",priorite:1,cpf:false},
+      {label:"Créer formations IA/numérique",detail:"Niche très porteuse. Articuler expertise terrain + pédagogie. Articulate Rise pour e-learning.",priorite:2,cpf:false},
     ],
   },
 ];
 
 const FORM_COMPETENCES = [
   {
+    domaine:'🧾 Comptabilité / Gestion',
+    ordre:['Sage 100 Compta','Excel avancé + Power Query','Cegid Business','DCG (VAE possible)','SAP Business One'],
+    items:[
+      {name:'Sage 100 Compta',niveau:'Priorité 1 🔴',detail:'Maîtrise avancée : clôtures mensuelles/annuelles, états financiers, paramétrage TVA, rapprochements bancaires. Certification officielle Sage recommandée.'},
+      {name:'Excel avancé + Power Query',niveau:'Priorité 1 🔴',detail:'TCD, formules avancées (INDEX/EQUIV, SUMIFS), Power Query pour connexion données ERP, Power Pivot. Standard absolu en compta.'},
+      {name:'Cegid Business / Loop',niveau:'Priorité 2 🟡',detail:'ERP comptable leader PME en France. Facturation, comptabilité, paie. Formation Cegid Academy (payante) ou YouTube officiel.'},
+      {name:'DCG / VAE',niveau:'Priorité 2 🟡',detail:'Si BTS CG en poche, la VAE (Validation Acquis Expérience) permet de valider tout ou partie du DCG sans reprendre les cours. Contacter un CFA comptable.'},
+      {name:'SAP Business One',niveau:'Priorité 3 🟢',detail:'ERP PME international. Notions suffisantes pour commencer. Certif SAP PartnerEdge pour aller plus loin. Utile en ESN.'},
+    ]
+  },
+  {
     domaine:'💻 IT / Support',
-    ordre:['ITIL 4','M365 MS-900','Power BI','PowerShell','Azure AZ-900'],
+    ordre:['ITIL 4 Foundation','Microsoft 365 (MS-900)','PowerShell bases','Azure AD / Intune','Power BI'],
     items:[
-      {name:'ITIL 4 Foundation',niveau:'Priorité 1 🔴',detail:'Référentiel ITSM universel. Gestion incidents, problèmes, changements. Examen ~300€, CPF possible. Indispensable pour évoluer en IT.'},
-      {name:'Microsoft 365 (MS-900)',niveau:'Priorité 1 🔴',detail:'Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€. Passeport vers toutes les certifs MS avancées.'},
-      {name:'Power BI',niveau:'Priorité 2 🟡',detail:'Tableaux de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN. Complément parfait à Excel.'},
-      {name:'PowerShell bases',niveau:'Priorité 2 🟡',detail:'Automatisation Windows, gestion AD, scripts. Indispensable pour passer N2.'},
-      {name:'Azure AZ-900',niveau:'Priorité 3 🟢',detail:'Fondamentaux cloud Azure. Gratuit sur Microsoft Learn. Examen ~100€. Très valorisé.'},
+      {name:'ITIL 4 Foundation',niveau:'Priorité 1 🔴',detail:'Référentiel ITSM universel. Gestion des incidents, problèmes, changements. Examen ~300€, CPF possible. Indispensable pour évoluer en IT.'},
+      {name:'Microsoft 365 (MS-900)',niveau:'Priorité 1 🔴',detail:'Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€. Passeport vers les certifs MS avancées.'},
+      {name:'Power BI',niveau:'Priorité 2 🟡',detail:'Tableau de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN compta/IT. Complément parfait à Excel.'},
+      {name:'PowerShell bases',niveau:'Priorité 2 🟡',detail:'Automatisation Windows, gestion AD, scripts de déploiement. Indispensable pour passer N2.'},
+      {name:'Azure AD / Intune',niveau:'Priorité 3 🟢',detail:'Gestion identités et appareils cloud. Complément naturel de M365. Certification MS-102.'},
     ]
   },
   {
-    domaine:'🤖 IA & Productivité',
-    ordre:['IA générative','Copilot M365','AI-900','Prompt engineering','Automatisation'],
-    items:[
-      {name:'IA générative appliquée',niveau:'Priorité 1 🔴',detail:'ChatGPT, Claude, Copilot au quotidien. Gain de productivité immédiat. Ressources gratuites partout. À commencer maintenant.'},
-      {name:'Microsoft Copilot / M365',niveau:'Priorité 1 🔴',detail:'IA intégrée dans Teams, Word, Excel, Outlook. Certification Copilot disponible. Très demandé en ESN 2024-2025.'},
-      {name:'Prompt Engineering',niveau:'Priorité 2 🟡',detail:'Apprendre à bien formuler ses requêtes IA. Ressources gratuites : Learn Prompting, guides Anthropic.'},
-      {name:'Azure AI Fundamentals (AI-900)',niveau:'Priorité 2 🟡',detail:'Fondamentaux IA/ML Microsoft. Gratuit sur Microsoft Learn. Examen ~100€. Complément naturel de AZ-900.'},
-      {name:'Automatisation no-code (Power Automate)',niveau:'Priorité 3 🟢',detail:'Automatiser des tâches répétitives sans code. Intégré dans M365. Très utile en ESN.'},
-    ]
-  },
-  {
-    domaine:'📊 Data & Reporting',
-    ordre:['Excel avancé','Power Query','Power BI','SQL','Python'],
-    items:[
-      {name:'Excel avancé + Power Query',niveau:'Priorité 1 🔴',detail:'TCD, formules avancées (INDEX/EQUIV, SUMIFS), Power Query pour connexion données. Standard absolu partout.'},
-      {name:'Power BI',niveau:'Priorité 1 🔴',detail:'Visualisation données, tableaux de bord. Microsoft Learn gratuit. Certif PL-300 pour aller plus loin.'},
-      {name:'SQL bases',niveau:'Priorité 2 🟡',detail:'SELECT, filtres, jointures. Extraction données ERP, reporting. SQLZoo gratuit. 10h pour les bases.'},
-      {name:'Python bases',niveau:'Priorité 2 🟡',detail:'Scripts automatisation, traitement données. CS50P Harvard gratuit. 15 min/jour pendant 3 mois.'},
-    ]
-  },
-  {
-    domaine:'🧑‍💻 Codage — Apprentissage perso',
+    domaine:"🧑‍💻 Codage — Apprentissage perso",
     ordre:['HTML/CSS/JS','Python','SQL','Git','API REST'],
     items:[
       {name:'HTML/CSS/JS',niveau:'Priorité 1 🔴',detail:"Tu codes déjà ce dashboard ! Continue avec des projets concrets. Ressource : The Odin Project (gratuit, complet)."},
-      {name:'Python',niveau:'Priorité 2 🟡',detail:"Polyvalent : scripts, automatisation, data. CS50P Harvard gratuit. Automate the Boring Stuff."},
-      {name:'SQL',niveau:'Priorité 2 🟡',detail:"Extraction ERP, reporting, BI. SQLZoo gratuit. Complément parfait à Power BI."},
-      {name:'Git / GitHub',niveau:'Priorité 3 🟢',detail:"Versioning de tes projets. Indispensable pour collaborer. Gratuit sur git-scm.com."},
+      {name:'Python',niveau:'Priorité 2 🟡',detail:"Langage polyvalent : scripts, automatisation, data. Ressource : CS50P Harvard (gratuit), Automate the Boring Stuff."},
+      {name:'SQL',niveau:'Priorité 2 🟡',detail:"Incontournable pour extraction ERP, reporting, BI. Complément parfait à Power BI. Ressource : SQLZoo (gratuit)."},
+      {name:'Git / GitHub',niveau:'Priorité 3 🟢',detail:"Versioning de tes projets. Indispensable pour collaborer ou héberger des projets. Gratuit sur git-scm.com."},
+      {name:'API REST / JSON',niveau:'Priorité 3 🟢',detail:"Comprendre les APIs pour automatiser des tâches et connecter des outils. Très utile en ESN."},
     ]
   },
   {
     domaine:'🎓 Pédagogie / Formateur',
-    ordre:['Titre FPA','Qualiopi','Articulate Rise','Miro','Micro-entrepreneur'],
+    ordre:['Titre FPA','Qualiopi','Articulate Storyline','Miro / Klaxoon','Micro-entrepreneur'],
     items:[
-      {name:'Titre FPA (Formateur Pro Adultes)',niveau:'Priorité 1 🔴',detail:"RNCP niveau 5. Obligatoire ou très recommandé. Finançable CPF/OPCO. Durée 6-12 mois selon rythme."},
-      {name:'Certification Qualiopi',niveau:'Priorité 1 🔴',detail:"Obligatoire pour accéder aux financements CPF. Audit qualité de tes pratiques pédagogiques."},
-      {name:'Articulate Rise',niveau:'Priorité 2 🟡',detail:"Outil e-learning simple et professionnel. Tutoriels gratuits sur Articulate Community."},
+      {name:'Titre FPA (Formateur Pro Adultes)',niveau:'Priorité 1 🔴',detail:'Titre RNCP niveau 5, reconnu par les OPCO. Obligatoire pour certains marchés. Finançable CPF. Durée : 6-12 mois selon rythme.'},
+      {name:'Certification Qualiopi',niveau:'Priorité 1 🔴',detail:'Obligatoire pour accéder aux financements CPF/OPCO. Audit de tes pratiques qualité. Se prépare en amont via le référentiel RNQ.'},
+      {name:'Articulate Storyline / Rise',niveau:'Priorité 2 🟡',detail:'Logiciels de création e-learning standards du marché. Rise (simple) puis Storyline (avancé). Tutoriels gratuits sur Articulate Community.'},
+      {name:'Miro / Klaxoon',niveau:'Priorité 3 🟢',detail:"Outils d'animation à distance. Indispensables pour formations hybrides ou 100% distanciel."},
     ]
   },
 ];
 
 const FORM_RESSOURCES = [
   {
+    cat:'🧾 Comptabilité — 100% gratuit',
+    items:[
+      {name:'Compta-facile.com',url:'https://www.compta-facile.com',desc:'Cours complets comptabilité générale, fiches pratiques, QCM. Le meilleur site FR gratuit.',cpf:false,duree:'À ton rythme'},
+      {name:'YouTube — Comptabilité Cours',url:'https://www.youtube.com/@ComptabiliteCours',desc:'Chaîne pédagogique française, du niveau BTS au DCG. Très bien expliqué.',cpf:false,duree:'À ton rythme'},
+      {name:'Sage Academy (modules gratuits)',url:'https://academy.sage.com/fr-fr',desc:'Modules d\'\2nitiation Sage 100 gratuits. Accès avec compte Sage.',cpf:false,duree:'2-5h par module'},
+      {name:'VAE — Info officielle',url:'https://www.service-public.fr/particuliers/vosdroits/F2401',desc:'Tout sur la Validation des Acquis pour le DCG. Finançable CPF.',cpf:true,duree:'6-18 mois'},
+    ]
+  },
+  {
     cat:'💻 IT / Microsoft — 100% gratuit',
     items:[
-      {name:'Microsoft Learn',url:'https://learn.microsoft.com/fr-fr',desc:"Formations officielles Microsoft 100% gratuites. ITIL, M365, Azure, Power BI, Copilot. Prépare les certifs.",cpf:false,duree:'Modules 1-8h'},
-      {name:'IT-Connect.fr',url:'https://www.it-connect.fr',desc:"Tutoriels Windows Server, Azure AD, PowerShell. Excellente qualité en français.",cpf:false,duree:'À ton rythme'},
-      {name:'ITIL 4 — Axelos',url:'https://www.axelos.com/certifications/itil-service-management',desc:"Site officiel ITIL. Ressources gratuites + info sur la certification CPF.",cpf:true,duree:'3-5 jours'},
-      {name:'Google IT Support (Coursera)',url:'https://www.coursera.org/professional-certificates/google-it-support',desc:"Auditable gratuitement. Certification payante mais contenu accessible sans payer.",cpf:false,duree:'6 mois'},
+      {name:'Microsoft Learn',url:'https://learn.microsoft.com/fr-fr',desc:'Formations officielles Microsoft 100% gratuites. ITIL, M365, Azure, Power BI. Prépare les certifs.',cpf:false,duree:'Modules de 1-8h'},
+      {name:'IT-Connect.fr',url:'https://www.it-connect.fr',desc:'Tutoriels Windows Server, Active Directory, Azure, PowerShell. Excellente qualité.',cpf:false,duree:'À ton rythme'},
+      {name:'Google IT Support (Coursera)',url:'https://www.coursera.org/professional-certificates/google-it-support',desc:'Auditable gratuitement. Certificat payant mais contenu accessible sans payer.',cpf:false,duree:'6 mois (~5h/sem)'},
+      {name:'OpenClassrooms — IT gratuit',url:'https://openclassrooms.com/fr/courses?subjects=it',desc:'Cours gratuits sans certif. Les certifications sont payantes mais les cours restent accessibles.',cpf:false,duree:'Variable'},
     ]
   },
   {
-    cat:'🤖 IA & Productivité — 100% gratuit',
+    cat:'📊 Power BI / Data — 100% gratuit',
     items:[
-      {name:'Learn Prompting',url:'https://learnprompting.org/fr',desc:"Guide complet prompt engineering en français. 100% gratuit, très bien structuré.",cpf:false,duree:'5-10h'},
-      {name:'Anthropic — Guide Claude',url:'https://docs.anthropic.com/fr/docs/build-with-claude/prompt-engineering/overview',desc:"Guide officiel pour maîtriser Claude et l'IA générative. Gratuit, très pratique.",cpf:false,duree:'2-3h'},
-      {name:'Microsoft Copilot Learn',url:'https://learn.microsoft.com/fr-fr/copilot',desc:"Formations officielles Microsoft Copilot. Gratuit, prépare la certification.",cpf:false,duree:'Modules 1-4h'},
-      {name:'Elements of AI',url:'https://course.elementsofai.com/fr',desc:"Introduction à l'IA en français. 100% gratuit, certifié par l'Université d'Helsinki.",cpf:false,duree:'6-10h'},
+      {name:'Microsoft Learn — Power BI',url:'https://learn.microsoft.com/fr-fr/training/powerplatform/power-bi',desc:"Parcours officiel Microsoft Power BI, du débutant à l'avancé. Gratuit et certifiant.",cpf:false,duree:'20-40h'},
+      {name:'YouTube — Guy in a Cube',url:'https://www.youtube.com/@GuyInACube',desc:'La référence YouTube Power BI (anglais B2+). Très pratique et régulièrement mis à jour.',cpf:false,duree:'À ton rythme'},
     ]
   },
   {
-    cat:'📊 Data & Reporting — 100% gratuit',
-    items:[
-      {name:'Microsoft Learn — Power BI',url:'https://learn.microsoft.com/fr-fr/training/powerplatform/power-bi',desc:"Parcours officiel Power BI, du débutant à l'avancé. Gratuit et certifiant.",cpf:false,duree:'20-40h'},
-      {name:'SQLZoo',url:'https://sqlzoo.net',desc:"Apprendre SQL par la pratique dans le navigateur. 100% gratuit.",cpf:false,duree:'5-10h'},
-      {name:'CS50P Harvard (Python)',url:'https://cs50.harvard.edu/python',desc:"Meilleur cours Python. Gratuit, certif disponible, exercices excellents.",cpf:false,duree:'10 semaines'},
-      {name:'YouTube — Guy in a Cube',url:'https://www.youtube.com/@GuyInACube',desc:"Référence YouTube Power BI (anglais B2+). Très pratique et régulièrement mis à jour.",cpf:false,duree:'À ton rythme'},
-    ]
-  },
-  {
-    cat:'🧑‍💻 Codage — 100% gratuit',
+    cat:"🧑‍💻 Codage — 100% gratuit",
     items:[
       {name:'The Odin Project',url:'https://www.theodinproject.com',desc:"Parcours complet HTML/CSS/JS. Gratuit, communauté active, projets concrets.",cpf:false,duree:'6-12 mois'},
+      {name:'CS50 Harvard (Python)',url:'https://cs50.harvard.edu/python',desc:"Meilleur cours intro Python. Gratuit, certif disponible, exercices excellents.",cpf:false,duree:'10 semaines'},
       {name:'freeCodeCamp',url:'https://www.freecodecamp.org',desc:"HTML, CSS, JS, Python, SQL — tout gratuit avec certifications reconnues.",cpf:false,duree:'À ton rythme'},
-      {name:'SQLZoo',url:'https://sqlzoo.net',desc:"SQL par la pratique. 100% gratuit.",cpf:false,duree:'5-10h'},
+      {name:'SQLZoo',url:'https://sqlzoo.net',desc:"Apprendre SQL par la pratique, directement dans le navigateur. 100% gratuit.",cpf:false,duree:'5-10h'},
     ]
   },
   {
     cat:'🎓 Formateur — Gratuit / CPF',
     items:[
-      {name:'Mon Compte Formation (CPF)',url:'https://www.moncompteformation.gouv.fr',desc:"Titre FPA et nombreuses formations finançables sur ton CPF. Vérifie ton solde.",cpf:true,duree:'Variable'},
-      {name:'Articulate Community',url:'https://community.articulate.com',desc:"Tutoriels gratuits pour Rise et Storyline. Forum très actif.",cpf:false,duree:'À ton rythme'},
-      {name:'Centre Inffo',url:'https://www.centre-inffo.fr',desc:"Veille formation professionnelle France. Newsletters utiles.",cpf:false,duree:'Veille régulière'},
+      {name:'Mon Compte Formation (CPF)',url:'https://www.moncompteformation.gouv.fr',desc:'Titre FPA et nombreuses formations finançables sur ton CPF. Vérifie ton solde.',cpf:true,duree:'Variable'},
+      {name:'Articulate Community',url:'https://community.articulate.com',desc:'Tutoriels gratuits pour Storyline et Rise. Forum très actif, ressources téléchargeables.',cpf:false,duree:'À ton rythme'},
+      {name:'Centre Inffo',url:'https://www.centre-inffo.fr',desc:'Veille sur la formation professionnelle en France. Gratuit, newsletters utiles.',cpf:false,duree:'Veille régulière'},
     ]
   },
 ];
 
 const FORM_CERTIFS = [
-  {name:'ITIL 4 Foundation',cat:'IT',cout:'~300 €',duree:'3-5 jours',cpf:true,priorite:1,desc:'Référentiel ITSM universel. Examen Pearson VUE, disponible en français. CPF possible.'},
-  {name:'Microsoft MS-900 (M365)',cat:'IT',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:1,desc:'Fondamentaux Microsoft 365. Préparation 100% gratuite sur Microsoft Learn.'},
-  {name:'Microsoft AZ-900 (Azure)',cat:'IT',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:2,desc:'Fondamentaux cloud Azure. Très valorisé en ESN. Préparation gratuite Microsoft Learn.'},
-  {name:'Microsoft AI-900',cat:'IA',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:2,desc:'Fondamentaux IA/ML Microsoft. Complément naturel de AZ-900. Gratuit sur Microsoft Learn.'},
-  {name:'Power BI (PL-300)',cat:'Data',cout:'~165 €',duree:'1 semaine',cpf:false,priorite:2,desc:'Certification Power BI officielle Microsoft. Très demandée en ESN.'},
-  {name:'Microsoft Copilot',cat:'IA',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:2,desc:'Certification IA Microsoft. Nouvelle certif très demandée dans les ESN en 2024-2025.'},
-  {name:'Titre FPA',cat:'Formation',cout:'Finançable CPF/OPCO',duree:'6-12 mois',cpf:true,priorite:1,desc:'RNCP niveau 5. Obligatoire ou très recommandé pour devenir formateur indépendant.'},
+  {name:'ITIL 4 Foundation',cat:'IT',cout:'~300 €',duree:'3-5 jours',cpf:true,priorite:1,desc:'Référentiel ITSM universel. Examen Pearson VUE, disponible en français.'},
+  {name:'Microsoft MS-900',cat:'IT',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:1,desc:'Fondamentaux Microsoft 365. Préparation 100% gratuite sur Microsoft Learn.'},
+  {name:'Microsoft PL-300 (Power BI)',cat:'IT',cout:'~165 €',duree:'1 semaine',cpf:false,priorite:2,desc:'Certification Power BI officielle Microsoft. Très demandée en ESN.'},
+  {name:'Sage 100 — Certification officielle',cat:'Comptabilité',cout:'~200-400 €',duree:'2-3 jours',cpf:false,priorite:1,desc:'Certification officielle Sage. Accès via Sage Academy. Très valorisée en ESN compta.'},
+  {name:'DCG — VAE',cat:'Comptabilité',cout:'Frais dossier ~300 €',duree:'6-18 mois',cpf:true,priorite:2,desc:'Validation Acquis Expérience. Si BTS CG obtenu, possibilité de valider certaines UE du DCG.'},
+  {name:'Titre FPA (Formateur Pro Adultes)',cat:'Formation',cout:'Finançable OPCO/CPF',duree:'6-12 mois',cpf:true,priorite:1,desc:'RNCP niveau 5. Obligatoire ou très recommandé pour devenir formateur indépendant.'},
   {name:'Qualiopi',cat:'Formation',cout:'~1500-3000 €',duree:'6-12 mois prépa',cpf:false,priorite:2,desc:'Obligatoire pour accéder aux financements CPF. Audit qualité par organisme accrédité.'},
-  {name:'CompTIA A+',cat:'IT',cout:'~250 € (x2)',duree:'1-3 mois',cpf:false,priorite:3,desc:'Certification IT support internationale. Reconnue en milieu anglophone.'},
+  {name:'CompTIA A+',cat:'IT',cout:'~250 € (x2 examens)',duree:'1-3 mois',cpf:false,priorite:3,desc:'Certification IT support internationale. Reconnue en milieu anglophone.'},
 ];
 
 const CV_SITES = [
@@ -3290,7 +3275,7 @@ const BADGES_DEF = [
   { id:'formation', icon:'🎓', name:'En formation', desc:'3 modules de formation en cours', check: () => (state.modules||[]).length >= 3 },
   { id:'certif', icon:'🏅', name:'Certifié', desc:'1 module de formation terminé', check: () => (state.modules||[]).some(m=>m.done>=m.total&&m.total>0) },
   { id:'culture10', icon:'🧠', name:'Cultivé', desc:'10 contenus culturels ajoutés', check: () => (state.culture||[]).length >= 10 },
-  { id:'streak', icon:'🔥', name:'Streak 5j', desc:"5 jours consécutifs d\'activité", check: () => { let streak=0; const today_=today(); for(let i=0;i<7;i++){const d=new Date(today_);d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);const dayData=state.days?.[ds]||{};if(Object.values(dayData).some(v=>v))streak++;else break;} return streak>=5; }},
+  { id:'streak', icon:'🔥', name:'Streak 5j', desc:'5 jours consécutifs d\'activité', check: () => { let streak=0; const today_=today(); for(let i=0;i<7;i++){const d=new Date(today_);d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);const dayData=state.days?.[ds]||{};if(Object.values(dayData).some(v=>v))streak++;else break;} return streak>=5; }},
 ];
 
 function renderBadges() {
@@ -3559,8 +3544,8 @@ function renderFinance2(){if(!state.finObjs)state.finObjs=[];const el=document.g
 function backupData(){const data=localStorage.getItem('chris_dashboard')||'{}';const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`dashboard-backup-${today()}.json`;a.click();URL.revokeObjectURL(url);document.getElementById('backupStatus').textContent='Sauvegarde téléchargée le '+new Date().toLocaleDateString('fr-FR');showToast('Données sauvegardées ✓');}
 function restoreData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=(e)=>{try{const data=JSON.parse(e.target.result);localStorage.setItem('chris_dashboard',JSON.stringify(data));document.getElementById('backupStatus').textContent='Données restaurées — rechargement...';showToast('Restauration réussie ✓');setTimeout(()=>location.reload(),1500);}catch(err){document.getElementById('backupStatus').textContent='Fichier invalide.';}};reader.readAsText(file);}
 // ======= DIGITAL =======
-const FREE_ALTERNATIVES=[{cat:'🎬 Vidéo / Films',items:[{name:'Cinepulse',url:'https://cinepulse.fr',desc:'Films & séries en streaming légal gratuit',replaces:'Netflix/Prime'},{name:'Arte.tv',url:'https://arte.tv',desc:"Documentaires, films d\'auteur, culture",replaces:'Netflix'},{name:'France.tv',url:'https://france.tv',desc:'Replay France Télévisions complet',replaces:'Netflix'},{name:'Pluto TV',url:'https://pluto.tv',desc:'Chaînes gratuites + films en streaming',replaces:'Netflix'},{name:'Tubi',url:'https://tubitv.com',desc:'Milliers de films et séries gratuits',replaces:'Netflix/Prime'}]},{cat:'🎵 Musique',items:[{name:'Deezer (gratuit)',url:'https://deezer.com',desc:'Écoute gratuite avec publicités',replaces:'Spotify Premium'},{name:'YouTube Music',url:'https://music.youtube.com',desc:'Gratuit avec pub, immense catalogue',replaces:'Spotify'},{name:'Radio.fr',url:'https://radio.fr',desc:'Toutes les radios du monde gratuitement',replaces:'Spotify'}]},{cat:'📚 Livres',items:[{name:'Open Library',url:'https://openlibrary.org',desc:'Millions de livres à emprunter gratuitement',replaces:'Kindle Unlimited'},{name:'Gallica (BnF)',url:'https://gallica.bnf.fr',desc:'Bibliothèque numérique nationale française',replaces:'Kindle'},{name:'Project Gutenberg',url:'https://gutenberg.org',desc:'70 000+ livres libres de droits',replaces:'Kindle'}]},{cat:'🎮 Jeux',items:[{name:'Epic Games Store',url:'https://epicgames.com',desc:'Jeux gratuits chaque semaine',replaces:'Achats jeux'},{name:'itch.io',url:'https://itch.io',desc:'Jeux indépendants souvent gratuits',replaces:'Steam'}]},{cat:'🧠 Formation',items:[{name:'Khan Academy',url:'https://khanacademy.org',desc:'Maths, sciences, prog - 100% gratuit',replaces:'Cours payants'},{name:'MIT OpenCourseWare',url:'https://ocw.mit.edu',desc:'Cours du MIT en ligne gratuitement',replaces:'Coursera'}]}];
-const DIGITAL_TIPS=[{icon:'📵',title:'Pas de téléphone au réveil',desc:'Attends 30 min avant de regarder ton téléphone. Commence la journée avec tes propres pensées.'},{icon:'🌙',title:'Mode nuit dès 21h',desc:"La lumière bleue perturbe la mélatonine et retarde l\'endormissement de 1 à 2h."},{icon:'🔕',title:'Notifications groupées',desc:'Désactive toutes les notifs sauf les appels. Consulte tes apps à horaires fixes (9h, 13h, 18h).'},{icon:'⏱️',title:'Règle des 1h de jeu max',desc:"Les jeux mobiles créent une dépendance. Fixe une limite et utilise le temps d\'écran iOS."},{icon:'📱',title:'Zones sans téléphone',desc:'Chambre, salle à manger, bureau = zones sans téléphone. Achète un réveil classique.'},{icon:'🧠',title:'Remplace par du positif',desc:'Pour chaque app limitée, remplace par une activité : lecture, sport, apprentissage.'},{icon:'📊',title:'Temps d\'écran iOS',desc:"Réglages → Temps d\'écran → Active les limites par app. Vise max 1h30/jour hors travail."}];
+const FREE_ALTERNATIVES=[{cat:'🎬 Vidéo / Films',items:[{name:'Cinepulse',url:'https://cinepulse.fr',desc:'Films & séries en streaming légal gratuit',replaces:'Netflix/Prime'},{name:'Arte.tv',url:'https://arte.tv',desc:'Documentaires, films d\'auteur, culture',replaces:'Netflix'},{name:'France.tv',url:'https://france.tv',desc:'Replay France Télévisions complet',replaces:'Netflix'},{name:'Pluto TV',url:'https://pluto.tv',desc:'Chaînes gratuites + films en streaming',replaces:'Netflix'},{name:'Tubi',url:'https://tubitv.com',desc:'Milliers de films et séries gratuits',replaces:'Netflix/Prime'}]},{cat:'🎵 Musique',items:[{name:'Deezer (gratuit)',url:'https://deezer.com',desc:'Écoute gratuite avec publicités',replaces:'Spotify Premium'},{name:'YouTube Music',url:'https://music.youtube.com',desc:'Gratuit avec pub, immense catalogue',replaces:'Spotify'},{name:'Radio.fr',url:'https://radio.fr',desc:'Toutes les radios du monde gratuitement',replaces:'Spotify'}]},{cat:'📚 Livres',items:[{name:'Open Library',url:'https://openlibrary.org',desc:'Millions de livres à emprunter gratuitement',replaces:'Kindle Unlimited'},{name:'Gallica (BnF)',url:'https://gallica.bnf.fr',desc:'Bibliothèque numérique nationale française',replaces:'Kindle'},{name:'Project Gutenberg',url:'https://gutenberg.org',desc:'70 000+ livres libres de droits',replaces:'Kindle'}]},{cat:'🎮 Jeux',items:[{name:'Epic Games Store',url:'https://epicgames.com',desc:'Jeux gratuits chaque semaine',replaces:'Achats jeux'},{name:'itch.io',url:'https://itch.io',desc:'Jeux indépendants souvent gratuits',replaces:'Steam'}]},{cat:'🧠 Formation',items:[{name:'Khan Academy',url:'https://khanacademy.org',desc:'Maths, sciences, prog - 100% gratuit',replaces:'Cours payants'},{name:'MIT OpenCourseWare',url:'https://ocw.mit.edu',desc:'Cours du MIT en ligne gratuitement',replaces:'Coursera'}]}];
+const DIGITAL_TIPS=[{icon:'📵',title:'Pas de téléphone au réveil',desc:'Attends 30 min avant de regarder ton téléphone. Commence la journée avec tes propres pensées.'},{icon:'🌙',title:'Mode nuit dès 21h',desc:'La lumière bleue perturbe la mélatonine et retarde l\'endormissement de 1 à 2h.'},{icon:'🔕',title:'Notifications groupées',desc:'Désactive toutes les notifs sauf les appels. Consulte tes apps à horaires fixes (9h, 13h, 18h).'},{icon:'⏱️',title:'Règle des 1h de jeu max',desc:'Les jeux mobiles créent une dépendance. Fixe une limite et utilise le temps d\'écran iOS.'},{icon:'📱',title:'Zones sans téléphone',desc:'Chambre, salle à manger, bureau = zones sans téléphone. Achète un réveil classique.'},{icon:'🧠',title:'Remplace par du positif',desc:'Pour chaque app limitée, remplace par une activité : lecture, sport, apprentissage.'},{icon:'📊',title:'Temps d\'écran iOS',desc:'Réglages → Temps d\'écran → Active les limites par app. Vise max 1h30/jour hors travail.'}];
 function addDigitalRule(){const val=document.getElementById('digitalRuleInput').value.trim();if(!val)return;if(!state.digitalRules)state.digitalRules=[];state.digitalRules.push({id:Date.now(),text:val,done:false});document.getElementById('digitalRuleInput').value='';save();renderDigital();}
 function toggleDigitalRule(id){const r=state.digitalRules.find(r=>r.id===id);if(r){r.done=!r.done;save();renderDigital();}}
 function deleteDigitalRule(id){state.digitalRules=state.digitalRules.filter(r=>r.id!==id);save();renderDigital();}
@@ -3615,6 +3600,44 @@ function startVocabQuiz(lang){const words=(state.langues[lang]?.vocab||[]).filte
 function renderQuiz(){const el=document.getElementById('vocabQuizArea');if(!el)return;if(quizState.current>=quizState.words.length){el.innerHTML=`<div style="text-align:center;padding:20px"><div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent)">${quizState.score}/${quizState.words.length}</div><div style="font-size:0.72rem;color:var(--text-muted);margin:8px 0">Score final</div><div style="font-size:1.5rem;margin:12px 0">${quizState.score>=8?'🏆 Excellent !':quizState.score>=5?'👍 Bien !':'💪 Continue !'}</div><button class="btn btn-primary" onclick="startVocabQuiz('${quizState.lang}')">Recommencer</button></div>`;return;}const word=quizState.words[quizState.current];const allWords=state.langues[quizState.lang]?.vocab||[];const wrong=allWords.filter(w=>w.id!==word.id).sort(()=>Math.random()-0.5).slice(0,3);const options=[{text:word.trad,correct:true},...wrong.map(w=>({text:w.trad,correct:false}))].sort(()=>Math.random()-0.5);el.innerHTML=`<div><div style="display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text-muted);margin-bottom:12px"><span>Question ${quizState.current+1}/${quizState.words.length}</span><span style="color:var(--accent)">Score: ${quizState.score}</span></div><div style="text-align:center;margin-bottom:20px"><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--text)">${word.mot}</div><div style="font-size:0.65rem;color:var(--text-muted);margin-top:4px">Quelle est la traduction ?</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="quizOptions">${options.map((o,i)=>`<button onclick="answerQuiz(${o.correct},${i})" style="padding:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.75rem;cursor:pointer;text-align:left">${o.text}</button>`).join('')}</div></div>`;}
 function answerQuiz(correct,idx){if(quizState.answered)return;quizState.answered=true;if(correct)quizState.score++;const btns=document.querySelectorAll('#quizOptions button');btns.forEach((btn,i)=>{btn.style.background=i===idx?(correct?'rgba(74,219,138,0.2)':'rgba(240,90,90,0.2)'):'var(--surface2)';btn.style.borderColor=i===idx?(correct?'#4adb8a':'#f05a5a'):'var(--border)';btn.style.cursor='default';});const word=quizState.words[quizState.current];const vi=state.langues[quizState.lang]?.vocab?.find(v=>v.id===word.id);if(vi){if(correct&&vi.maitrise<3)vi.maitrise++;else if(!correct&&vi.maitrise>0)vi.maitrise--;save();}setTimeout(()=>{quizState.current++;quizState.answered=false;renderQuiz();},1200);}
 // ======= MÉTÉO =======
+async function fetchWeather(){const el=document.getElementById('weatherWidget');if(!el)return;try{const geoRes=await fetch('https://ipapi.co/json/');const geo=await geoRes.json();const lat=geo.latitude||45.75,lon=geo.longitude||4.85,city=geo.city||'Ma ville';const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);const data=await res.json();const w=data.current_weather;const temp=Math.round(w.temperature),wind=Math.round(w.windspeed),wcode=w.weathercode;const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',80:'🌦️',81:'🌧️',95:'⛈️'};const icon=icons[wcode]||'🌡️';const good=temp>=10&&temp<=28&&wcode<60;el.innerHTML=`<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><div style="text-align:center"><div style="font-size:2.5rem">${icon}</div><div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent)">${temp}°C</div></div><div><div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px">${city}</div><div style="font-size:0.7rem;color:var(--text-muted)">Vent : ${wind} km/h</div><div style="margin-top:8px;padding:6px 12px;border-radius:999px;font-size:0.68rem;font-weight:600;display:inline-block;background:${good?'rgba(74,219,138,0.12)':'rgba(240,90,90,0.12)'};color:${good?'#4adb8a':'#f05a5a'};border:1px solid ${good?'rgba(74,219,138,0.3)':'rgba(240,90,90,0.3)'}">${good?'✓ Idéal pour le sport':'⚠️ Préfère le sport en intérieur'}</div></div></div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted)">Météo indisponible</div>';}}
+// ======= ACTUALITÉS IA =======
+async function fetchNews(){const el=document.getElementById('newsContainer');if(!el)return;el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';try{
+    const _newsPrompt='Tu es journaliste. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format: [{"titre":"...","theme":"Géopolitique","resume":"...","importance":"haute"}]. Donne 6 actualités importantes du moment en géopolitique, économie et technologie. Factuel, concis (1-2 phrases par résumé).';
+    const _newsText = await callGemini('', _newsPrompt, 800);
+    const news=JSON.parse((_newsText||'[]').replace(/```json|```/g,'').trim());const themeColors={'Géopolitique':'#48cae4','Économie':'#c8f04a','Tech':'#7b5ea7'};el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${news.map(n=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;border-left:3px solid ${themeColors[n.theme]||'var(--border)'}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span style="font-size:0.6rem;padding:2px 8px;border-radius:999px;background:${themeColors[n.theme]||'#6b6b80'}22;color:${themeColors[n.theme]||'#6b6b80'};text-transform:uppercase">${n.theme}</span>${n.importance==='haute'?'<span style="font-size:0.6rem;color:#f05a5a">🔥</span>':''}</div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4">${n.titre}</div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${n.resume}</div></div>`).join('')}</div>`;}catch(e){el.innerHTML='<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Actualités indisponibles</div>';}}
+
+// ======= FILMS =======
+const FILM_GENRE_COLORS={'Plot twist':'#9b8cff','Thriller':'#f05a5a','Drame':'#48cae4','Documentaire':'#4adb8a','Science-Fiction':'#7b5ea7','Classique':'#f4a261','Comédie':'#c8f04a','Action':'#f05a5a','Autre':'#6b6b80'};
+const FILM_SUGGESTIONS=[
+  {title:'The Others',genre:'Plot twist',year:'2001',desc:'Nicole Kidman — twist final dévastateur'},
+  {title:'Oldboy',genre:'Thriller',year:'2003',desc:'Revenge coréen avec un twist légendaire'},
+  {title:'Usual Suspects',genre:'Plot twist',year:'1995',desc:'Qui est Keyser Söze ?'},
+  {title:'Icarus',genre:'Documentaire',year:'2017',desc:'Oscar doc — dopage etatique russe'},
+  {title:'13th',genre:'Documentaire',year:'2016',desc:'Système carcéral américain — Netflix'},
+  {title:'A Beautiful Mind',genre:'Drame',year:'2001',desc:'Russell Crowe — génie et schizophrénie'},
+  {title:'Wild Wild Country',genre:'Documentaire',year:'2018',desc:'Culte religieux aux USA — Netflix'},
+  {title:'Interstellar',genre:'Science-Fiction',year:'2014',desc:'Nolan — voyage dans le temps et les dimensions'},
+  {title:'Gone Baby Gone',genre:'Thriller',year:'2007',desc:'Dilemme moral — Ben Affleck'},
+  {title:'Making a Murderer',genre:'Documentaire',year:'2015',desc:'Justice américaine — Netflix'},
+];
+let filmFilter='all';
+function addFilm(){const title=document.getElementById('filmTitle').value.trim(),genre=document.getElementById('filmGenre').value,year=document.getElementById('filmYear').value.trim();if(!title){showToast('Ajoute un titre !');return;}if(!state.films)state.films=[];state.films.push({id:Date.now(),title,genre,year,status:'avoir',note:0,avis:''});document.getElementById('filmTitle').value='';document.getElementById('filmYear').value='';save();renderFilms();showToast('Film ajouté ✓');}
+function toggleFilmStatus(id){const f=state.films.find(f=>f.id===id);if(!f)return;f.status=f.status==='avoir'?'vu':f.status==='vu'?'abandonné':'avoir';save();renderFilms();}
+function setFilmNote(id,note){const f=state.films.find(f=>f.id===id);if(f){f.note=note;save();renderFilms();}}
+function deleteFilm(id){state.films=state.films.filter(f=>f.id!==id);save();renderFilms();}
+function setFilmFilter(f){filmFilter=f;document.querySelectorAll('#filmFilters .btn').forEach(b=>{b.style.background='var(--surface2)';b.style.color='var(--text-muted)';b.style.border='1px solid var(--border)';});event.target.style.background='var(--accent)';event.target.style.color='#0e0e11';event.target.style.border='none';renderFilms();}
+function addFilmSuggestion(title,genre,year){if(!state.films)state.films=[];state.films.push({id:Date.now(),title,genre,year,status:'avoir',note:0,avis:''});save();renderFilms();showToast('Ajouté ✓');}
+async function getFilmSummary(id){
+  const f=state.films.find(f=>f.id===id);
+  if(!f)return;
+  const el=document.getElementById('film-sum-'+id);
+  if(!el)return;
+  el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';
+  const text = await callGemini('Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.', `Présente le film "${f.title}" (${f.year}).`, 200);
+  if(text) el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${text.split('\n').join('<br>')}</div>`;
+  else el.innerHTML='';
+}
 function renderFilms(){
   if(!state.films)state.films=[];
   let films=[...state.films];
@@ -3625,14 +3648,62 @@ function renderFilms(){
   const STATUS_LABELS={avoir:'🎬 À voir',vu:'✅ Vu',abandonné:'❌ Abandonné'};
   const el=document.getElementById('filmList');
   if(!el)return; // panel not visible
-  el.innerHTML=films.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun film</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${films.map(f=>{const color=FILM_GENRE_COLORS[f.genre]||'#6b6b80';return `<div style="background:var(--surface);border:1px solid ${STATUS_COLORS[f.status]};border-radius:var(--radius);padding:16px;border-left:3px solid ${color}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div style="flex:1"><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${f.title}</div><div style="font-size:0.62rem;color:${color};margin-top:2px">${f.genre}${f.year?' · '+f.year:''}</div></div><button class="btn btn-danger" onclick="getFilmSummary(${f.id})" style="background:rgba(244,162,97,0.12);border:1px solid rgba(244,162,97,0.3);color:#f4a261;font-size:0.65rem">✨ Synopsis</button>
-            <button class="btn btn-danger" onclick="deleteFilm(${f.id})">✕</button></div><div id="film-sum-${f.id}"></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:6px"><div onclick="toggleFilmStatus(${f.id})" style="cursor:pointer;padding:5px 12px;border-radius:999px;font-size:0.65rem;font-weight:600;background:${f.status==='vu'?'rgba(74,219,138,0.15)':f.status==='abandonné'?'rgba(240,90,90,0.12)':'var(--surface2)'};border:1px solid ${STATUS_COLORS[f.status]};color:${f.status==='vu'?'#4adb8a':f.status==='abandonné'?'#f05a5a':'var(--text-muted)'}">${STATUS_LABELS[f.status]}</div>${f.status==='vu'?`<div style="display:flex;gap:2px">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<span onclick="setFilmNote(${f.id},${n})" style="cursor:pointer;font-size:0.7rem;color:${n<=f.note?'#f4a261':'var(--border)'}">★</span>`).join('')}</div>`:``}</div></div>`;}).join('')}</div>`;
+  el.innerHTML=films.length===0?'<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:24px">Aucun film</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${films.map(f=>{const color=FILM_GENRE_COLORS[f.genre]||'#6b6b80';return `<div style="background:var(--surface);border:1px solid ${STATUS_COLORS[f.status]};border-radius:var(--radius);padding:16px;border-left:3px solid ${color}"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div style="flex:1"><div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${f.title}</div><div style="font-size:0.62rem;color:${color};margin-top:2px">${f.genre}${f.year?' · '+f.year:''}</div></div><button class="btn btn-danger" onclick="deleteFilm(${f.id})">✕</button></div><div id="film-sum-${f.id}"></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:6px"><div onclick="toggleFilmStatus(${f.id})" style="cursor:pointer;padding:5px 12px;border-radius:999px;font-size:0.65rem;font-weight:600;background:${f.status==='vu'?'rgba(74,219,138,0.15)':f.status==='abandonné'?'rgba(240,90,90,0.12)':'var(--surface2)'};border:1px solid ${STATUS_COLORS[f.status]};color:${f.status==='vu'?'#4adb8a':f.status==='abandonné'?'#f05a5a':'var(--text-muted)'}">${STATUS_LABELS[f.status]}</div>${f.status==='vu'?`<div style="display:flex;gap:2px">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<span onclick="setFilmNote(${f.id},${n})" style="cursor:pointer;font-size:0.7rem;color:${n<=f.note?'#f4a261':'var(--border)'}">★</span>`).join('')}</div>`:`<button onclick="getFilmSummary(${f.id})" style="font-size:0.6rem;color:var(--text-muted);background:transparent;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:1px">📖 Synopsis IA</button>`}</div></div>`;}).join('')}</div>`;
   const suggEl=document.getElementById('filmSuggestions');
   if(suggEl){const existing=(state.films||[]).map(f=>f.title.toLowerCase());const toShow=FILM_SUGGESTIONS.filter(s=>!existing.includes(s.title.toLowerCase()));suggEl.innerHTML=toShow.length===0?'<div style="font-size:0.72rem;color:var(--text-muted)">Tous les films suggérés sont dans ta liste !</div>':`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">${toShow.map(s=>`<div onclick="addFilmSuggestion('${s.title.replace(/'/g,"\'")}','${s.genre}','${s.year}')" style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid ${FILM_GENRE_COLORS[s.genre]||'#6b6b80'};border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:2px">${s.title} <span style="font-size:0.6rem;color:var(--text-muted)">${s.year}</span></div><div style="font-size:0.62rem;color:${FILM_GENRE_COLORS[s.genre]||'#6b6b80'};margin-bottom:4px">${s.genre}</div><div style="font-size:0.65rem;color:var(--text-muted)">${s.desc}</div></div>`).join('')}</div>`;}
 }
 // ======= PODCAST RECO =======
 const PODCAST_RECO=[{cat:'🌐 Géopolitique',items:[{name:'Géopolitique profonde',desc:'Analyses hebdomadaires sur les tensions mondiales'},{name:'Le dessous des cartes (Arte)',desc:'Cartographie des enjeux géopolitiques'},{name:'Affaires Étrangères (France Culture)',desc:'Politique internationale approfondie'}]},{cat:'📈 Économie & Finance',items:[{name:'Génération Do It Yourself',desc:'Entrepreneuriat, finance, liberté financière'},{name:'Hacking Finance',desc:'Investissement, bourse, patrimoine'},{name:'Planet Money (NPR)',desc:'Économie mondiale — anglais B2+'}]},{cat:'💻 Tech',items:[{name:'Lex Fridman Podcast',desc:'IA, science, tech — anglais C1'},{name:'No Limit Secu',desc:'Cybersécurité en français'},{name:'Darknet Diaries',desc:'Histoires vraies de hacks — anglais C1'}]},{cat:'🧠 Développement perso',items:[{name:'Huberman Lab',desc:'Neurosciences, sommeil, performance — anglais B2+'},{name:'The Tim Ferriss Show',desc:'Interviews de performers — anglais C1'},{name:'Choses à Savoir',desc:'Culture générale en 5 min'}]}];
+function renderPodcastReco(){const el=document.getElementById('podcastReco');if(!el)return;el.innerHTML=PODCAST_RECO.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:flex;flex-direction:column;gap:6px">${cat.items.map(p=>`<div style="padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px"><div style="font-size:0.75rem;font-weight:600;color:var(--text)">${p.name}</div><div style="font-size:0.62rem;color:var(--text-muted)">${p.desc}</div></div>`).join('')}</div></div>`).join('');}
 
+// ======= MÉDITATION =======
+
+// ======= DCA TRACKER =======
+function addDCA() {
+  const name = document.getElementById('dcaName').value.trim();
+  const env = document.getElementById('dcaEnv').value;
+  const amount = parseFloat(document.getElementById('dcaAmount').value) || 0;
+  const day = parseInt(document.getElementById('dcaDay').value) || 1;
+  if (!name || !amount) { showToast('Remplis nom et montant !'); return; }
+  if (!state.dcaList) state.dcaList = [];
+  state.dcaList.push({ id: Date.now(), name, env, amount, day, active: true });
+  ['dcaName','dcaAmount','dcaDay'].forEach(id => document.getElementById(id).value = '');
+  save(); renderDCA(); showToast('DCA ajouté ✓');
+}
+
+function toggleDCA(id) {
+  const item = state.dcaList?.find(d => d.id === id);
+  if (item) { item.active = !item.active; save(); renderDCA(); }
+}
+
+function deleteDCA(id) {
+  state.dcaList = state.dcaList.filter(d => d.id !== id);
+  save(); renderDCA();
+}
+
+function renderDCA() {
+  if (!state.dcaList) state.dcaList = [];
+  const el = document.getElementById('dcaList');
+  const totalEl = document.getElementById('dcaTotal');
+  if (!el) return;
+  const ENV_COLORS = { PEA: '#c8f04a', CTO: '#48cae4', AV: '#9b8cff' };
+  const totalActive = state.dcaList.filter(d => d.active).reduce((s,d) => s + d.amount, 0);
+  el.innerHTML = state.dcaList.length === 0
+    ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun DCA programmé</div>'
+    : `<div style="display:flex;flex-direction:column;gap:8px">` +
+      state.dcaList.map(d => `
+        <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;border:1px solid ${d.active?ENV_COLORS[d.env]||'var(--border)':'var(--border)'};opacity:${d.active?1:0.5};flex-wrap:wrap">
+          <div style="width:10px;height:10px;border-radius:50%;background:${d.active?ENV_COLORS[d.env]||'var(--accent)':'var(--text-muted)'};flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text)">${d.name}</div>
+            <div style="font-size:0.62rem;color:var(--text-muted)">${d.env} · Prélèvement le ${d.day} du mois</div>
+          </div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:${ENV_COLORS[d.env]||'var(--accent)'}">${d.amount} €/mois</div>
+          <div onclick="toggleDCA(${d.id})" style="cursor:pointer;padding:4px 10px;border-radius:999px;font-size:0.62rem;background:${d.active?'rgba(74,219,138,0.12)':'var(--surface)'};border:1px solid ${d.active?'rgba(74,219,138,0.3)':'var(--border)'};color:${d.active?'#4adb8a':'var(--text-muted)'}">${d.active?'Actif':'Pausé'}</div>
+          <button class="btn btn-danger" onclick="deleteDCA(${d.id})">✕</button>
+        </div>`).join('') + '</div>';
+  if (totalEl) totalEl.innerHTML = `Total DCA actifs : <span style="color:var(--accent);font-weight:700">${totalActive} €/mois</span> · <span style="color:var(--text-muted)">soit ${(totalActive*12).toLocaleString('fr-FR')} €/an</span>`;
+}
 
 
 // ======= GOOGLE DRIVE SYNC =======
@@ -3839,9 +3910,9 @@ function initApiSettings() {
   const configured = '<span style="color:#4adb8a;font-size:0.65rem">✅ Configuré</span>';
   const notConfigured = '<span style="color:#f4a261;font-size:0.65rem">⚠️ Non configuré</span>';
   const groqBadge = document.getElementById('groqBadge');
-  if (groqBadge) groqBadge.innerHTML = groqKey ? configured : notConfigured;
+  if(groqBadge) groqBadge.innerHTML = groqKey ? configured : notConfigured;
   const groqStatus = document.getElementById('groqStatus');
-  if (groqStatus) groqStatus.innerHTML = groqKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
+  if(groqStatus) groqStatus.innerHTML = groqKey ? '<span style="color:#4adb8a">✅ Clé chargée</span>' : '';
   initSyncStatus();
 }
 
@@ -4412,6 +4483,32 @@ function renderVeille() {
 
 // ======= FIX SUGGEST WORDS =====
 // Override suggestWords to properly add words
+async function suggestWords(lang) {
+  const el = document.getElementById('wordSuggestResult-'+lang);
+  if(!el)return;
+  el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+  const existing=(state.langues[lang]?.vocab||[]).map(v=>v.mot).slice(0,10).join(', ');
+  const level=state.langues[lang]?.vocab?.length>20?'B2':'A2/B1';
+  const LANG_NAMES={en:'anglais',es:'espagnol',it:'italien',ru:'russe'};
+  const prompt=`Tu es professeur de ${LANG_NAMES[lang]||lang}. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format exact: [{"mot":"word","trad":"traduction en français"}]. Suggère 8 mots ou expressions utiles en ${LANG_NAMES[lang]||lang} pour un apprenant niveau ${level}. Mots à éviter car déjà connus: ${existing||'aucun'}. Privilégie vocabulaire professionnel, quotidien et expressions idiomatiques.`;
+  try {
+    const text = await callGemini('', prompt, 600);
+    if(!text){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur IA — configure ta clé Groq dans Digital → Paramètres</div>';return;}
+    const clean=text.replace(/```json/g,'').replace(/```/g,'').trim();
+    const words=JSON.parse(clean);
+    el.innerHTML=`<div style="margin-top:12px"><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Suggestions — clique pour ajouter</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${words.map(w=>`<div onclick="addSuggestedWord('${lang}','${w.mot.replace(/'/g,"\\'")}','${w.trad.replace(/'/g,"\\'")}',this)"
+          style="padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s"
+          onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(!this.dataset.added)this.style.borderColor='var(--border)'">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--text)">${w.mot}</div>
+          <div style="font-size:0.65rem;color:var(--text-muted)">${w.trad}</div>
+          <div style="font-size:0.58rem;color:var(--accent);margin-top:3px">+ Ajouter</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  } catch(e){el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur parsing — réessaie</div>';}
+}
 
 function addSuggestedWord(lang, mot, trad, el) {
   if(!state.langues[lang])return;
@@ -4429,6 +4526,17 @@ function addSuggestedWord(lang, mot, trad, el) {
 }
 
 // ======= FIX FORMATION - Suggestion IA + Supprimer =======
+async function suggestFormation() {
+  const el=document.getElementById('formationSuggestionResult');
+  if(!el)return;
+  el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+  const modules=(state.modules||[]).map(m=>m.name).join(', ')||'aucun';
+  const certs=(state.customCerts||[]).map(c=>c.name).join(', ')||'aucune';
+  const prompt=`Tu es conseiller en formation professionnelle France. Profil: support IT dans une ESN, vise transition vers éditeur logiciel / formateur indépendant Qualiopi, domaines compta/IT. Modules actuels: ${modules}. Certifications: ${certs}. Recommande 5 formations ou certifications prioritaires avec: nom, pourquoi, durée, financement CPF possible ou non. Sois concis et actionnable.`;
+  const text=await callGemini('',prompt,800);
+  if(text){el.innerHTML=`<div style="font-size:0.75rem;color:var(--text);line-height:1.7;padding:14px;background:var(--surface2);border-radius:10px">${text.split('\n').join('<br>')}</div>`;}
+  else{el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Configure ta clé Groq dans Digital → Paramètres</div>';}
+}
 
 // ======= HABITUDES =======
 function addHabitude() {
@@ -4686,6 +4794,27 @@ function renderAV() {
 }
 
 // ======= IA INVEST =======
+async function askInvestAdvice() {
+  const q = document.getElementById('investQuestion')?.value.trim();
+  if(!q){showToast('Pose une question !');return;}
+  const chat = document.getElementById('investAdviceChat');
+  if(!chat)return;
+  chat.innerHTML += `<div class="ai-msg user" style="text-align:right;margin-bottom:8px;font-size:0.75rem;color:var(--text)">${q}</div>`;
+  document.getElementById('investQuestion').value = '';
+  const typingEl = document.createElement('div');
+  typingEl.className = 'ai-typing';
+  typingEl.style.cssText = 'padding:8px 0;margin-bottom:8px';
+  typingEl.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(typingEl);
+  chat.scrollTop = chat.scrollHeight;
+  const peaVal = (state.envPositions?.pea||[]).reduce((s,p)=>s+p.current*p.qty,0);
+  const ctoVal = (state.envPositions?.cto||[]).reduce((s,p)=>s+p.current*p.qty,0);
+  const context = `Tu es un conseiller en investissement. Profil: particulier français, patrimoine PEA ${peaVal.toFixed(0)}€, CTO ${ctoVal.toFixed(0)}€. Conseil non contractuel, à titre informatif uniquement. Sois concis et pratique.`;
+  typingEl.remove();
+  const text = await callGemini(context, q, 800) || 'Erreur de connexion — vérifie ta clé Groq dans Digital → Paramètres.';
+  chat.innerHTML += `<div class="ai-msg assistant" style="margin-bottom:8px;font-size:0.75rem;color:var(--text-muted);line-height:1.6;padding:10px;background:var(--surface2);border-radius:8px">${text.split('\n').join('<br>')}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
 
 // ======= MOBILE NAVIGATION =======
 function mobileTab(name, btn) {
@@ -4705,8 +4834,7 @@ function mobileTab(name, btn) {
   if(name==='finances'){renderBudget();renderFinance2();}
   if(name==='synthese'){renderKPIs();renderAlerts();renderBadges();renderRappels();
 renderLearningStreak();}
-  if(name==='apprentissage'){renderApprenti();
-applyLangSettings();switchApprTab('journal');}
+  if(name==='apprentissage'){renderApprenti();switchApprTab('journal');}
   if(name==='formation'){renderFormation();switchFormTab('roadmap');}
   if(name==='carriere'){renderCandidatures();switchCarrTab('candidatures');}
   if(name==='bienetre'){renderHabitudes();renderHydration();renderPoids();}
@@ -5121,88 +5249,31 @@ function showMobileRestoreBanner() {
   document.body.prepend(banner);
 }
 
+
 // ======= LANGUE TOGGLE =======
 function toggleLangSettings() {
   const el = document.getElementById('langSettingsPanel');
   if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
-
 function toggleLang(lang, enabled) {
-  if(!state.langSettings) state.langSettings = {en:true, es:true, it:false, ru:false};
+  if(!state.langSettings) state.langSettings = {en:true,es:true,it:false,ru:false};
   state.langSettings[lang] = enabled;
   save();
   applyLangSettings();
-  // If we disabled the current active lang, switch to first enabled
   if(!enabled) {
-    const firstEnabled = ['en','es','it','ru'].find(l => state.langSettings[l]);
-    if(firstEnabled) switchLang(firstEnabled);
+    const first = ['en','es','it','ru'].find(l => state.langSettings[l] !== false);
+    if(first) switchLang(first);
   }
 }
-
 function applyLangSettings() {
-  if(!state.langSettings) state.langSettings = {en:true, es:true, it:false, ru:false};
+  if(!state.langSettings) state.langSettings = {en:true,es:true,it:false,ru:false};
   ['en','es','it','ru'].forEach(lang => {
     const btn = document.getElementById('ltab-'+lang);
-    const checkbox = document.getElementById('lang-toggle-'+lang);
-    const enabled = state.langSettings[lang] !== false; // default true for en/es
+    const cb = document.getElementById('lang-toggle-'+lang);
+    const enabled = state.langSettings[lang] !== false;
     if(btn) btn.style.display = enabled ? '' : 'none';
-    if(checkbox) checkbox.checked = enabled;
+    if(cb) cb.checked = enabled;
   });
-  // Default: en and es enabled, it and ru disabled
-  const defaults = {en:true, es:true, it:false, ru:false};
-  if(!state.langSettings) state.langSettings = defaults;
-}
-
-function deleteFilm(id){state.films=state.films.filter(f=>f.id!==id);save();renderFilms();}
-function setFilmNote(id,note){const f=state.films.find(f=>f.id===id);if(f){f.note=note;save();renderFilms();}}
-function toggleFilmStatus(id){const f=state.films.find(f=>f.id===id);if(!f)return;f.status=f.status==='avoir'?'vu':f.status==='vu'?'abandonné':'avoir';save();renderFilms();}
-function addFilmSuggestion(title){if(!state.films)state.films=[];state.films.push({id:Date.now(),titre:title,status:'avoir',note:0,genre:'Autre'});save();renderFilms();showToast('Film ajouté ✓');}
-// ======= STUBS =======
-function addDCA(){showToast('Fonctionnalité en cours de mise à jour');}
-function addFilm(){showToast('Fonctionnalité en cours de mise à jour');}
-function setFilmFilter(){showToast('Fonctionnalité en cours de mise à jour');}
-
-async function getFilmSummary(id){
-  const f=state.films.find(f=>f.id===id);
-  if(!f)return;
-  const el=document.getElementById('film-sum-'+id);
-  if(!el)return;
-  el.innerHTML='<div class="ai-typing" style="padding:4px 0"><span></span><span></span><span></span></div>';
-  const text = await callGemini('Critique ciné. 2-3 phrases max: synopsis sans spoiler + pourquoi voir.', `Présente le film "${f.title}" (${f.year}).`, 200);
-  if(text) el.innerHTML=`<div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5;margin-top:6px;padding:8px;background:var(--surface);border-radius:6px">${text.split('\n').join('<br>')}</div>`;
-  else el.innerHTML='';
-}
-
-async function callGemini(systemPrompt, userMessage, maxTokens=800) {
-  const key = getAIKey();
-  if (!key) {
-    showToast('⚙️ Configure ta clé IA dans Digital → Paramètres !');
-    return null;
-  }
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${key}`
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [
-          ...(systemPrompt ? [{role:'system', content: systemPrompt}] : []),
-          {role:'user', content: userMessage}
-        ],
-        max_tokens: maxTokens,
-        temperature: 0.7
-      })
-    });
-    const data = await res.json();
-    if (data.error) { console.error('Groq error:', data.error); return null; }
-    return data.choices?.[0]?.message?.content || null;
-  } catch(e) {
-    console.error('Groq error:', e);
-    return null;
-  }
 }
 
 // ======= AUTO-REFRESH MINUIT =======
@@ -5248,6 +5319,7 @@ renderLearningStreak();
 renderFocus();
 renderFinance2();
 renderDigital();
+applyLangSettings();
 initApiSettings();
 initSyncStatus();
 // Load from cloud on startup if configured
@@ -5284,7 +5356,6 @@ if(!state.digitalRules)state.digitalRules=[{id:1,text:"Pas plus d'1h de jeu vid�
 if(!state.screenTime)state.screenTime={};
 save();
 // Météo async
-
 if(state.savingsGoal)document.getElementById('savingsGoal').value=state.savingsGoal;
 scheduleMidnightRefresh();
 </script>
