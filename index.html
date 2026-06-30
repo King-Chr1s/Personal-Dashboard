@@ -487,60 +487,6 @@
 <!-- ===== BIEN-ÊTRE ===== -->
 <!-- ===== BIEN-ÊTRE ===== -->
 <div class="panel" id="panel-bienetre">
-  <div class="grid-2" style="margin-bottom:20px">
-    <div class="card">
-      <div class="card-title">😴 Sommeil cette nuit</div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
-        <div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Couché</div><input class="inp" type="time" id="sleepBed" style="width:110px" oninput="saveSleep()"/></div>
-        <div><div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Levé</div><input class="inp" type="time" id="sleepWake" style="width:110px" oninput="saveSleep()"/></div>
-        <div id="sleepDuration" style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--accent)">—</div>
-      </div>
-      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Qualité</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="sleepQualityBtns">
-        <div onclick="saveSleepQuality(1)" id="sq-1" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap">😴 Mauvaise</div>
-        <div onclick="saveSleepQuality(2)" id="sq-2" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap">😐 Moyenne</div>
-        <div onclick="saveSleepQuality(3)" id="sq-3" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap">😊 Bonne</div>
-        <div onclick="saveSleepQuality(4)" id="sq-4" style="padding:6px 10px;border-radius:8px;font-size:0.65rem;cursor:pointer;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap">🌟 Excellente</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">⚡ Humeur & Énergie</div>
-      <div style="margin-bottom:14px">
-        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Énergie (1–5)</div>
-        <div style="display:flex;gap:6px" id="energyBtns">
-          <div onclick="saveEnergy(1)" id="en-1" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">1</div>
-          <div onclick="saveEnergy(2)" id="en-2" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">2</div>
-          <div onclick="saveEnergy(3)" id="en-3" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">3</div>
-          <div onclick="saveEnergy(4)" id="en-4" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">4</div>
-          <div onclick="saveEnergy(5)" id="en-5" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">5</div>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Humeur</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap" id="moodBtns">
-          <div onclick="saveMood('😤')" id="mood-0" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border)">😤</div>
-          <div onclick="saveMood('😔')" id="mood-1" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border)">😔</div>
-          <div onclick="saveMood('😐')" id="mood-2" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border)">😐</div>
-          <div onclick="saveMood('🙂')" id="mood-3" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border)">🙂</div>
-          <div onclick="saveMood('😄')" id="mood-4" style="width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--surface2);border:1px solid var(--border)">😄</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">🙏 Gratitude du jour</div>
-    <textarea class="inp" id="gratitudeText" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Aujourd'hui je suis reconnaissant pour..." oninput="saveGratitude()"></textarea>
-    <input class="inp" type="text" id="bienetrNote" placeholder="Une pensée, une observation..." style="width:100%;margin-top:8px" oninput="saveGratitude()"/>
-  </div>
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title">📝 Rétrospective hebdomadaire</div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div><div style="font-size:0.62rem;color:#4adb8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">✅ Ce qui a bien marché</div><textarea class="inp" id="retroGood" rows="2" style="width:100%;resize:none;font-size:0.75rem" placeholder="Ex: 4 séances sport..." oninput="saveRetro()"></textarea></div>
-      <div><div style="font-size:0.62rem;color:#f05a5a;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">⚠️ Ce qui a bloqué</div><textarea class="inp" id="retroBlock" rows="2" style="width:100%;resize:none;font-size:0.75rem" placeholder="Ex: manque de sommeil..." oninput="saveRetro()"></textarea></div>
-      <div><div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">🎯 1 ajustement</div><input class="inp" type="text" id="retroNext" placeholder="Ex: coucher à 23h max" style="width:100%" oninput="saveRetro()"/></div>
-    </div>
-    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-primary" onclick="saveRetroEntry()">Sauvegarder →</button></div>
-  </div>
   
 
   <!-- Habitudes quotidiennes -->
@@ -1914,55 +1860,6 @@ function getBienetrDay() {
   const t=today(); if(!state.bienetre[t])state.bienetre[t]={bed:'',wake:'',sleepQ:0,energy:0,mood:'',gratitude:'',note:''};
   return state.bienetre[t];
 }
-function saveSleep() {
-  const d=getBienetrDay();
-  d.bed=document.getElementById('sleepBed').value; d.wake=document.getElementById('sleepWake').value;
-  if(d.bed&&d.wake){
-    const [bh,bm]=d.bed.split(':').map(Number); let [wh,wm]=d.wake.split(':').map(Number);
-    let diff=(wh*60+wm)-(bh*60+bm); if(diff<0)diff+=24*60;
-    const h=Math.floor(diff/60),m=diff%60;
-    const el=document.getElementById('sleepDuration');
-    el.textContent=`${h}h${m>0?m+'min':''}`; el.style.color=h>=7?'#4adb8a':h>=6?'#f4a261':'#f05a5a';
-  }
-  save();
-}
-function saveSleepQuality(q) {
-  getBienetrDay().sleepQ=q; save();
-  document.querySelectorAll('[id^="sq-"]').forEach(el=>{
-    const n=parseInt(el.id.split('-')[1]);
-    el.style.background=n===q?'#7b5ea7':'var(--surface2)'; el.style.color=n===q?'#fff':'var(--text-muted)'; el.style.borderColor=n===q?'#7b5ea7':'var(--border)';
-  });
-}
-function saveEnergy(n) {
-  getBienetrDay().energy=n; save();
-  const colors=['','#f05a5a','#f4a261','#c8f04a','#4adb8a','#48cae4'];
-  document.querySelectorAll('[id^="en-"]').forEach(el=>{
-    const v=parseInt(el.id.split('-')[1]);
-    el.style.background=v<=n?colors[n]:'var(--surface2)'; el.style.color=v<=n?'#0e0e11':'var(--text-muted)'; el.style.borderColor=v<=n?colors[n]:'var(--border)';
-  });
-}
-function saveMood(emoji) {
-  getBienetrDay().mood=emoji; save();
-  ['😤','😔','😐','🙂','😄'].forEach((e,i)=>{
-    const el=document.getElementById('mood-'+i);
-    if(el){el.style.background=e===emoji?'#7b5ea7':'var(--surface2)'; el.style.borderColor=e===emoji?'#7b5ea7':'var(--border)';}
-  });
-}
-function saveGratitude() {
-  const d=getBienetrDay(); d.gratitude=document.getElementById('gratitudeText').value; d.note=document.getElementById('bienetrNote').value; save();
-}
-function saveRetro() {
-  if(!state.currentRetro)state.currentRetro={};
-  state.currentRetro.good=document.getElementById('retroGood').value;
-  state.currentRetro.block=document.getElementById('retroBlock').value;
-  state.currentRetro.next=document.getElementById('retroNext').value; save();
-}
-function saveRetroEntry() {
-  if(!state.retros)state.retros=[];
-  state.retros.unshift({id:Date.now(),date:today(),week:getWeekNumber(new Date()),good:document.getElementById('retroGood').value,block:document.getElementById('retroBlock').value,next:document.getElementById('retroNext').value});
-  ['retroGood','retroBlock','retroNext'].forEach(id=>document.getElementById(id).value='');
-  save(); renderBienetre(); showToast('Rétrospective sauvegardée ✓');
-}
 const SPORT_DAYS=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const SPORT_COLORS=['#48cae4','#c8f04a','#f4a261','#7b5ea7','#4adb8a','#f05a5a','#9b8cff'];
 const SPORT_SUGGESTIONS={
@@ -2845,91 +2742,56 @@ const FORM_ROADMAP = [
 
 const FORM_COMPETENCES = [
   {
-    domaine:'🧾 Comptabilité / Gestion',
-    ordre:['Sage 100 Compta','Excel avancé + Power Query','Cegid Business','DCG (VAE possible)','SAP Business One'],
+    domaine:'💻 IT Support N1 → N2',
+    ordre:['ITIL 4 Foundation','Microsoft 365 (MS-900)','PowerShell bases','Power BI'],
     items:[
-      {name:'Sage 100 Compta',niveau:'Priorité 1 🔴',detail:'Maîtrise avancée : clôtures mensuelles/annuelles, états financiers, paramétrage TVA, rapprochements bancaires. Certification officielle Sage recommandée.'},
-      {name:'Excel avancé + Power Query',niveau:'Priorité 1 🔴',detail:'TCD, formules avancées (INDEX/EQUIV, SUMIFS), Power Query pour connexion données ERP, Power Pivot. Standard absolu en compta.'},
-      {name:'Cegid Business / Loop',niveau:'Priorité 2 🟡',detail:'ERP comptable leader PME en France. Facturation, comptabilité, paie. Formation Cegid Academy (payante) ou YouTube officiel.'},
-      {name:'DCG / VAE',niveau:'Priorité 2 🟡',detail:'Si BTS CG en poche, la VAE (Validation Acquis Expérience) permet de valider tout ou partie du DCG sans reprendre les cours. Contacter un CFA comptable.'},
-      {name:'SAP Business One',niveau:'Priorité 3 🟢',detail:'ERP PME international. Notions suffisantes pour commencer. Certif SAP PartnerEdge pour aller plus loin. Utile en ESN.'},
+      {name:'ITIL 4 Foundation',niveau:'Priorité 1 🔴',detail:"Référentiel ITSM universel. Gestion des incidents, problèmes, changements. Examen ~300€, CPF possible. Indispensable pour passer N2."},
+      {name:'Microsoft 365 (MS-900)',niveau:'Priorité 1 🔴',detail:"Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€."},
+      {name:'PowerShell bases',niveau:'Priorité 2 🟡',detail:"Automatisation Windows, gestion AD, scripts de déploiement. Indispensable pour passer N2."},
+      {name:'Power BI',niveau:'Priorité 2 🟡',detail:"Tableau de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN."},
     ]
   },
   {
-    domaine:'💻 IT / Support',
-    ordre:['ITIL 4 Foundation','Microsoft 365 (MS-900)','PowerShell bases','Azure AD / Intune','Power BI'],
+    domaine:'🔧 Consultant ERP / Compta',
+    ordre:['Excel avancé + Power Query','Comptabilité générale','Cegid ou SAP (selon poste)'],
     items:[
-      {name:'ITIL 4 Foundation',niveau:'Priorité 1 🔴',detail:'Référentiel ITSM universel. Gestion des incidents, problèmes, changements. Examen ~300€, CPF possible. Indispensable pour évoluer en IT.'},
-      {name:'Microsoft 365 (MS-900)',niveau:'Priorité 1 🔴',detail:'Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€. Passeport vers les certifs MS avancées.'},
-      {name:'Power BI',niveau:'Priorité 2 🟡',detail:'Tableau de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN compta/IT. Complément parfait à Excel.'},
-      {name:'PowerShell bases',niveau:'Priorité 2 🟡',detail:'Automatisation Windows, gestion AD, scripts de déploiement. Indispensable pour passer N2.'},
-      {name:'Azure AD / Intune',niveau:'Priorité 3 🟢',detail:'Gestion identités et appareils cloud. Complément naturel de M365. Certification MS-102.'},
+      {name:'Excel avancé + Power Query',niveau:'Priorité 1 🔴',detail:"TCD, formules avancées, Power Query pour connexion données ERP. Standard absolu pour consultant ERP."},
+      {name:'Comptabilité générale',niveau:'Priorité 2 🟡',detail:"Bases comptables solides indispensables pour comprendre les flux ERP côté métier."},
+      {name:'ERP spécifique au poste',niveau:'Priorité 3 🟢',detail:"Se former sur l'ERP utilisé par ton futur employeur (Sage, Cegid, SAP) une fois le poste identifié — formation ciblée plus efficace qu'anticipée."},
     ]
   },
   {
-    domaine:"🧑‍💻 Codage — Apprentissage perso",
-    ordre:['HTML/CSS/JS','Python','SQL','Git','API REST'],
+    domaine:'🎓 Formateur indépendant',
+    ordre:['Titre FPA','Qualiopi','Articulate Rise'],
     items:[
-      {name:'HTML/CSS/JS',niveau:'Priorité 1 🔴',detail:"Tu codes déjà ce dashboard ! Continue avec des projets concrets. Ressource : The Odin Project (gratuit, complet)."},
-      {name:'Python',niveau:'Priorité 2 🟡',detail:"Langage polyvalent : scripts, automatisation, data. Ressource : CS50P Harvard (gratuit), Automate the Boring Stuff."},
-      {name:'SQL',niveau:'Priorité 2 🟡',detail:"Incontournable pour extraction ERP, reporting, BI. Complément parfait à Power BI. Ressource : SQLZoo (gratuit)."},
-      {name:'Git / GitHub',niveau:'Priorité 3 🟢',detail:"Versioning de tes projets. Indispensable pour collaborer ou héberger des projets. Gratuit sur git-scm.com."},
-      {name:'API REST / JSON',niveau:'Priorité 3 🟢',detail:"Comprendre les APIs pour automatiser des tâches et connecter des outils. Très utile en ESN."},
-    ]
-  },
-  {
-    domaine:'🎓 Pédagogie / Formateur',
-    ordre:['Titre FPA','Qualiopi','Articulate Storyline','Miro / Klaxoon','Micro-entrepreneur'],
-    items:[
-      {name:'Titre FPA (Formateur Pro Adultes)',niveau:'Priorité 1 🔴',detail:'Titre RNCP niveau 5, reconnu par les OPCO. Obligatoire pour certains marchés. Finançable CPF. Durée : 6-12 mois selon rythme.'},
-      {name:'Certification Qualiopi',niveau:'Priorité 1 🔴',detail:'Obligatoire pour accéder aux financements CPF/OPCO. Audit de tes pratiques qualité. Se prépare en amont via le référentiel RNQ.'},
-      {name:'Articulate Storyline / Rise',niveau:'Priorité 2 🟡',detail:'Logiciels de création e-learning standards du marché. Rise (simple) puis Storyline (avancé). Tutoriels gratuits sur Articulate Community.'},
-      {name:'Miro / Klaxoon',niveau:'Priorité 3 🟢',detail:"Outils d'animation à distance. Indispensables pour formations hybrides ou 100% distanciel."},
+      {name:'Titre FPA (Formateur Pro Adultes)',niveau:'Priorité 1 🔴',detail:"Titre RNCP niveau 5, reconnu par les OPCO. Obligatoire pour certains marchés. Finançable CPF. Durée 6-12 mois."},
+      {name:'Certification Qualiopi',niveau:'Priorité 1 🔴',detail:"Obligatoire pour accéder aux financements CPF/OPCO. Audit de tes pratiques qualité."},
+      {name:'Articulate Rise',niveau:'Priorité 2 🟡',detail:"Outil e-learning simple et professionnel. Tutoriels gratuits sur Articulate Community."},
     ]
   },
 ];
 
 const FORM_RESSOURCES = [
   {
-    cat:'🧾 Comptabilité — 100% gratuit',
+    cat:'💻 IT Support — 100% gratuit',
     items:[
-      {name:'Compta-facile.com',url:'https://www.compta-facile.com',desc:'Cours complets comptabilité générale, fiches pratiques, QCM. Le meilleur site FR gratuit.',cpf:false,duree:'À ton rythme'},
-      {name:'YouTube — Comptabilité Cours',url:'https://www.youtube.com/@ComptabiliteCours',desc:'Chaîne pédagogique française, du niveau BTS au DCG. Très bien expliqué.',cpf:false,duree:'À ton rythme'},
-      {name:'Sage Academy (modules gratuits)',url:'https://academy.sage.com/fr-fr',desc:'Modules d\'\2nitiation Sage 100 gratuits. Accès avec compte Sage.',cpf:false,duree:'2-5h par module'},
-      {name:'VAE — Info officielle',url:'https://www.service-public.fr/particuliers/vosdroits/F2401',desc:'Tout sur la Validation des Acquis pour le DCG. Finançable CPF.',cpf:true,duree:'6-18 mois'},
+      {name:'Microsoft Learn',url:'https://learn.microsoft.com/fr-fr',desc:"Formations officielles Microsoft 100% gratuites. ITIL, M365, Power BI. Prépare les certifs.",cpf:false,duree:'Modules 1-8h'},
+      {name:'IT-Connect.fr',url:'https://www.it-connect.fr',desc:"Tutoriels Windows Server, Active Directory, PowerShell. Excellente qualité.",cpf:false,duree:'À ton rythme'},
     ]
   },
   {
-    cat:'💻 IT / Microsoft — 100% gratuit',
+    cat:'📊 Excel & Power BI — 100% gratuit',
     items:[
-      {name:'Microsoft Learn',url:'https://learn.microsoft.com/fr-fr',desc:'Formations officielles Microsoft 100% gratuites. ITIL, M365, Azure, Power BI. Prépare les certifs.',cpf:false,duree:'Modules de 1-8h'},
-      {name:'IT-Connect.fr',url:'https://www.it-connect.fr',desc:'Tutoriels Windows Server, Active Directory, Azure, PowerShell. Excellente qualité.',cpf:false,duree:'À ton rythme'},
-      {name:'Google IT Support (Coursera)',url:'https://www.coursera.org/professional-certificates/google-it-support',desc:'Auditable gratuitement. Certificat payant mais contenu accessible sans payer.',cpf:false,duree:'6 mois (~5h/sem)'},
-      {name:'OpenClassrooms — IT gratuit',url:'https://openclassrooms.com/fr/courses?subjects=it',desc:'Cours gratuits sans certif. Les certifications sont payantes mais les cours restent accessibles.',cpf:false,duree:'Variable'},
-    ]
-  },
-  {
-    cat:'📊 Power BI / Data — 100% gratuit',
-    items:[
-      {name:'Microsoft Learn — Power BI',url:'https://learn.microsoft.com/fr-fr/training/powerplatform/power-bi',desc:"Parcours officiel Microsoft Power BI, du débutant à l'avancé. Gratuit et certifiant.",cpf:false,duree:'20-40h'},
-      {name:'YouTube — Guy in a Cube',url:'https://www.youtube.com/@GuyInACube',desc:'La référence YouTube Power BI (anglais B2+). Très pratique et régulièrement mis à jour.',cpf:false,duree:'À ton rythme'},
-    ]
-  },
-  {
-    cat:"🧑‍💻 Codage — 100% gratuit",
-    items:[
-      {name:'The Odin Project',url:'https://www.theodinproject.com',desc:"Parcours complet HTML/CSS/JS. Gratuit, communauté active, projets concrets.",cpf:false,duree:'6-12 mois'},
-      {name:'CS50 Harvard (Python)',url:'https://cs50.harvard.edu/python',desc:"Meilleur cours intro Python. Gratuit, certif disponible, exercices excellents.",cpf:false,duree:'10 semaines'},
-      {name:'freeCodeCamp',url:'https://www.freecodecamp.org',desc:"HTML, CSS, JS, Python, SQL — tout gratuit avec certifications reconnues.",cpf:false,duree:'À ton rythme'},
-      {name:'SQLZoo',url:'https://sqlzoo.net',desc:"Apprendre SQL par la pratique, directement dans le navigateur. 100% gratuit.",cpf:false,duree:'5-10h'},
+      {name:'Microsoft Learn — Power BI',url:'https://learn.microsoft.com/fr-fr/training/powerplatform/power-bi',desc:"Parcours officiel Power BI, du débutant à l'avancé. Gratuit et certifiant.",cpf:false,duree:'20-40h'},
+      {name:'YouTube — Guy in a Cube',url:'https://www.youtube.com/@GuyInACube',desc:"Référence YouTube Power BI (anglais B2+). Très pratique.",cpf:false,duree:'À ton rythme'},
     ]
   },
   {
     cat:'🎓 Formateur — Gratuit / CPF',
     items:[
-      {name:'Mon Compte Formation (CPF)',url:'https://www.moncompteformation.gouv.fr',desc:'Titre FPA et nombreuses formations finançables sur ton CPF. Vérifie ton solde.',cpf:true,duree:'Variable'},
-      {name:'Articulate Community',url:'https://community.articulate.com',desc:'Tutoriels gratuits pour Storyline et Rise. Forum très actif, ressources téléchargeables.',cpf:false,duree:'À ton rythme'},
-      {name:'Centre Inffo',url:'https://www.centre-inffo.fr',desc:'Veille sur la formation professionnelle en France. Gratuit, newsletters utiles.',cpf:false,duree:'Veille régulière'},
+      {name:'Mon Compte Formation (CPF)',url:'https://www.moncompteformation.gouv.fr',desc:"Titre FPA et formations finançables sur ton CPF. Vérifie ton solde.",cpf:true,duree:'Variable'},
+      {name:'Articulate Community',url:'https://community.articulate.com',desc:"Tutoriels gratuits pour Rise. Forum très actif.",cpf:false,duree:'À ton rythme'},
+      {name:'Centre Inffo',url:'https://www.centre-inffo.fr',desc:"Veille formation professionnelle France. Newsletters utiles.",cpf:false,duree:'Veille régulière'},
     ]
   },
 ];
@@ -2938,11 +2800,8 @@ const FORM_CERTIFS = [
   {name:'ITIL 4 Foundation',cat:'IT',cout:'~300 €',duree:'3-5 jours',cpf:true,priorite:1,desc:'Référentiel ITSM universel. Examen Pearson VUE, disponible en français.'},
   {name:'Microsoft MS-900',cat:'IT',cout:'~100 €',duree:'1-2 jours',cpf:false,priorite:1,desc:'Fondamentaux Microsoft 365. Préparation 100% gratuite sur Microsoft Learn.'},
   {name:'Microsoft PL-300 (Power BI)',cat:'IT',cout:'~165 €',duree:'1 semaine',cpf:false,priorite:2,desc:'Certification Power BI officielle Microsoft. Très demandée en ESN.'},
-  {name:'Sage 100 — Certification officielle',cat:'Comptabilité',cout:'~200-400 €',duree:'2-3 jours',cpf:false,priorite:1,desc:'Certification officielle Sage. Accès via Sage Academy. Très valorisée en ESN compta.'},
-  {name:'DCG — VAE',cat:'Comptabilité',cout:'Frais dossier ~300 €',duree:'6-18 mois',cpf:true,priorite:2,desc:'Validation Acquis Expérience. Si BTS CG obtenu, possibilité de valider certaines UE du DCG.'},
   {name:'Titre FPA (Formateur Pro Adultes)',cat:'Formation',cout:'Finançable OPCO/CPF',duree:'6-12 mois',cpf:true,priorite:1,desc:'RNCP niveau 5. Obligatoire ou très recommandé pour devenir formateur indépendant.'},
   {name:'Qualiopi',cat:'Formation',cout:'~1500-3000 €',duree:'6-12 mois prépa',cpf:false,priorite:2,desc:'Obligatoire pour accéder aux financements CPF. Audit qualité par organisme accrédité.'},
-  {name:'CompTIA A+',cat:'IT',cout:'~250 € (x2 examens)',duree:'1-3 mois',cpf:false,priorite:3,desc:'Certification IT support internationale. Reconnue en milieu anglophone.'},
 ];
 
 const CV_SITES = [
@@ -4406,10 +4265,8 @@ function calcSalaire() {
 
 const EVOLUTION_DATA = [
   {role:'Technicien IT Support N1/N2',salaire:'28 000 — 36 000 €/an',color:'#48cae4',attendus:['Active Directory, Microsoft 365','Tickets GLPI/ServiceNow','ITIL Foundation','Relationnel et réactivité'],evolution:'→ N3, Chef de projet IT, Admin sys'},
-  {role:'Administrateur systèmes & réseaux',salaire:'38 000 — 52 000 €/an',color:'#c8f04a',attendus:['PowerShell, Azure AD','Virtualisation VMware/Hyper-V','Certif CompTIA / Microsoft','Anglais technique B2+'],evolution:'→ Architecte SI, DSI, Consultant'},
-  {role:'Consultant logiciel ERP/Compta',salaire:'38 000 — 55 000 €/an',color:'#f4a261',attendus:['Sage, Cegid ou SAP','Comptabilité générale niveau DCG','Pédagogie et formation','Certification éditeur'],evolution:'→ Chef de projet ERP, Formateur'},
+  {role:'Consultant logiciel ERP/Compta',salaire:'38 000 — 55 000 €/an',color:'#f4a261',attendus:['Sage, Cegid ou SAP','Comptabilité générale','Pédagogie et formation','Certification éditeur'],evolution:'→ Chef de projet ERP, Formateur'},
   {role:'Formateur indépendant (Qualiopi)',salaire:'400 — 900 €/jour',color:'#9b8cff',attendus:['Expertise terrain 3-5 ans min','Titre FPA ou équivalent RNCP','Qualiopi obligatoire pour CPF','Outils e-learning (Articulate)'],evolution:'→ Plateforme formation, Organisme'},
-  {role:'Comptable / Chef comptable',salaire:'32 000 — 55 000 €/an',color:'#4adb8a',attendus:['DCG minimum','Sage 100 ou Cegid','Rigueur et autonomie','Maîtrise fiscale et sociale'],evolution:'→ DAF, Expert-comptable (DEC)'},
 ];
 
 function renderSalaires() {
