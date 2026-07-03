@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Mon Tableau">
 <link rel="manifest" href="manifest.json">
-<title>Dashboard · Chris v2.10</title>
+<title>Dashboard · Chris v2.11</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -354,7 +354,7 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
     <div class="week-badge" id="weekBadge">Semaine —</div>
-    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.10 — Dashboard Personnel</div>
+    <div style="font-size:0.58rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase">v2.11 — Dashboard Personnel</div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
       <div id="iaStatusBadge" onclick="switchTabFromRappel('digital')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(244,162,97,0.15);color:#f4a261;border:1px solid rgba(244,162,97,0.3)">⚙️ Configurer APIs</div>
       <div onclick="switchTabFromRappel('synthese')" style="font-size:0.58rem;padding:3px 10px;border-radius:999px;cursor:pointer;background:rgba(240,90,90,0.12);color:#f05a5a;border:1px solid rgba(240,90,90,0.3);display:none" id="rappelsBadge">0</div>
@@ -366,7 +366,7 @@
   <button class="tab active" onclick="switchTab('synthese')">📊 Synthèse</button>
   <button class="tab" onclick="switchTab('objectifs')">🎯 Objectifs</button>
   <button class="tab" onclick="switchTab('planning')">⏱️ Planning</button>
-  <button class="tab" onclick="switchTab('bienetre')">🧘 Bien-être</button>
+  
   <button class="tab" onclick="switchTab('sport')">💪 Sport</button>
   <button class="tab" onclick="switchTab('alimentation')">🍽️ Alimentation</button>
   <button class="tab" onclick="switchTab('mediatheque')">🎬 Médiathèque</button>
@@ -374,7 +374,7 @@
   <button class="tab" onclick="switchTab('invest')">📈 Invest.</button>
   <button class="tab" onclick="switchTab('finances')">💶 Finances</button>
   <button class="tab" onclick="switchTab('formation')">🎓 Formation</button>
-  <button class="tab" onclick="switchTab('apprentissage')">🧠 Apprentissage</button>
+  
   <button class="tab" onclick="switchTab('carriere')">💼 Carrière</button>
   <button class="tab" onclick="switchTab('digital')">📱 Digital</button>
 </div>
@@ -411,12 +411,30 @@
   <!-- Rappels intelligents -->
   <div id="rappelsContainer" style="margin-bottom:20px"></div>
 
+  <!-- Score semaine -->
+  <div id="scoreSemaine" style="margin-bottom:16px"></div>
+
   <!-- Objectif apprentissage semaine -->
   <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(155,140,255,0.07),rgba(72,202,228,0.05));border-color:rgba(155,140,255,0.2)">
     <div class="card-title" style="color:#9b8cff">🎯 Objectif d'apprentissage de la semaine</div>
     <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:10px">Une seule chose à la fois — la constance fait la différence.</div>
     <input class="inp" type="text" id="learningObjective" placeholder="Ex: Maîtriser les TCD Excel, 15 min/jour..." style="width:100%;margin-bottom:8px" oninput="saveLearningObjective()"/>
     <div id="learningStreak" style="font-size:0.68rem;color:var(--text-muted)"></div>
+  </div>
+
+  <!-- Habitudes quotidiennes -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🎯 Habitudes du jour</div>
+    <div id="habitudesList"></div>
+    <div class="add-row" style="margin-top:12px">
+      <input class="inp" type="text" id="habitudeInput" placeholder="Ex: Lecture 10 min, Marche..." style="flex:1" onkeydown="if(event.key==='Enter')addHabitude()"/>
+      <select class="inp" id="habitudeEmoji" style="width:60px">
+        <option>📚</option><option>🚶</option><option>💧</option><option>🧘</option>
+        <option>💪</option><option>🥗</option><option>😴</option><option>✍️</option>
+        <option>🌿</option><option>🎯</option>
+      </select>
+      <button class="btn btn-primary" onclick="addHabitude()">+</button>
+    </div>
   </div>
 
   <!-- Récap hebdomadaire -->
@@ -484,46 +502,6 @@
 </div>
 
 
-<!-- ===== BIEN-ÊTRE ===== -->
-<!-- ===== BIEN-ÊTRE ===== -->
-<div class="panel" id="panel-bienetre">
-  
-
-  <!-- Habitudes quotidiennes -->
-  <div class="card section-gap">
-    <div class="card-title">🎯 Habitudes quotidiennes</div>
-    <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Micro-habitudes à cocher chaque jour. La régularité fait la différence.</div>
-    <div id="habitudesList"></div>
-    <div class="add-row" style="margin-top:14px">
-      <input class="inp" type="text" id="habitudeInput" placeholder="Ex: Lecture 10 min, Marche, No alcool..." style="flex:1" onkeydown="if(event.key==='Enter')addHabitude()"/>
-      <select class="inp" id="habitudeEmoji" style="width:60px">
-        <option>📚</option><option>🚶</option><option>💧</option><option>🧘</option>
-        <option>💪</option><option>🥗</option><option>😴</option><option>✍️</option>
-        <option>🌿</option><option>🎯</option>
-      </select>
-      <button class="btn btn-primary" onclick="addHabitude()">+</button>
-    </div>
-  </div>
-
-  <!-- Poids & Hydratation -->
-  <div class="grid-2 section-gap">
-    
-    <div class="card">
-      <div class="card-title">💧 Hydratation</div>
-      <div style="text-align:center;padding:10px 0">
-        <div style="font-family:'DM Serif Display',serif;font-size:3rem;color:#48cae4;line-height:1" id="hydrationCount">0</div>
-        <div style="font-size:0.65rem;color:var(--text-muted);margin:4px 0 16px">verres aujourd'hui / objectif 8</div>
-        <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="hydrationGlasses"></div>
-        <div style="display:flex;gap:8px;justify-content:center">
-          <button class="btn btn-primary" onclick="addGlass()" style="background:#48cae4;color:#0e0e11">+ 1 verre</button>
-          <button class="btn" onclick="removeGlass()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">−</button>
-        </div>
-      </div>
-      <div class="prog-bar-bg" style="margin-top:10px"><div class="prog-bar-fill" id="hydrationBar" style="background:#48cae4;width:0%"></div></div>
-    </div>
-  </div>
-
-</div>
 
 
 <!-- ===== SPORT ===== -->
@@ -603,8 +581,10 @@
     <button class="btn" id="invtab-av" onclick="switchInvEnv('av')" style="background:transparent;border:none;color:var(--text-muted)">🏦 AV</button>
     <button class="btn" id="invtab-livrets" onclick="switchInvEnv('livrets')" style="background:transparent;border:none;color:var(--text-muted)">💰 Livrets</button>
     <button class="btn" id="invtab-crypto" onclick="switchInvEnv('crypto')" style="background:transparent;border:none;color:var(--text-muted)">🪙 Crypto</button>
-    <button class="btn" id="invtab-noncote" onclick="switchInvEnv('noncote')" style="background:transparent;border:none;color:var(--text-muted)">🏢 Non coté</button>
-    <button class="btn" id="invtab-oblig" onclick="switchInvEnv('oblig')" style="background:transparent;border:none;color:var(--text-muted)">📄 Obligations</button>
+      <button class="btn" id="invtab-watchlist" onclick="switchInvEnv('watchlist')" style="background:transparent;border:none;color:var(--text-muted)">👁️ Watchlist</button>
+      <button class="btn" id="invtab-glossaire" onclick="switchInvEnv('glossaire')" style="background:transparent;border:none;color:var(--text-muted)">📖 Glossaire</button>
+    
+    
   </div>
 
   <!-- PEA -->
@@ -718,35 +698,7 @@
     <div id="cryptoList"></div>
   </div>
 
-  <!-- Non coté -->
-  <div id="inv-noncote" class="inv-env-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter un investissement non coté</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="ncName" placeholder="Nom (ex: SCPI, startup…)" style="flex:2"/>
-        <select class="inp" id="ncType"><option value="SCPI">🏠 SCPI</option><option value="Startup">🚀 Startup</option><option value="Immobilier">🏗️ Immobilier</option><option value="Crowdfunding">👥 Crowdfunding</option><option value="Autre">📦 Autre</option></select>
-        <input class="inp" type="number" id="ncMontant" placeholder="Montant investi (€)" style="width:150px"/>
-        <input class="inp" type="number" id="ncRendement" placeholder="Rendement %" style="width:110px" step="0.1"/>
-        <button class="btn btn-primary" onclick="addNonCote()">+</button>
-      </div>
-    </div>
-    <div id="nonCoteList"></div>
-  </div>
-
-  <!-- Obligations -->
-  <div id="inv-oblig" class="inv-env-section" style="display:none">
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Ajouter une obligation</div>
-      <div class="add-row">
-        <input class="inp" type="text" id="obligName" placeholder="Nom (ex: OAT 2027)" style="flex:2"/>
-        <input class="inp" type="number" id="obligMontant" placeholder="Montant (€)" style="width:120px"/>
-        <input class="inp" type="number" id="obligTaux" placeholder="Taux %" style="width:90px" step="0.01"/>
-        <input class="inp" type="date" id="obligEcheance" style="width:140px"/>
-        <button class="btn btn-primary" onclick="addOblig()">+</button>
-      </div>
-    </div>
-    <div id="obligList"></div>
-  </div>
+  
 
   <!-- DCA Tracker -->
   <div class="card section-gap">
@@ -793,6 +745,7 @@
     <button class="btn" id="form-tab-ressources" onclick="switchFormTab('ressources')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🆓 Ressources</button>
     <button class="btn" id="form-tab-tracker" onclick="switchFormTab('tracker')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">⏱️ Tracker</button>
     <button class="btn" id="form-tab-certifs" onclick="switchFormTab('certifs')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🏆 Certifications</button>
+    <button class="btn" id="form-tab-calendrier" onclick="switchFormTab('calendrier')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🗓️ Planning</button>
     <button class="btn" id="form-tab-cv" onclick="switchFormTab('cv')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">📄 CV & Profil</button>
   </div>
 
@@ -834,6 +787,28 @@
 
   <div id="form-certifs" style="display:none"><div id="formCertifsContent"></div></div>
 
+  <!-- Calendrier thématique -->
+  <div id="form-calendrier" style="display:none">
+    <div style="background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border:1px solid rgba(200,240,74,0.15);border-radius:var(--radius);padding:16px;margin-bottom:20px">
+      <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:4px">🗓️ Calendrier souple</div>
+      <div style="font-size:0.72rem;color:var(--text-muted)">Pas un planning rigide — juste une direction. Ajuste librement selon ton énergie et ta dispo.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="card-title">📅 Cette semaine</div>
+        <textarea class="inp" id="cal-semaine" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: SQLZoo 15 min/jour · Vidéo Microsoft Learn ITIL..." oninput="saveCalendrier()"></textarea>
+      </div>
+      <div class="card">
+        <div class="card-title">📆 Ce mois</div>
+        <textarea class="inp" id="cal-mois" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Terminer le module ITIL 4 · Passer MS-900..." oninput="saveCalendrier()"></textarea>
+      </div>
+      <div class="card">
+        <div class="card-title">🗓️ Ce trimestre</div>
+        <textarea class="inp" id="cal-trimestre" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Certif ITIL 4 · Commencer Power BI · SQL bases solides..." oninput="saveCalendrier()"></textarea>
+      </div>
+    </div>
+  </div>
+
   <div id="form-cv" style="display:none">
     <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
       <div class="card-title" style="color:var(--accent)">🎯 Ma note de positionnement</div>
@@ -862,6 +837,28 @@
   </div>
 
 </div>
+  <!-- Watchlist -->
+  <div id="inv-watchlist" class="inv-env-section" style="display:none">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#c8f04a">👁️ Entreprises suivies</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Ton radar de conviction — entreprises à surveiller avant d'investir.</div>
+      <div class="add-row" style="margin-bottom:14px">
+        <input class="inp" type="text" id="watchName" placeholder="Entreprise (ex: LVMH)" style="flex:2;min-width:120px"/>
+        <input class="inp" type="text" id="watchTicker" placeholder="Ticker (ex: MC.PA)" style="width:100px"/>
+        <input class="inp" type="text" id="watchSecteur" placeholder="Secteur" style="width:110px"/>
+        <button class="btn btn-primary" onclick="addWatchlist()">+</button>
+      </div>
+      <div id="watchlistInput" style="margin-bottom:10px">
+        <input class="inp" type="text" id="watchPourquoi" placeholder="Pourquoi tu la suis..." style="width:100%"/>
+      </div>
+      <div id="watchlistItems"></div>
+    </div>
+  </div>
+
+  <!-- Glossaire bourse -->
+  <div id="inv-glossaire" class="inv-env-section" style="display:none">
+    <div id="glossaireContent"></div>
+  </div>
 
 <!-- ===== PLANNING ===== -->
 <div class="panel" id="panel-planning">
@@ -1283,143 +1280,7 @@
 </div>
 
 
-<!-- ===== APPRENTISSAGE ===== -->
-<div class="panel" id="panel-apprentissage">
 
-  <!-- Sous-onglets -->
-  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--surface);border-radius:12px;padding:4px;width:fit-content;flex-wrap:wrap">
-    <button class="btn btn-primary" id="appr-tab-journal" onclick="switchApprTab('journal')" style="font-size:0.7rem;padding:7px 14px">📝 Journal</button>
-    <button class="btn" id="appr-tab-fiches" onclick="switchApprTab('fiches')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🗂️ Fiches</button>
-    <button class="btn" id="appr-tab-feynman" onclick="switchApprTab('feynman')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px">🧠 Feynman</button>
-  </div>
-
-  <!-- Journal quotidien -->
-  <div id="appr-journal">
-    <div class="focus-block" style="margin-bottom:20px">
-      <div class="focus-label">📝 Journal d'apprentissage du jour</div>
-      <div style="font-size:0.72rem;color:var(--text);margin-top:4px" id="journalDateLabel">—</div>
-    </div>
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-title">Qu'as-tu appris aujourd'hui ?</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <select class="inp" id="journalCat" style="width:160px">
-          <option value="Langues">🌍 Langues</option>
-          <option value="IT">💻 IT</option>
-          <option value="Comptabilité">🧾 Comptabilité</option>
-          <option value="Formation">🎓 Formation</option>
-          <option value="Culture">📚 Culture</option>
-          <option value="Sport">💪 Sport</option>
-          <option value="Autre">📦 Autre</option>
-        </select>
-        <div style="display:flex;gap:6px;align-items:center">
-          <span style="font-size:0.7rem;color:var(--text-muted)">Confiance :</span>
-          <div style="display:flex;gap:4px" id="journalConfidenceBtns">
-            <button onclick="setJournalConfidence(1)" id="jc-1" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">1</button>
-            <button onclick="setJournalConfidence(2)" id="jc-2" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">2</button>
-            <button onclick="setJournalConfidence(3)" id="jc-3" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">3</button>
-            <button onclick="setJournalConfidence(4)" id="jc-4" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">4</button>
-            <button onclick="setJournalConfidence(5)" id="jc-5" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:0.7rem;color:var(--text-muted)">5</button>
-          </div>
-        </div>
-      </div>
-      <textarea class="inp" id="journalText" rows="4" style="width:100%;resize:none;font-size:0.78rem" placeholder="Décris ce que tu as appris, compris, découvert..."></textarea>
-      <div style="display:flex;justify-content:flex-end;margin-top:10px">
-        <button class="btn btn-primary" onclick="saveJournalEntry()">💾 Enregistrer</button>
-      </div>
-    </div>
-    <!-- Historique -->
-    <div class="card">
-      <div class="card-title">📅 Historique des apprentissages</div>
-      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="journalFilters">
-        <button class="btn btn-primary" onclick="setJournalFilter('all')">Tous</button>
-        <button class="btn" onclick="setJournalFilter('Langues')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🌍 Langues</button>
-        <button class="btn" onclick="setJournalFilter('IT')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">💻 IT</button>
-        <button class="btn" onclick="setJournalFilter('Comptabilité')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted)">🧾 Compta</button>
-      </div>
-      <div id="journalHistory"></div>
-    </div>
-  </div>
-
-  <!-- Fiches de révision -->
-  <div id="appr-fiches" style="display:none">
-    <!-- Fiches à réviser aujourd'hui -->
-    <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border-color:rgba(200,240,74,0.2)">
-      <div class="card-title" style="color:var(--accent)">🔔 À réviser aujourd'hui</div>
-      <div id="fichesAReviser"></div>
-    </div>
-    <!-- Mode révision -->
-    <div id="revisionMode" style="display:none;margin-bottom:20px">
-      <div class="card" style="text-align:center;padding:30px">
-        <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px" id="revisionProgress">—</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:20px" id="revisionQuestion">—</div>
-        <div id="revisionAnswer" style="display:none;background:var(--surface2);border-radius:10px;padding:16px;margin-bottom:20px;text-align:left">
-          <div style="font-size:0.65rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Réponse</div>
-          <div style="font-size:0.78rem;color:var(--text)" id="revisionAnswerText"></div>
-        </div>
-        <div id="revisionBtns">
-          <button class="btn btn-primary" onclick="showRevisionAnswer()">👁️ Voir la réponse</button>
-        </div>
-      </div>
-    </div>
-    <!-- Ajouter fiche -->
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-title">+ Nouvelle fiche</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <input class="inp" type="text" id="ficheTitle" placeholder="Titre / concept clé" style="width:100%"/>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <select class="inp" id="ficheCat" style="flex:1">
-            <option value="Langues">🌍 Langues</option>
-            <option value="IT">💻 IT</option>
-            <option value="Comptabilité">🧾 Comptabilité</option>
-            <option value="Formation">🎓 Formation</option>
-            <option value="Culture">📚 Culture</option>
-            <option value="Autre">📦 Autre</option>
-          </select>
-        </div>
-        <textarea class="inp" id="ficheResume" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Résumé en 2-3 lignes..."></textarea>
-        <textarea class="inp" id="fichePoints" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Points clés (un par ligne)..."></textarea>
-        <textarea class="inp" id="ficheExemple" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Exemple concret..."></textarea>
-        <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
-          <button class="btn btn-primary" onclick="addFiche()">💾 Créer la fiche</button>
-          <button class="btn" onclick="exportFichesPDF()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">📄 Exporter PDF</button>
-        </div>
-      </div>
-    </div>
-    <!-- Liste fiches -->
-    <div id="fichesList"></div>
-  </div>
-
-  <!-- Méthode Feynman -->
-  <div id="appr-feynman" style="display:none">
-    <div style="background:linear-gradient(135deg,rgba(123,94,167,0.08),rgba(72,202,228,0.06));border:1px solid rgba(123,94,167,0.2);border-radius:var(--radius);padding:18px;margin-bottom:20px">
-      <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:#9b8cff;margin-bottom:6px">🧠 Méthode Feynman</div>
-      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.6">La meilleure façon de savoir si tu as vraiment compris quelque chose : <strong style="color:var(--text)">l'expliquer simplement comme si tu l'enseignais</strong>. Si tu bloques, c'est là que tu dois retravailler.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Concept à maîtriser</div>
-      <input class="inp" type="text" id="feynmanConcept" placeholder="Ex: La TVA déductible, le Present Perfect, le VLOOKUP Excel..." style="width:100%;margin-bottom:16px"/>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div>
-          <div style="font-size:0.65rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">1️⃣ Explique simplement (comme à un enfant de 10 ans)</div>
-          <textarea class="inp" id="feynman1" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Utilise des mots simples, pas de jargon..."></textarea>
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:#f4a261;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">2️⃣ Où tu bloques / ce qui reste flou</div>
-          <textarea class="inp" id="feynman2" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Sois honnête — c'est là que tu dois retravailler..."></textarea>
-        </div>
-        <div>
-          <div style="font-size:0.65rem;color:#4adb8a;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">3️⃣ Reformule encore plus simplement</div>
-          <textarea class="inp" id="feynman3" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Version encore plus claire après avoir revu ce qui bloquait..."></textarea>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end">
-          <button class="btn btn-primary" onclick="saveFeynman()">💾 Sauvegarder</button>
-          <button class="btn" onclick="convertFeynmanToFiche()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">→ Convertir en fiche</button>
-        </div>
-      </div>
-    </div>
-    <div class="card section-gap"><div class="card-title">📚 Feynman sauvegardés</div><div id="feynmanHistory"></div></div>
-  </div>
-</div>
 
 <!-- ===== CARRIÈRE ===== -->
 <div class="panel" id="panel-carriere">
@@ -1509,6 +1370,33 @@
       <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Sites et ressources à consulter régulièrement pour rester à jour.</div>
       <div id="veilleMetier"></div>
     </div>
+    <!-- LinkedIn -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="color:#0077b5">💼 Suivi LinkedIn</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Cibles à contacter + posts publiés. Simple, pas de CRM.</div>
+      <div class="add-row" style="margin-bottom:10px">
+        <input class="inp" type="text" id="linkedinName" placeholder="Nom" style="flex:1;min-width:100px"/>
+        <input class="inp" type="text" id="linkedinCompany" placeholder="Entreprise" style="flex:1;min-width:100px"/>
+        <select class="inp" id="linkedinStatus" style="width:150px">
+          <option>À contacter</option>
+          <option>Demande envoyée</option>
+          <option>Connecté</option>
+        </select>
+        <button class="btn btn-primary" onclick="addLinkedInContact()">+</button>
+      </div>
+      <div id="linkedinContacts" style="margin-bottom:14px"></div>
+      <div style="font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:8px">📝 Posts publiés</div>
+      <div class="add-row" style="margin-bottom:8px">
+        <input class="inp" type="text" id="linkedinPostSujet" placeholder="Ex: Mon avancement ITIL 4..." style="flex:1"/>
+        <button class="btn btn-primary" onclick="addLinkedInPost()">+</button>
+      </div>
+      <div id="linkedinPosts"></div>
+      <div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)">
+        <div style="font-size:0.65rem;color:var(--accent);font-weight:600;margin-bottom:4px">💡 Idées de posts</div>
+        <div style="font-size:0.65rem;color:var(--text-muted);line-height:1.6">• Mon avancement ITIL 4 Foundation<br>• Ce que j'ai appris sur Power BI cette semaine<br>• Pourquoi je me réoriente vers l'IT/ERP<br>• Découverte du SQL — mes premières requêtes</div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-title">📰 Mes notes de veille</div>
       <div class="add-row" style="margin-top:0;margin-bottom:14px">
@@ -1534,9 +1422,7 @@
   <button class="mobile-nav-item" onclick="mobileTab('planning',this)" style="min-width:62px">
     <span class="nav-icon">⏱️</span><span>Planning</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('bienetre',this)" style="min-width:62px">
-    <span class="nav-icon">🧘</span><span>Bien-être</span><div class="nav-dot"></div>
-  </button>
+
   <button class="mobile-nav-item" onclick="mobileTab('sport',this)" style="min-width:58px">
     <span class="nav-icon">💪</span><span>Sport</span><div class="nav-dot"></div>
   </button>
@@ -1546,9 +1432,7 @@
   <button class="mobile-nav-item" onclick="mobileTab('objectifs',this)" style="min-width:64px">
     <span class="nav-icon">🎯</span><span>Objectifs</span><div class="nav-dot"></div>
   </button>
-  <button class="mobile-nav-item" onclick="mobileTab('apprentissage',this)" style="min-width:64px">
-    <span class="nav-icon">🧠</span><span>Apprend.</span><div class="nav-dot"></div>
-  </button>
+
   <button class="mobile-nav-item" onclick="mobileTab('carriere',this)" style="min-width:62px">
     <span class="nav-icon">💼</span><span>Carrière</span><div class="nav-dot"></div>
   </button>
@@ -1650,7 +1534,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], langSettings:{en:true,es:true,it:false,ru:false}, journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{},
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], langSettings:{en:true,es:true,it:false,ru:false}, journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{}, calendrierFormation:{}, watchlist:[], linkedinContacts:[], linkedinPosts:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -2365,8 +2249,8 @@ function switchInvEnv(env) {
   else if (env === 'av') renderAV();
   else if (env === 'livrets') renderPortfolio();
   else if (env === 'crypto') renderPortfolio();
-  else if (env === 'noncote') renderPortfolio();
-  else if (env === 'oblig') renderPortfolio();
+  
+  
   renderPatrimoine();
 }
 
@@ -2552,8 +2436,8 @@ function renderPatrimoine() {
   const avVal   = state.avData?.total || 0;
   const livVal  = (state.livrets||[]).reduce((s,l) => s + l.solde, 0);
   const cryptoVal = (state.cryptos||[]).reduce((s,c) => s + c.current*c.qty, 0);
-  const ncVal   = (state.nonCote||[]).reduce((s,n) => s + n.montant, 0);
-  const obligVal= (state.obligs||[]).reduce((s,o) => s + o.montant, 0);
+  const ncVal = 0;
+  const obligVal = 0;
   const total = peaVal + ctoVal + avVal + livVal + cryptoVal + ncVal + obligVal;
 
   const el = document.getElementById('patrimoineGlobal'); if (!el) return;
@@ -2742,13 +2626,14 @@ const FORM_ROADMAP = [
 
 const FORM_COMPETENCES = [
   {
-    domaine:'💻 IT Support N1 → N2',
-    ordre:['ITIL 4 Foundation','Microsoft 365 (MS-900)','PowerShell bases','Power BI'],
+    domaine:'💻 IT Support N1 → N2 / BA-MOA',
+    ordre:['ITIL 4 Foundation','Microsoft 365 (MS-900)','SQL','Power BI','PowerShell bases'],
     items:[
       {name:'ITIL 4 Foundation',niveau:'Priorité 1 🔴',detail:"Référentiel ITSM universel. Gestion des incidents, problèmes, changements. Examen ~300€, CPF possible. Indispensable pour passer N2."},
       {name:'Microsoft 365 (MS-900)',niveau:'Priorité 1 🔴',detail:"Fondamentaux cloud Microsoft. 100% gratuit sur Microsoft Learn. Examen ~100€."},
+      {name:'SQL',niveau:'Priorité 1 🔴',detail:"Incontournable pour BA/MOA et reporting ERP. SELECT, WHERE, JOIN, GROUP BY. Ressource : SQLZoo (gratuit, 100% dans le navigateur). 10h pour les bases solides."},
+      {name:'Power BI',niveau:'Priorité 2 🟡',detail:"Tableau de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN. Complément naturel du SQL."},
       {name:'PowerShell bases',niveau:'Priorité 2 🟡',detail:"Automatisation Windows, gestion AD, scripts de déploiement. Indispensable pour passer N2."},
-      {name:'Power BI',niveau:'Priorité 2 🟡',detail:"Tableau de bord et reporting. Microsoft Learn gratuit. Très demandé en ESN."},
     ]
   },
   {
@@ -3412,31 +3297,32 @@ function addScreenTime(){const app=document.getElementById('screenAppInput').val
 function deleteScreenTime(id){const t=today();if(state.screenTime[t])state.screenTime[t]=state.screenTime[t].filter(s=>s.id!==id);save();renderDigital();}
 function renderDigital(){if(!state.digitalRules)state.digitalRules=[];if(!state.screenTime)state.screenTime={};document.getElementById('digitalRulesList').innerHTML=state.digitalRules.map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div onclick="toggleDigitalRule(${r.id})" style="width:20px;height:20px;border-radius:5px;flex-shrink:0;cursor:pointer;background:${r.done?'#4adb8a':'var(--surface2)'};border:2px solid ${r.done?'#4adb8a':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#0e0e11">${r.done?'✓':''}</div><span style="flex:1;font-size:0.75rem;color:${r.done?'var(--text-muted)':'var(--text)'};text-decoration:${r.done?'line-through':'none'}">${r.text}</span><button class="btn btn-danger" onclick="deleteDigitalRule(${r.id})">✕</button></div>`).join('')||'<div style="font-size:0.72rem;color:var(--text-muted)">Ajoute tes règles</div>';const t=today(),st=state.screenTime[t]||[],total=st.reduce((s,x)=>s+x.mins,0),limit=90,over=total>limit;document.getElementById('screenTimeList').innerHTML=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.72rem;color:${over?'#f05a5a':'var(--text-muted)'};margin-bottom:6px"><span>Total aujourd'hui</span><span style="font-weight:700;color:${over?'#f05a5a':'#4adb8a'}">${total} min${over?' ⚠️':' ✓'}</span></div><div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${Math.min(100,total/limit*100)}%;background:${over?'#f05a5a':'#4adb8a'}"></div></div></div>${st.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.72rem"><span>${s.app}</span><div style="display:flex;align-items:center;gap:8px"><span style="color:${s.mins>30?'#f4a261':'var(--text-muted)'}">${s.mins} min</span><button class="btn btn-danger" onclick="deleteScreenTime(${s.id})">✕</button></div></div>`).join('')}`;document.getElementById('freeAlternativesList').innerHTML=FREE_ALTERNATIVES.map(cat=>`<div style="margin-bottom:16px"><div style="font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:var(--text);margin-bottom:8px">${cat.cat}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">${cat.items.map(item=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="font-size:0.78rem;font-weight:600;color:var(--text)">${item.name}</div><span style="font-size:0.55rem;padding:2px 6px;border-radius:999px;background:rgba(74,219,138,0.12);color:#4adb8a;border:1px solid rgba(74,219,138,0.3)">Gratuit</span></div><div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:4px">${item.desc}</div><div style="font-size:0.6rem;color:var(--accent3)">Remplace : ${item.replaces}</div><a href="${item.url}" target="_blank" style="font-size:0.58rem;color:var(--text-muted);text-decoration:none;text-transform:uppercase;letter-spacing:1px;display:block;margin-top:6px">Visiter →</a></div>`).join('')}</div></div>`).join('');document.getElementById('digitalTipsList').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${DIGITAL_TIPS.map(tip=>`<div style="padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:1.2rem">${tip.icon}</span><div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text)">${tip.title}</div></div><div style="font-size:0.68rem;color:var(--text-muted);line-height:1.5">${tip.desc}</div></div>`).join('')}`;}
 // ======= RECETTES IA =======
-async function suggestMeal(slot){
-  const el=document.getElementById('mealSuggestResult-'+slot);
-  if(!el)return;
-  el.innerHTML='<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
-  const slotName=slot==='matin'?'petit-déjeuner':slot==='midi'?'déjeuner':'dîner';
-  const prompt=`Tu es nutritionniste. Réponds UNIQUEMENT en JSON valide sans markdown ni backticks. Format exact: {"nom":"...","ingredients":["..."],"proteines":30,"calories":450,"preparation":"étapes courtes","temps":"15 min"}. Suggère une recette de ${slotName} équilibrée, riche en protéines, simple pour un sportif actif.`;
-  try {
-    const text = await callGemini('', prompt, 600);
-    const clean = text.replace(/```json/g,'').replace(/```/g,'').trim();
-    const recipe = JSON.parse(clean);
-    const nom = (recipe.nom||'Recette').replace(/'/g,"\'");
-    const ingr = (recipe.ingredients||[]).join(', ').replace(/'/g,"\'");
-    el.innerHTML=`<div style="background:var(--surface2);border:1px solid var(--accent3)44;border-radius:10px;padding:14px;cursor:pointer" onclick="applyRecipe('${slot}','${nom}',${recipe.proteines||0},${recipe.calories||0},'${ingr}')">
-      <div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:6px">${recipe.nom||'Recette'} <span style="font-size:0.6rem;color:var(--text-muted)">⏱️ ${recipe.temps||''}</span></div>
-      <div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:8px">${(recipe.ingredients||[]).join(', ')}</div>
-      <div style="display:flex;gap:16px;font-size:0.7rem;margin-bottom:6px"><span style="color:#48cae4">💪 ${recipe.proteines||0}g protéines</span><span style="color:#f4a261">🔥 ${recipe.calories||0} kcal</span></div>
-      <div style="font-size:0.65rem;color:var(--text-muted);line-height:1.5">${recipe.preparation||''}</div>
-      <div style="font-size:0.62rem;color:var(--accent);margin-top:8px;text-transform:uppercase;letter-spacing:1px">→ Cliquer pour appliquer</div>
-    </div>`;
-  } catch(e) {
-    el.innerHTML='<div style="font-size:0.72rem;color:#f05a5a">Erreur — réessaie</div>';
+async function suggestMeal(slot) {
+  const el = document.getElementById('mealSuggestResult-'+slot);
+  if(!el) return;
+  el.innerHTML = '<div class="ai-typing" style="padding:8px 0"><span></span><span></span><span></span></div>';
+  const slotName = slot==='matin'?'petit-déjeuner':slot==='midi'?'déjeuner':'dîner';
+  const prompt = `Tu es nutritionniste. Propose 3 idées de repas variées pour le ${slotName}, riches en protéines et équilibrées. Format: pour chaque repas, une ligne avec emoji + nom + macros entre parenthèses (protéines/calories). Sois concis, maximum 3 lignes.`;
+  const text = await callGemini('', prompt, 400);
+  if(text) {
+    const lines = text.trim().split('\n').filter(l => l.trim());
+    el.innerHTML = '<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">' +
+      lines.map(line => `<div onclick="applyMealSuggestion('${slot}', this.dataset.meal)" data-meal="${line.replace(/"/g,'&quot;')}" style="padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.75rem;color:var(--text);transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--accent3)'" onmouseout="this.style.borderColor='var(--border)'">${line}</div>`
+      ).join('') + '</div>';
+  } else {
+    el.innerHTML = '<div style="font-size:0.72rem;color:#f05a5a">Configure ta clé Groq dans Digital → Paramètres</div>';
   }
 }
-function applyRecipe(slot,nom,proteines,calories,ingredients){saveRepasItem(slot,'content',ingredients);saveRepasItem(slot,'proteins',proteines);saveRepasItem(slot,'calories',calories);renderRepas();showToast('Recette appliquée ✓');}
-// ======= RÉSUMÉ LIVRE IA =======
+
+function applyMealSuggestion(slot, meal) {
+  const textarea = document.getElementById('meal-'+slot);
+  if(textarea) {
+    textarea.value = meal.replace(/^[^\w]+/, '').split('(')[0].trim();
+    calcRepas(slot);
+    showToast('Repas appliqué ✓');
+  }
+}
+
 async function summarizeBook(title){
   const el=document.getElementById('bookSummaryResult');
   if(!el)return;
@@ -4264,7 +4150,8 @@ function calcSalaire() {
 }
 
 const EVOLUTION_DATA = [
-  {role:'Technicien IT Support N1/N2',salaire:'28 000 — 36 000 €/an',color:'#48cae4',attendus:['Active Directory, Microsoft 365','Tickets GLPI/ServiceNow','ITIL Foundation','Relationnel et réactivité'],evolution:'→ N3, Chef de projet IT, Admin sys'},
+  {role:'Technicien IT Support N1/N2',salaire:'28 000 — 36 000 €/an',color:'#48cae4',attendus:['Active Directory, Microsoft 365','Tickets GLPI/ServiceNow','ITIL Foundation','Relationnel et réactivité'],evolution:'→ N3, Consultant, BA/MOA'},
+  {role:'Business Analyst (BA) / MOA',salaire:'38 000 — 55 000 €/an',color:'#c8f04a',attendus:['Expression de besoins','Rédaction specs fonctionnelles','SQL et outils BI','Pont métier/technique'],evolution:'→ Chef de projet, MOA senior, Product Owner'},
   {role:'Consultant logiciel ERP/Compta',salaire:'38 000 — 55 000 €/an',color:'#f4a261',attendus:['Sage, Cegid ou SAP','Comptabilité générale','Pédagogie et formation','Certification éditeur'],evolution:'→ Chef de projet ERP, Formateur'},
   {role:'Formateur indépendant (Qualiopi)',salaire:'400 — 900 €/jour',color:'#9b8cff',attendus:['Expertise terrain 3-5 ans min','Titre FPA ou équivalent RNCP','Qualiopi obligatoire pour CPF','Outils e-learning (Articulate)'],evolution:'→ Plateforme formation, Organisme'},
 ];
@@ -5131,6 +5018,286 @@ function applyLangSettings() {
     if(btn) btn.style.display = enabled ? '' : 'none';
     if(cb) cb.checked = enabled;
   });
+}
+
+// ======= FORMATION CALENDRIER =======
+function saveCalendrier() {
+  if(!state.calendrierFormation) state.calendrierFormation = {};
+  state.calendrierFormation.semaine = document.getElementById('cal-semaine')?.value || '';
+  state.calendrierFormation.mois = document.getElementById('cal-mois')?.value || '';
+  state.calendrierFormation.trimestre = document.getElementById('cal-trimestre')?.value || '';
+  save();
+}
+
+function renderCalendrier() {
+  if(!state.calendrierFormation) state.calendrierFormation = {};
+  const s = document.getElementById('cal-semaine');
+  const m = document.getElementById('cal-mois');
+  const t = document.getElementById('cal-trimestre');
+  if(s) s.value = state.calendrierFormation.semaine || '';
+  if(m) m.value = state.calendrierFormation.mois || '';
+  if(t) t.value = state.calendrierFormation.trimestre || '';
+}
+
+// ======= WATCHLIST INVEST =======
+function addWatchlist() {
+  const name = document.getElementById('watchName')?.value.trim();
+  const ticker = document.getElementById('watchTicker')?.value.trim();
+  const secteur = document.getElementById('watchSecteur')?.value.trim();
+  const pourquoi = document.getElementById('watchPourquoi')?.value.trim();
+  if(!name) { showToast('Donne un nom !'); return; }
+  if(!state.watchlist) state.watchlist = [];
+  state.watchlist.push({ id: Date.now(), name, ticker, secteur, pourquoi });
+  ['watchName','watchTicker','watchSecteur','watchPourquoi'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  save(); renderWatchlist(); showToast(name + ' ajouté à la watchlist ✓');
+}
+
+function deleteWatchlist(id) {
+  state.watchlist = (state.watchlist||[]).filter(w => w.id !== id);
+  save(); renderWatchlist();
+}
+
+function renderWatchlist() {
+  if(!state.watchlist) state.watchlist = [];
+  const el = document.getElementById('watchlistItems'); if(!el) return;
+  if(state.watchlist.length === 0) {
+    el.innerHTML = '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:20px">Aucune entreprise suivie</div>';
+    return;
+  }
+  el.innerHTML = state.watchlist.map(w => `
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div>
+          <span style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;color:var(--text)">${w.name}</span>
+          ${w.ticker ? `<span style="font-size:0.65rem;padding:2px 8px;border-radius:999px;background:rgba(200,240,74,0.12);color:var(--accent);margin-left:8px">${w.ticker}</span>` : ''}
+          ${w.secteur ? `<span style="font-size:0.65rem;padding:2px 8px;border-radius:999px;background:var(--surface);color:var(--text-muted);margin-left:6px;border:1px solid var(--border)">${w.secteur}</span>` : ''}
+        </div>
+        <button class="btn btn-danger" onclick="deleteWatchlist(${w.id})">✕</button>
+      </div>
+      ${w.pourquoi ? `<div style="font-size:0.7rem;color:var(--text-muted);font-style:italic">${w.pourquoi}</div>` : ''}
+    </div>`).join('');
+}
+
+// ======= GLOSSAIRE BOURSE =======
+const GLOSSAIRE_BOURSE = [
+  {
+    cat: '📊 Ratios de valorisation',
+    items: [
+      { terme: 'P/E (PER)', def: "Price-to-Earnings. Cours / Bénéfice par action. Mesure combien tu paies pour 1€ de bénéfice.", ref: "< 15 : potentiellement sous-évalué · > 25 : cher · Dépend du secteur", exemple: "Apple P/E 28 = tu paies 28€ pour 1€ de bénéfice annuel" },
+      { terme: 'P/FCF', def: "Price-to-Free Cash Flow. Cours / FCF par action. Plus fiable que le P/E car le FCF est plus difficile à manipuler.", ref: "< 15 : attractif · < 20 : raisonnable · > 30 : cher", exemple: "P/FCF 12 = valeur plus intéressante que P/E 20 car cash réel" },
+      { terme: 'P/B (Price/Book)', def: "Cours / Valeur comptable. Mesure si l'action se paie plus ou moins que la valeur des actifs nets.", ref: "< 1 : sous la valeur comptable (occasion ou problème) · 1-3 : normal", exemple: "Utile pour banques, assurances et secteurs capitalistiques" },
+      { terme: 'P/S (Price/Sales)', def: "Cours / Chiffre d'affaires par action. Utile pour les sociétés non encore bénéficiaires.", ref: "< 2 : raisonnable · > 5 : cher pour la plupart des secteurs", exemple: "Très utilisé pour évaluer les SaaS et tech en croissance" },
+      { terme: 'EV/EBITDA', def: "Valeur d'entreprise / EBITDA. Compare la valeur totale (dette incluse) aux bénéfices opérationnels.", ref: "< 10 : attractif · 10-15 : correct · > 20 : cher", exemple: "Permet de comparer des sociétés avec des structures de dette différentes" },
+      { terme: 'PEG Ratio', def: "P/E divisé par le taux de croissance des bénéfices. Intègre la croissance dans la valorisation.", ref: "< 1 : sous-évalué par rapport à la croissance · > 2 : cher", exemple: "P/E 30 avec croissance 30% = PEG 1 → plus raisonnable qu'il n'y paraît" },
+    ]
+  },
+  {
+    cat: '💰 Cash Flow & Rentabilité',
+    items: [
+      { terme: 'FCF (Free Cash Flow)', def: "Flux de trésorerie disponible = Cash opérationnel − Capex. L'argent réellement généré par l'activité.", ref: "FCF positif et croissant = bonne santé · FCF négatif = surveiller", exemple: "Une société peut avoir des bénéfices positifs mais FCF négatif → attention" },
+      { terme: 'FCF Yield', def: "FCF / Capitalisation boursière. Rendement réel en cash que génère l'entreprise.", ref: "> 5% : attractif · > 8% : très attractif", exemple: "FCF Yield 7% = l'entreprise génère 7% de sa valeur en cash chaque année" },
+      { terme: 'Marge nette', def: "Bénéfice net / Chiffre d'affaires. % de CA qui devient du profit après toutes les charges.", ref: "> 10% : bonne · > 20% : excellente (selon secteur)", exemple: "Apple ~25%, Amazon ~5% (secteurs très différents)" },
+      { terme: 'Marge opérationnelle', def: "Résultat opérationnel / CA. Rentabilité avant intérêts et impôts.", ref: "> 15% : solide · > 25% : avantage concurrentiel fort", exemple: "Permet de comparer des entreprises sans l'effet de la structure fiscale" },
+      { terme: 'ROE (Return on Equity)', def: "Bénéfice net / Capitaux propres. Mesure l'efficacité à générer des profits avec les fonds actionnaires.", ref: "> 15% : bon · > 20% : excellent", exemple: "ROE 30% = pour 100€ investis par actionnaires, 30€ de profit" },
+      { terme: 'ROIC', def: "Return on Invested Capital. Rentabilité sur l'ensemble du capital employé (dette + fonds propres).", ref: "> WACC = création de valeur · ROIC > 15% : excellent", exemple: "Le ratio préféré de Warren Buffett pour évaluer la qualité d'une entreprise" },
+    ]
+  },
+  {
+    cat: '📈 Dividende',
+    items: [
+      { terme: 'Rendement dividende', def: "Dividende annuel / Cours de l'action. Ce que tu perçois chaque année en % de ton investissement.", ref: "2-4% : raisonnable · > 6% : à vérifier (risque de coupe)", exemple: "Action à 100€ avec dividende 3€ = rendement 3%" },
+      { terme: 'Payout Ratio', def: "Dividendes versés / Bénéfice net. Part du bénéfice distribuée aux actionnaires.", ref: "< 60% : dividende sûr · > 80% : risque de réduction · > 100% : danger", exemple: "Payout 40% = 60% du bénéfice réinvesti, dividende bien couvert" },
+      { terme: 'CAGR Dividende', def: "Taux de croissance annuel moyen du dividende sur plusieurs années.", ref: "> 5%/an : excellente progression · > 10%/an : aristocrate du dividende", exemple: "LVMH a augmenté son dividende de +12%/an sur 10 ans" },
+    ]
+  },
+  {
+    cat: '🏦 Santé financière',
+    items: [
+      { terme: 'Dette nette / EBITDA', def: "Mesure le levier financier. Combien d'années de résultats opérationnels pour rembourser la dette nette.", ref: "< 1 : très sain · < 2 : correct · > 3 : surveillé · > 4 : risqué", exemple: "Dette nette 500M€ / EBITDA 200M€ = ratio 2.5x" },
+      { terme: 'Current Ratio', def: "Actif courant / Passif courant. Capacité à rembourser les dettes court terme.", ref: "> 1.5 : sain · < 1 : risque de liquidité", exemple: "Ratio 2 = les actifs court terme couvrent 2x les dettes court terme" },
+      { terme: 'Capex', def: "Capital Expenditure. Investissements en actifs physiques (usines, machines, infra).", ref: "Capex / CA < 5% : secteur léger · > 20% : secteur lourd (industrie, telecom)", exemple: "Capex élevé réduit le FCF mais peut soutenir la croissance future" },
+    ]
+  },
+  {
+    cat: '🔤 Bases boursières',
+    items: [
+      { terme: 'Capitalisation boursière', def: "Cours × Nombre d'actions. Valeur totale de l'entreprise sur le marché.", ref: "< 300M€ : small cap · 300M-2Md€ : mid cap · > 2Md€ : large cap", exemple: "Apple ~3 000Md$ = plus grande capitalisation mondiale" },
+      { terme: 'EV (Enterprise Value)', def: "Capitalisation + Dette nette − Trésorerie. Valeur réelle pour un acheteur.", ref: "Toujours comparer EV/EBITDA plutôt que P/E pour sociétés endettées", exemple: "EV plus juste que la capi pour comparer des sociétés avec dettes différentes" },
+      { terme: 'Beta', def: "Mesure la volatilité d'une action par rapport au marché.", ref: "< 1 : moins volatile que le marché · > 1 : plus volatile · < 0 : décorrelé", exemple: "Beta 1.5 = l'action monte/baisse 1.5x plus que l'indice" },
+      { terme: 'Flottant', def: "% des actions disponibles sur le marché (hors actionnaires bloqués).", ref: "> 50% : bonne liquidité · < 20% : risque de manipulation", exemple: "Faible flottant = écarts de cours importants sur peu de volume" },
+    ]
+  },
+];
+
+function renderGlossaire() {
+  const el = document.getElementById('glossaireContent'); if(!el) return;
+  el.innerHTML = `
+    <div style="margin-bottom:16px">
+      <input class="inp" type="text" id="glossaireSearch" placeholder="🔍 Rechercher un terme..." style="width:100%" oninput="filterGlossaire(this.value)"/>
+    </div>
+    <div id="glossaireList">` +
+    GLOSSAIRE_BOURSE.map(cat => `
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">${cat.cat}</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${cat.items.map(item => `
+            <div class="glossaire-item" data-terme="${item.terme.toLowerCase()}" style="padding:12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent)">
+              <div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--accent);margin-bottom:4px">${item.terme}</div>
+              <div style="font-size:0.72rem;color:var(--text);margin-bottom:6px;line-height:1.5">${item.def}</div>
+              <div style="font-size:0.65rem;color:#4adb8a;margin-bottom:4px">📐 Référence : ${item.ref}</div>
+              <div style="font-size:0.65rem;color:var(--text-muted);font-style:italic">💡 ${item.exemple}</div>
+            </div>`).join('')}
+        </div>
+      </div>`).join('') + '</div>';
+}
+
+function filterGlossaire(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.glossaire-item').forEach(item => {
+    const terme = item.dataset.terme || '';
+    const text = item.textContent.toLowerCase();
+    item.style.display = (!q || terme.includes(q) || text.includes(q)) ? '' : 'none';
+  });
+}
+
+// ======= LINKEDIN SUIVI =======
+function addLinkedInContact() {
+  const name = document.getElementById('linkedinName')?.value.trim();
+  const company = document.getElementById('linkedinCompany')?.value.trim();
+  const status = document.getElementById('linkedinStatus')?.value;
+  if(!name) { showToast('Donne un nom !'); return; }
+  if(!state.linkedinContacts) state.linkedinContacts = [];
+  state.linkedinContacts.push({ id: Date.now(), name, company, status, date: today() });
+  ['linkedinName','linkedinCompany'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  save(); renderLinkedin(); showToast(name + ' ajouté ✓');
+}
+
+function updateLinkedInStatus(id, val) {
+  const c = (state.linkedinContacts||[]).find(c => c.id === id);
+  if(c) { c.status = val; save(); renderLinkedin(); }
+}
+
+function deleteLinkedIn(id) {
+  state.linkedinContacts = (state.linkedinContacts||[]).filter(c => c.id !== id);
+  save(); renderLinkedin();
+}
+
+function addLinkedInPost() {
+  const sujet = document.getElementById('linkedinPostSujet')?.value.trim();
+  if(!sujet) { showToast('Décris le sujet du post !'); return; }
+  if(!state.linkedinPosts) state.linkedinPosts = [];
+  state.linkedinPosts.unshift({ id: Date.now(), sujet, date: today() });
+  const el = document.getElementById('linkedinPostSujet'); if(el) el.value = '';
+  save(); renderLinkedin(); showToast('Post enregistré ✓');
+}
+
+function renderLinkedin() {
+  if(!state.linkedinContacts) state.linkedinContacts = [];
+  if(!state.linkedinPosts) state.linkedinPosts = [];
+  const STATUS_COLORS = { 'À contacter': '#48cae4', 'Demande envoyée': '#f4a261', 'Connecté': '#4adb8a' };
+
+  const contactsEl = document.getElementById('linkedinContacts');
+  if(contactsEl) {
+    contactsEl.innerHTML = state.linkedinContacts.length === 0
+      ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:16px">Aucun contact ajouté</div>'
+      : state.linkedinContacts.map(c => `
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">
+          <div style="flex:1;min-width:100px">
+            <div style="font-size:0.78rem;font-weight:600;color:var(--text)">${c.name}</div>
+            ${c.company ? `<div style="font-size:0.65rem;color:var(--text-muted)">${c.company}</div>` : ''}
+          </div>
+          <select onchange="updateLinkedInStatus(${c.id},this.value)" style="font-size:0.65rem;padding:4px 8px;background:${STATUS_COLORS[c.status]||'var(--surface2)'}22;color:${STATUS_COLORS[c.status]||'var(--text)'};border:1px solid ${STATUS_COLORS[c.status]||'var(--border)'}44;border-radius:6px;cursor:pointer;font-family:'DM Mono',monospace">
+            ${['À contacter','Demande envoyée','Connecté'].map(s => `<option value="${s}" ${s===c.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn btn-danger" onclick="deleteLinkedIn(${c.id})">✕</button>
+        </div>`).join('');
+  }
+
+  const postsEl = document.getElementById('linkedinPosts');
+  if(postsEl) {
+    postsEl.innerHTML = state.linkedinPosts.length === 0
+      ? '<div style="font-size:0.72rem;color:var(--text-muted);text-align:center;padding:12px">Aucun post enregistré</div>'
+      : state.linkedinPosts.map(p => `
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:0.7rem;font-weight:600;color:var(--text);flex:1">${p.sujet}</span>
+          <span style="font-size:0.62rem;color:var(--text-muted)">${p.date}</span>
+        </div>`).join('');
+  }
+}
+
+// ======= SCORE SEMAINE =======
+function calcScoreSemaine() {
+  const weekDates = getWeekDates();
+  let score = 0; let total = 0;
+
+  // Habitudes (30%)
+  if(state.habitudes?.length > 0) {
+    const habitScore = weekDates.reduce((s,d) => s + Math.min(1, (state.habitudesLog?.[d]||[]).length / state.habitudes.length), 0) / 7;
+    score += habitScore * 30; total += 30;
+  }
+
+  // Sport (25%)
+  const sportDays = weekDates.filter(d => state.sport?.[d]?.done).length;
+  score += (sportDays / 4) * 25; total += 25;
+
+  // Fiches révision ou journal (20%)
+  const apprDays = weekDates.filter(d => (state.journalEntries||[]).some(e => e.date === d) || (state.fiches||[]).some(f => f.lastReview === d)).length;
+  score += Math.min(1, apprDays / 3) * 20; total += 20;
+
+  // Tracker formations avancé (25%)
+  const formDays = weekDates.filter(d => (state.trackerFormations||[]).some(t => t.lastSession === d)).length;
+  score += Math.min(1, formDays / 3) * 25; total += 25;
+
+  return Math.round(total > 0 ? (score / total) * 10 : 0);
+}
+
+function renderScoreSemaine() {
+  const el = document.getElementById('scoreSemaine'); if(!el) return;
+  const score = calcScoreSemaine();
+  const color = score >= 7 ? '#4adb8a' : score >= 4 ? '#f4a261' : '#f05a5a';
+  const emoji = score >= 8 ? '🔥' : score >= 6 ? '⚡' : score >= 4 ? '👍' : '💪';
+  el.innerHTML = `
+    <div style="text-align:center;padding:16px;background:var(--surface);border:1px solid ${color}33;border-radius:var(--radius)">
+      <div style="font-family:'DM Serif Display',serif;font-size:3rem;color:${color};line-height:1">${score}<span style="font-size:1.2rem;color:var(--text-muted)">/10</span></div>
+      <div style="font-size:0.65rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px">${emoji} Score de la semaine</div>
+    </div>`;
+}
+
+// ======= SWITCHFORMTAB UPDATE =======
+const _oldSwitchFormTab = switchFormTab;
+function switchFormTab(tab) {
+  ['roadmap','competences','ressources','tracker','certifs','cv','calendrier'].forEach(t => {
+    const el = document.getElementById('form-'+t); if(el) el.style.display = t===tab?'block':'none';
+    const btn = document.getElementById('form-tab-'+t);
+    if(btn){btn.className=t===tab?'btn btn-primary':'btn';btn.style.cssText=t===tab?'font-size:0.7rem;padding:7px 14px':'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';}
+  });
+  if(tab==='roadmap') renderFormRoadmap();
+  else if(tab==='competences') renderFormCompetences();
+  else if(tab==='ressources') renderFormRessources();
+  else if(tab==='tracker') renderTracker();
+  else if(tab==='certifs') renderFormCertifs();
+  else if(tab==='cv') renderFormCV();
+  else if(tab==='calendrier') renderCalendrier();
+}
+
+// ======= SWITCHINVENV UPDATE =======
+const _origSwitchInvEnv = switchInvEnv;
+function switchInvEnv(env) {
+  document.querySelectorAll('.inv-env-section').forEach(s => s.style.display='none');
+  document.querySelectorAll('[id^="invtab-"]').forEach(b => {
+    b.className='btn'; b.style.cssText='background:transparent;border:none;color:var(--text-muted)';
+  });
+  const section = document.getElementById('inv-'+env);
+  if(section) section.style.display='block';
+  const tab = document.getElementById('invtab-'+env);
+  if(tab) { tab.className='btn btn-primary'; tab.style.cssText=''; }
+  if(env==='pea'||env==='cto') renderEnvTable(env);
+  else if(env==='av') renderAV();
+  else if(env==='watchlist') renderWatchlist();
+  else if(env==='glossaire') renderGlossaire();
+  else renderPortfolio();
 }
 
 // ======= AUTO-REFRESH MINUIT =======
