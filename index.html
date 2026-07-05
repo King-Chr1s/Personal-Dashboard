@@ -789,22 +789,61 @@
 
   <!-- Calendrier thématique -->
   <div id="form-calendrier" style="display:none">
-    <div style="background:linear-gradient(135deg,rgba(200,240,74,0.07),rgba(72,202,228,0.05));border:1px solid rgba(200,240,74,0.15);border-radius:var(--radius);padding:16px;margin-bottom:20px">
-      <div style="font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:4px">🗓️ Calendrier souple</div>
-      <div style="font-size:0.72rem;color:var(--text-muted)">Pas un planning rigide — juste une direction. Ajuste librement selon ton énergie et ta dispo.</div>
+
+    <!-- Calendrier thématique souple -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">🗓️ Direction de la semaine / du mois</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:14px">Pas un planning rigide — juste une direction. Ajuste librement.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:0.62rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📅 Cette semaine</div>
+          <textarea class="inp" id="cal-semaine" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: SQLZoo 15 min/jour · Vidéo Microsoft Learn ITIL..." oninput="saveCalendrier()"></textarea>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:#48cae4;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📆 Ce mois</div>
+          <textarea class="inp" id="cal-mois" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Terminer ITIL module 1 · Passer MS-900..." oninput="saveCalendrier()"></textarea>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:#9b8cff;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">🗓️ Ce trimestre</div>
+          <textarea class="inp" id="cal-trimestre" rows="2" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Certif ITIL 4 · SQL bases · Power BI..." oninput="saveCalendrier()"></textarea>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="card">
-        <div class="card-title">📅 Cette semaine</div>
-        <textarea class="inp" id="cal-semaine" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: SQLZoo 15 min/jour · Vidéo Microsoft Learn ITIL..." oninput="saveCalendrier()"></textarea>
+
+    <!-- Programme 12 semaines -->
+    <div class="card">
+      <div class="card-title" style="color:var(--accent)">🐍 Programme 12 semaines — Finance & Python</div>
+      <div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:16px">Finance · Fiscalité · Python · SQL — un thème par semaine, un projet toutes les 2-3 semaines.</div>
+
+      <!-- Barre de progression -->
+      <div id="prog12Strip" style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:8px"></div>
+      <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text-muted);font-family:'DM Mono',monospace;margin-bottom:16px">
+        <span>S1</span><span id="prog12Label">0 / 12 semaines</span><span>S12</span>
       </div>
-      <div class="card">
-        <div class="card-title">📆 Ce mois</div>
-        <textarea class="inp" id="cal-mois" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Terminer le module ITIL 4 · Passer MS-900..." oninput="saveCalendrier()"></textarea>
+
+      <!-- Légende -->
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;font-size:0.65rem;color:var(--text-muted)">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#2F6FED;display:inline-block"></span>Python</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#A97B1F;display:inline-block"></span>Fiscalité</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#7C4DBE;display:inline-block"></span>SQL</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:#1E8A5A;display:inline-block"></span>Analyse</span>
       </div>
-      <div class="card">
-        <div class="card-title">🗓️ Ce trimestre</div>
-        <textarea class="inp" id="cal-trimestre" rows="3" style="width:100%;resize:none;font-size:0.78rem" placeholder="Ex: Certif ITIL 4 · Commencer Power BI · SQL bases solides..." oninput="saveCalendrier()"></textarea>
+
+      <!-- Semaines -->
+      <div id="prog12Weeks" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px"></div>
+
+      <!-- Projets -->
+      <div style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">🗂️ Fiches projets</div>
+      <div id="prog12Projects" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:16px"></div>
+
+      <!-- Extensions -->
+      <div style="padding:14px;background:var(--surface2);border:1px dashed var(--border);border-radius:10px;font-size:0.72rem;color:var(--text-muted)">
+        <div style="font-weight:700;color:var(--text);margin-bottom:8px">🚀 Extensions — après les 12 semaines</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div>• Screener d'actions selon tes critères (PER, ROIC, marge) à partir d'un CSV</div>
+          <div>• Backtest DCA vs lump sum sur données historiques</div>
+          <div>• Dashboard HTML statique généré depuis le suivi de portefeuille</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1534,7 +1573,7 @@ function getDefaultState() {
     ],
     objFilter:'all',
     bienetre:{}, retros:[], currentRetro:{},
-    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], langSettings:{en:true,es:true,it:false,ru:false}, journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{}, calendrierFormation:{}, watchlist:[], linkedinContacts:[], linkedinPosts:[],
+    positions:[], livrets:[], nonCote:[], cryptos:[], obligs:[], envPositions:{pea:[],cto:[],av:[]}, avData:{total:0,lines:[]}, meditSessions:{}, dcaList:[], langSettings:{en:true,es:true,it:false,ru:false}, journalEntries:[], fiches:[], feynmanNotes:[], candidatures:[], entretienReponses:{}, veilleNotes:[], trackerFormations:[], cvProfile:{pitch:'',portfolio:[]}, habitudes:[], habitudesLog:{}, poidsSuivi:[], hydration:{}, customAliments:[], learning:{}, calendrierFormation:{}, prog12Done:[], watchlist:[], linkedinContacts:[], linkedinPosts:[],
     nutrition:{},
     prelevements:[
       {id:1,label:'Abonnement téléphone',amount:20,cat:'Abonnements'},
@@ -2234,7 +2273,8 @@ const ENV_CONFIG = {
 
 function switchInvEnv(env) {
   document.querySelectorAll('.inv-env-section').forEach(el => el.style.display = 'none');
-  document.getElementById('inv-' + env).style.display = 'block';
+  const section = document.getElementById('inv-' + env);
+  if(section) section.style.display = 'block';
   document.querySelectorAll('[id^="invtab-"]').forEach(btn => {
     btn.className = 'btn';
     btn.style.cssText = 'background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;padding:7px 14px';
@@ -2249,8 +2289,8 @@ function switchInvEnv(env) {
   else if (env === 'av') renderAV();
   else if (env === 'livrets') renderPortfolio();
   else if (env === 'crypto') renderPortfolio();
-  
-  
+  else if (env === 'watchlist') renderWatchlist();
+  else if (env === 'glossaire') renderGlossaire();
   renderPatrimoine();
 }
 
@@ -5020,6 +5060,97 @@ function applyLangSettings() {
   });
 }
 
+// ======= PROGRAMME 12 SEMAINES =======
+const PROG12_WEEKS = [
+  {t:'python', theme:'Python — les bases', detail:"Variables, boucles, fonctions. Utile pour le N2 et l'analyse de données.", proj:'PROJET 0 · Setup GitHub'},
+  {t:'fisc',   theme:'Fiscalité PEA / CTO / AV', detail:"Seuils 5 ans / 8 ans, flat tax, prélèvements sociaux, cas concrets.", proj:'PROJET 1 · Convertisseur fiscal'},
+  {t:'sql',    theme:'SQL niveau 2', detail:"Jointures, agrégations, sous-requêtes. Prolonge le workbook.", proj:null},
+  {t:'python', theme:'Python — pratique', detail:"Consolidation boucles + fonctions à travers un projet complet.", proj:'PROJET 2 · Calculateur DCA'},
+  {t:'analyse',theme:'Lire un rapport annuel', detail:"Compte de résultat, bilan, cash-flow : où trouver quoi, comment le lire.", proj:null},
+  {t:'python', theme:'Python + données financières', detail:"pandas, récupérer des cours, manipuler des DataFrames.", proj:'PROJET 3 · Suivi portefeuille v1'},
+  {t:'fisc',   theme:'Fiscalité immobilière', detail:"SCI IR / IS, LMNP, revenus fonciers. + veille holding (YouTube).", proj:null},
+  {t:'analyse',theme:"Analyse d'entreprise — n°1", detail:"Appliquer la grille (PER, ROIC, moat) sur une valeur de la watchlist.", proj:null},
+  {t:'python', theme:'Python — visualisation', detail:"Graphiques, structuration d'un vrai projet, README.", proj:'PROJET 4 · Suivi portefeuille v2'},
+  {t:'fisc',   theme:'Transmission & régimes matrimoniaux', detail:"Abattements, donation, démembrement, clause bénéficiaire AV.", proj:null},
+  {t:'python', theme:'Python — automatisation', detail:"Scripts planifiés, envoi d'emails.", proj:'PROJET 5 · Alerte de prix watchlist'},
+  {t:'analyse',theme:"Analyse n°2 + bilan du trimestre", detail:"Deuxième valeur watchlist + revue : acquis, lacunes, trimestre suivant.", proj:"BONUS · Tracker course sub-57'"},
+];
+
+const PROG12_PROJECTS = [
+  {num:'PROJET 0 · S1', title:'Setup GitHub', desc:"Créer le compte, premier repo, README. Maîtriser le cycle de base.", skills:'git add · commit · push · pull', color:'#2F6FED'},
+  {num:'PROJET 1 · S2', title:'Convertisseur fiscal', desc:"Gain → imposition selon enveloppe : PEA <5/>5 ans, CTO flat tax, AV <8/>8 ans.", skills:'conditions · fonctions · input()', color:'#A97B1F'},
+  {num:'PROJET 2 · S4', title:'Calculateur DCA', desc:"Simuler la valeur future des 490€/mois selon plusieurs rendements et horizons.", skills:'boucles · intérêts composés · formatage', color:'#2F6FED'},
+  {num:'PROJET 3 · S6', title:'Suivi de portefeuille — v1', desc:"Récupérer les cours (PEA + CTO), calculer PRU et plus/moins-values par ligne.", skills:'pandas · yfinance · DataFrames', color:'#2F6FED'},
+  {num:'PROJET 4 · S9', title:'Suivi de portefeuille — v2', desc:"Allocation par poche, répartition sectorielle, graphique. Projet vitrine GitHub.", skills:'matplotlib · structuration projet', color:'#2F6FED'},
+  {num:'PROJET 5 · S11', title:'Alerte de prix', desc:"Vérification quotidienne des seuils watchlist → email si franchissement.", skills:'automatisation · smtplib · cron', color:'#2F6FED'},
+  {num:'BONUS · S12', title:"Tracker course sub-57'", desc:"Sorties (distance, temps), allure moyenne, courbe de progression vers le 10 km.", skills:"listes · calculs d'allure · graphique", color:'#1E8A5A'},
+];
+
+const PROG12_COLORS = {python:'#2F6FED', fisc:'#A97B1F', sql:'#7C4DBE', analyse:'#1E8A5A'};
+
+function renderProg12() {
+  if(!state.prog12Done) state.prog12Done = new Array(12).fill(false);
+
+  const stripEl = document.getElementById('prog12Strip');
+  const weeksEl = document.getElementById('prog12Weeks');
+  const labelEl = document.getElementById('prog12Label');
+  const projEl  = document.getElementById('prog12Projects');
+  if(!stripEl || !weeksEl) return;
+
+  const doneCount = state.prog12Done.filter(Boolean).length;
+  if(labelEl) labelEl.textContent = `${doneCount} / 12 semaines`;
+
+  // Strip
+  stripEl.innerHTML = PROG12_WEEKS.map((w,i) => {
+    const color = PROG12_COLORS[w.t];
+    const done = state.prog12Done[i];
+    return `<div onclick="toggleProg12(${i})" title="S${i+1} — ${w.theme}"
+      style="height:32px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;
+      background:${done ? color : 'transparent'};
+      border:2px solid ${color};
+      color:${done ? '#fff' : color};
+      transition:transform 0.15s"
+      onmouseover="this.style.transform='translateY(-2px)'"
+      onmouseout="this.style.transform=''">${i+1}</div>`;
+  }).join('');
+
+  // Weeks list
+  weeksEl.innerHTML = PROG12_WEEKS.map((w,i) => {
+    const color = PROG12_COLORS[w.t];
+    const done = state.prog12Done[i];
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-left:4px solid ${color};border-radius:8px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;opacity:${done?0.55:1};cursor:pointer" onclick="toggleProg12(${i})">
+      <div style="width:22px;height:22px;border-radius:5px;flex-shrink:0;margin-top:2px;
+        background:${done ? color : 'transparent'};border:2px solid ${color};
+        display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:${done?'#fff':color}">
+        ${done ? '✓' : ''}
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.72rem;font-weight:700;color:${color};min-width:28px;margin-top:3px">S${i+1}</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:0.82rem;color:var(--text);text-decoration:${done?'line-through':'none'}">${w.theme}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px">${w.detail}</div>
+        ${w.proj ? `<div style="display:inline-block;font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:500;background:${color}18;color:${color};border:1px solid ${color}44;border-radius:5px;padding:2px 8px;margin-top:6px">${w.proj}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Projects
+  if(projEl) projEl.innerHTML = PROG12_PROJECTS.map(p => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:${p.color};font-weight:600;letter-spacing:0.05em;margin-bottom:4px">${p.num}</div>
+      <div style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:4px">${p.title}</div>
+      <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:8px">${p.desc}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text);background:var(--surface);border-radius:5px;padding:5px 8px">${p.skills}</div>
+    </div>`).join('');
+}
+
+function toggleProg12(i) {
+  if(!state.prog12Done) state.prog12Done = new Array(12).fill(false);
+  state.prog12Done[i] = !state.prog12Done[i];
+  save();
+  renderProg12();
+}
+
 // ======= FORMATION CALENDRIER =======
 function saveCalendrier() {
   if(!state.calendrierFormation) state.calendrierFormation = {};
@@ -5279,25 +5410,7 @@ function switchFormTab(tab) {
   else if(tab==='tracker') renderTracker();
   else if(tab==='certifs') renderFormCertifs();
   else if(tab==='cv') renderFormCV();
-  else if(tab==='calendrier') renderCalendrier();
-}
-
-// ======= SWITCHINVENV UPDATE =======
-const _origSwitchInvEnv = switchInvEnv;
-function switchInvEnv(env) {
-  document.querySelectorAll('.inv-env-section').forEach(s => s.style.display='none');
-  document.querySelectorAll('[id^="invtab-"]').forEach(b => {
-    b.className='btn'; b.style.cssText='background:transparent;border:none;color:var(--text-muted)';
-  });
-  const section = document.getElementById('inv-'+env);
-  if(section) section.style.display='block';
-  const tab = document.getElementById('invtab-'+env);
-  if(tab) { tab.className='btn btn-primary'; tab.style.cssText=''; }
-  if(env==='pea'||env==='cto') renderEnvTable(env);
-  else if(env==='av') renderAV();
-  else if(env==='watchlist') renderWatchlist();
-  else if(env==='glossaire') renderGlossaire();
-  else renderPortfolio();
+  else if(tab==='calendrier') { renderCalendrier(); renderProg12(); }
 }
 
 // ======= AUTO-REFRESH MINUIT =======
@@ -5361,7 +5474,6 @@ if(getJsonbinConfig().binId) {
 }
 renderFilms();
 renderPodcastReco();
-renderPortfolio();
 renderAV();
 renderPatrimoine();
 renderDCA();
